@@ -778,6 +778,8 @@ footer{
           <option value="errors-asc">Fewest Errors</option>
           <option value="pct-asc">Lowest Compliance</option>
           <option value="pct-desc">Highest Compliance</option>
+          <option value="qual-asc">Lowest Qualified %</option>
+          <option value="qual-desc">Highest Qualified %</option>
           <option value="audits-desc">Most Audits</option>
           <option value="name">Name A–Z</option>
         </select>
@@ -927,18 +929,21 @@ footer{
 
   <!-- KPI ROW — single clean row -->
   <div class="kg" style="grid-template-columns:repeat(8,1fr)">
-    <div class="kc" style="border:2px solid #dc2626;border-radius:12px"><div class="ka" id="k-pct-a" style="background:#dc2626"></div><div class="kl" style="font-weight:700">Overall %</div><div class="kv" id="k-pct" style="color:#dc2626">—</div><div class="ks">Avg compliance score</div></div>
-    <div class="kc" style="border:2px solid #dc2626;border-radius:12px"><div class="ka" style="background:#dc2626"></div><div class="kl">⛔ Critical</div><div class="kv" id="k-crit" style="color:#dc2626;font-size:18px">—</div><div class="ks">Critical violation rows</div></div>
-    <div class="kc"><div class="ka" id="k-ws-a" style="background:#7c3aed"></div><div class="kl">Cat Errors</div><div class="kv" id="k-ws" style="color:#7c3aed;font-size:13px;font-weight:700;padding-top:4px">—</div><div class="ks" id="k-ws-sub">total this period</div></div>
-    <div class="kc"><div class="ka" id="k-acc-a" style="background:#e8943a"></div><div class="kl">Err / Audit</div><div class="kv" id="k-acc" style="color:#e8943a">—</div><div class="ks" id="k-acc-sub">category errors per audit</div></div>
+    <div class="kc" style="border:2px solid #dc2626;border-radius:12px"><div class="ka" id="k-pct-a" style="background:#dc2626"></div><div class="kl" style="font-weight:700">Overall %</div><div class="kv" id="k-pct" style="color:#dc2626">—</div><div class="ks">All case types</div></div>
+    <div class="kc" style="border:2px solid #059669;border-radius:12px"><div class="ka" id="k-qual-a" style="background:#059669"></div><div class="kl" style="font-weight:700">QUALIFIED %</div><div class="kv" id="k-qual" style="color:#059669;font-size:18px">—</div><div class="ks" id="k-qual-s">Revenue cases</div></div>
+    <div class="kc"><div class="ka" id="k-ws-a" style="background:#7c3aed"></div><div class="kl">Pts Lost/Max</div><div class="kv" id="k-ws" style="color:#7c3aed;font-size:13px;font-weight:700;padding-top:4px">—</div><div class="ks" id="k-ws-sub">lost / possible</div></div>
+    <div class="kc"><div class="ka" id="k-acc-a" style="background:#e8943a"></div><div class="kl">Loss Rate %</div><div class="kv" id="k-acc" style="color:#e8943a">—</div><div class="ks" id="k-acc-sub">of audits pts</div></div>
     <div class="kc"><div class="ka" id="k-rep-a" style="background:#dc2626"></div><div class="kl">At Risk</div><div class="kv" id="k-rep" style="color:#dc2626">—</div><div class="ks">Below 80%</div></div>
     <div class="kc"><div class="ka" style="background:#d97706"></div><div class="kl">Watch</div><div class="kv" id="k-coa" style="color:#d97706">—</div><div class="ks">80–90%</div></div>
     <div class="kc"><div class="ka" style="background:#059669"></div><div class="kl">Excellent</div><div class="kv" id="k-ok" style="color:#059669">—</div><div class="ks">Above 90%</div></div>
     <div class="kc"><div class="ka" style="background:#7c3aed"></div><div class="kl">Deal Errors</div><div class="kv" id="k-dl" style="color:#7c3aed">—</div><div class="ks">High impact</div></div>
   </div>
+  <!-- hidden elements kept for JS compatibility -->
   <div style="display:none">
-    <span id="k-aud">—</span><span id="k-err">—</span><span id="k-tw">—</span><span id="k-tw-a"></span>
-    <span id="k-qual">—</span><span id="k-qual-a"></span><span id="k-qual-s"></span>
+    <span id="k-aud">—</span>
+    <span id="k-err">—</span>
+    <span id="k-tw">—</span>
+    <span id="k-tw-a"></span>
   </div>
 
   <!-- CHARTS ROW -->
@@ -976,20 +981,57 @@ footer{
       <div class="tw">
         <table>
           <thead>
+            <tr style="background:var(--m2)">
+              <th colspan="2"></th>
+              <th colspan="1" style="text-align:center;color:#2563eb;font-size:10px;border-bottom:2px solid #2563eb">📞 CALL<br><span style="font-weight:400">10pts</span></th>
+              <th colspan="3" style="text-align:center;color:#059669;font-size:10px;border-bottom:2px solid #059669">💬 WHATSAPP<br><span style="font-weight:400">10pts</span></th>
+              <th colspan="3" style="text-align:center;color:#d97706;font-size:10px;border-bottom:2px solid #d97706">📧 EMAIL<br><span style="font-weight:400">10pts</span></th>
+              <th colspan="2" style="text-align:center;color:#64748b;font-size:10px;border-bottom:2px solid #64748b">📝 DESCRIPTION<br><span style="font-weight:400">10pts</span></th>
+              <th colspan="3" style="text-align:center;color:#7c3aed;font-size:10px;border-bottom:2px solid #7c3aed">🎯 LEAD STAGE<br><span style="font-weight:400">10pts</span></th>
+              <th colspan="1" style="text-align:center;color:#e11d48;font-size:10px;border-bottom:2px solid #e11d48">📋 OUTCOME<br><span style="font-weight:400">10pts</span></th>
+              <th colspan="1" style="text-align:center;color:#dc2626;font-size:10px;border-bottom:2px solid #dc2626">💼 DEAL<br><span style="font-weight:400">10pts</span></th>
+              <th colspan="2" style="text-align:center;color:#f59e0b;font-size:10px;border-bottom:2px solid #f59e0b">📊 PIPELINE<br><span style="font-weight:400">10pts</span></th>
+              <th colspan="3" style="text-align:center;color:#6366f1;font-size:10px;border-bottom:2px solid #6366f1">✅ TASK<br><span style="font-weight:400">10pts</span></th>
+              <th colspan="1" style="text-align:center;color:#0891b2;font-size:10px;border-bottom:2px solid #0891b2">⏱ TIMELY<br><span style="font-weight:400">10pts</span></th>
+              <th colspan="3"></th>
+            </tr>
             <tr>
               <th onclick="tsort('name')">Agent</th>
               <th onclick="tsort('audits')" style="text-align:center">Audits</th>
-              <th onclick="tsort('catErr_call')" style="text-align:center;color:#2563eb">📞 Call<br><span style="font-size:9px;font-weight:400;color:#94a3b8">Col C</span></th>
-              <th onclick="tsort('catErr_whatsapp')" style="text-align:center;color:#059669">💬 WhatsApp<br><span style="font-size:9px;font-weight:400;color:#94a3b8">Col D</span></th>
-              <th onclick="tsort('catErr_email')" style="text-align:center;color:#d97706">📧 Email<br><span style="font-size:9px;font-weight:400;color:#94a3b8">Col E</span></th>
-              <th onclick="tsort('catErr_description')" style="text-align:center;color:#64748b">📝 Description<br><span style="font-size:9px;font-weight:400;color:#94a3b8">Col F</span></th>
-              <th onclick="tsort('catErr_leadStage')" style="text-align:center;color:#7c3aed">🎯 Lead Stage<br><span style="font-size:9px;font-weight:400;color:#94a3b8">Col G</span></th>
-              <th onclick="tsort('catErr_deal')" style="text-align:center;color:#dc2626">💼 Deal<br><span style="font-size:9px;font-weight:400;color:#94a3b8">Col H</span></th>
-              <th onclick="tsort('catErr_task')" style="text-align:center;color:#6366f1">✅ Task<br><span style="font-size:9px;font-weight:400;color:#94a3b8">Col I</span></th>
-              <th onclick="tsort('catErr_followUp')" style="text-align:center;color:#0891b2">⏱️ Follow Up<br><span style="font-size:9px;font-weight:400;color:#94a3b8">Col J</span></th>
-              <th onclick="tsort('total')" style="text-align:center">Cat Errors ↕</th>
+              <!-- CALL col D -->
+              <th onclick="tsort('callLogged')" style="text-align:center;color:#2563eb" title="D: Call Made — 10pts if fail">Call Made<br><span style="font-size:9px;color:#dc2626">D</span></th>
+              <!-- WHATSAPP cols E,F,G -->
+              <th onclick="tsort('waUsed')" style="text-align:center;color:#059669" title="E: WhatsApp Used — part of 10pt cat">WA Used<br><span style="font-size:9px;color:#dc2626">E</span></th>
+              <th onclick="tsort('waLogged')" style="text-align:center;color:#059669" title="F: WA Logged in HubSpot">WA Logged<br><span style="font-size:9px;color:#dc2626">F</span></th>
+              <th onclick="tsort('waNote')" style="text-align:center;color:#059669" title="G: WA Note if unavailable">WA Note<br><span style="font-size:9px;color:#dc2626">G</span></th>
+              <!-- EMAIL cols H,I,J -->
+              <th onclick="tsort('emailSent')" style="text-align:center;color:#d97706" title="H: Email Sent">Email Sent<br><span style="font-size:9px;color:#dc2626">H</span></th>
+              <th onclick="tsort('profTone')" style="text-align:center;color:#d97706" title="I: Professional Tone">Prof Tone<br><span style="font-size:9px;color:#dc2626">I</span></th>
+              <th onclick="tsort('signature')" style="text-align:center;color:#d97706" title="J: Company Signature">Co. Sig<br><span style="font-size:9px;color:#dc2626">J</span></th>
+              <!-- DESCRIPTION cols K,L -->
+              <th onclick="tsort('callDesc')" style="text-align:center;color:#64748b" title="K: Description/Call Notes">Description<br><span style="font-size:9px;color:#dc2626">K</span></th>
+              <th onclick="tsort('allProperties')" style="text-align:center;color:#64748b" title="L: All Required Properties">All Props<br><span style="font-size:9px;color:#dc2626">L</span></th>
+              <!-- LEAD STAGE cols M,N,O -->
+              <th onclick="tsort('leadStage')" style="text-align:center;color:#7c3aed" title="M: Lead Stage Updated After Contact">Stage Upd<br><span style="font-size:9px;color:#dc2626">M</span></th>
+              <th onclick="tsort('correctStage')" style="text-align:center;color:#7c3aed" title="N: Qualified Stage Marked">Qual Mark<br><span style="font-size:9px;color:#dc2626">N</span></th>
+              <th onclick="tsort('qualifiedMark')" style="text-align:center;color:#7c3aed" title="O: Correct Lead Stage per SOP">Correct Stage<br><span style="font-size:9px;color:#dc2626">O</span></th>
+              <!-- OUTCOME col P -->
+              <th onclick="tsort('outcome')" style="text-align:center;color:#e11d48" title="P: Outcome Recorded">Outcome<br><span style="font-size:9px;color:#dc2626">P</span></th>
+              <!-- DEAL col Q -->
+              <th onclick="tsort('deal')" style="text-align:center;color:#dc2626" title="Q: Deal Created if Qualified">Deal<br><span style="font-size:9px;color:#dc2626">Q</span></th>
+              <!-- PIPELINE cols R,S -->
+              <th onclick="tsort('timeline')" style="text-align:center;color:#f59e0b" title="R: Timeline Activity set to All Time">Timeline<br><span style="font-size:9px;color:#dc2626">R</span></th>
+              <th onclick="tsort('pipeline')" style="text-align:center;color:#f59e0b" title="S: Correct Pipeline Selected">Pipeline<br><span style="font-size:9px;color:#dc2626">S</span></th>
+              <!-- TASK cols T,U,V -->
+              <th onclick="tsort('taskCreated')" style="text-align:center;color:#6366f1" title="T: Task Created">Task Created<br><span style="font-size:9px;color:#dc2626">T</span></th>
+              <th onclick="tsort('taskDone')" style="text-align:center;color:#6366f1" title="U: Task Completed Timely">Task Done<br><span style="font-size:9px;color:#dc2626">U</span></th>
+              <th onclick="tsort('taskType')" style="text-align:center;color:#6366f1" title="V: Task Type Matches Request">Task Type<br><span style="font-size:9px;color:#dc2626">V</span></th>
+              <!-- TIMELY col W -->
+              <th onclick="tsort('timelyContact')" style="text-align:center;color:#0891b2" title="W: Timely Contact Maintained">Timely<br><span style="font-size:9px;color:#dc2626">W</span></th>
+              <th onclick="tsort('total')" style="text-align:center">Field Errors ↕</th>
               <th onclick="tsort('pct')">Score %</th>
-              <th>Severity</th>
+              <th onclick="tsort('qualPct')" style="color:#059669">QUAL %<br><span style="font-size:9px;color:var(--mu)">if audited</span></th>
+              <th onclick="tsort('naPct')" style="color:#2563eb">NA %<br><span style="font-size:9px;color:var(--mu)">if audited</span></th>
               <th>Status</th>
               <th style="text-align:center">PDF</th>
             </tr>
@@ -1011,16 +1053,18 @@ footer{
           <tr>
             <th>Agent</th>
             <th style="text-align:center">Audits</th>
-            <th style="text-align:center;color:#2563eb">📞 CALL</th>
-            <th style="text-align:center;color:#059669">💬 WHATSAPP</th>
-            <th style="text-align:center;color:#d97706">📧 EMAIL</th>
-            <th style="text-align:center;color:#64748b">📝 DESCRIPTION</th>
-            <th style="text-align:center;color:#7c3aed">🎯 LEAD STAGE</th>
-            <th style="text-align:center;color:#dc2626">💼 DEAL</th>
-            <th style="text-align:center;color:#6366f1">✅ TASK</th>
-            <th style="text-align:center;color:#0891b2">⏱️ FOLLOW UP</th>
-            <th style="text-align:center">Cat Errors</th>
-            <th style="text-align:center">Score %</th>
+            <th style="text-align:center;color:#2563eb">CALL<br><span style="font-size:9px;font-weight:400;color:#94a3b8">10pts</span></th>
+            <th style="text-align:center;color:#059669">WHATSAPP<br><span style="font-size:9px;font-weight:400;color:#94a3b8">10pts</span></th>
+            <th style="text-align:center;color:#d97706">EMAIL<br><span style="font-size:9px;font-weight:400;color:#94a3b8">10pts</span></th>
+            <th style="text-align:center;color:#64748b">DESCRIPTION<br><span style="font-size:9px;font-weight:400;color:#94a3b8">10pts</span></th>
+            <th style="text-align:center;color:#7c3aed">LEAD STAGE<br><span style="font-size:9px;font-weight:400;color:#94a3b8">10pts</span></th>
+            <th style="text-align:center;color:#e11d48">OUTCOME<br><span style="font-size:9px;font-weight:400;color:#94a3b8">10pts</span></th>
+            <th style="text-align:center;color:#dc2626">DEAL<br><span style="font-size:9px;font-weight:400;color:#94a3b8">10pts</span></th>
+            <th style="text-align:center;color:#f59e0b">PIPELINE<br><span style="font-size:9px;font-weight:400;color:#94a3b8">10pts</span></th>
+            <th style="text-align:center;color:#6366f1">TASK<br><span style="font-size:9px;font-weight:400;color:#94a3b8">10pts</span></th>
+            <th style="text-align:center;color:#0891b2">TIMELY<br><span style="font-size:9px;font-weight:400;color:#94a3b8">10pts</span></th>
+            <th style="text-align:center">Cat Fails</th>
+            <th style="text-align:center">Compliance %</th>
           </tr>
         </thead>
         <tbody id="wtb"></tbody>
@@ -1059,23 +1103,25 @@ footer{
     <div id="sopViolationsPanel" style="padding:16px"></div>
   </div>
 
-  <!-- TRAINING FOCUS PANEL -->
+  <!-- TRAINING FOCUS PANEL — with consultant dropdown -->
   <div class="card" style="margin-bottom:16px;overflow:hidden">
     <div class="ch">
       <div style="flex:1">
-        <div class="ct">🎓 Training Focus — Click a Consultant</div>
-        <div class="cs">Click any card to see their exact error breakdown · date filters apply</div>
+        <div class="ct">🎓 Training Focus — Exact Error Detail</div>
+        <div class="cs">Select a consultant to see their specific error breakdown for coaching sessions</div>
       </div>
-      <select id="trainingConsultantSel" style="display:none">
+      <select id="trainingConsultantSel" onchange="showTrainingForConsultant(this.value)"
+        style="background:var(--s2);border:1px solid var(--b2);border-radius:8px;padding:7px 12px;color:var(--tx);font-size:13px;font-weight:600;font-family:'Nunito',sans-serif;cursor:pointer;outline:none;min-width:220px;transition:border-color .2s"
+        onfocus="this.style.borderColor='var(--ac)'" onblur="this.style.borderColor='var(--b2)'">
         <option value="">— Select a Consultant —</option>
       </select>
     </div>
-    <div id="trainingPanel" style="padding:16px;display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:10px;min-height:60px">
-      <div style="color:var(--mu);font-size:13px;padding:12px;grid-column:1/-1;text-align:center">Loading consultants…</div>
+    <div id="trainingPanel" style="padding:16px;display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:12px">
+      <div style="color:var(--mu);font-size:13px;padding:12px;grid-column:1/-1;text-align:center">
+        Select a consultant from the dropdown to see their exact error detail
+      </div>
     </div>
-    <div id="trainingDetail" style="padding:0 16px 16px"></div>
   </div>
-  <!-- COMPLIANCE DISTRIBUTION
 
   <!-- COMPLIANCE DISTRIBUTION HISTOGRAM -->
   <div class="card" style="margin-bottom:16px">
@@ -1759,64 +1805,64 @@ footer{
 
 <!-- ══════════════════════ DEAL'S OVERVIEW TAB ══════════════════════ -->
 <div class="panel" id="p-deals">
-  <!-- DEALS HEADER -->
-  <div style="display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:24px;flex-wrap:wrap;gap:12px;padding-top:4px">
+
+  <!-- ── Error bar ── -->
+  <div class="ebar" id="deals-eb" style="display:none"><span id="deals-em"></span><button class="icon-btn" style="margin-left:auto" onclick="dealsRefreshAll()">Retry</button></div>
+
+  <!-- ── Section Header ── -->
+  <div style="display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:16px;flex-wrap:wrap;gap:12px;padding-top:4px">
     <div>
-      <div style="font-size:10px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:#6366f1;margin-bottom:4px;font-family:'DM Mono',monospace">LIVE · GOOGLE SHEETS CONNECTED</div>
+      <div style="font-size:10px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--ac);margin-bottom:4px">Live · Google Sheets</div>
       <div style="font-size:20px;font-weight:800;letter-spacing:-.5px;font-family:'Nunito',sans-serif;color:var(--tx)">Deal's Overview</div>
-      <div style="font-size:11px;color:var(--mu);margin-top:2px;font-family:'DM Mono',monospace" id="deals-source-label">Loading from Google Sheets…</div>
+      <div style="font-size:11px;color:var(--mu);margin-top:2px;font-family:'DM Mono',monospace" id="deals-source-label">Loading data…</div>
     </div>
     <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center">
       <div style="display:flex;align-items:center;gap:6px;font-size:11px;color:var(--mu);font-family:'DM Mono',monospace;padding:5px 10px;background:var(--s2);border-radius:6px;border:1px solid var(--b)">
         <span style="width:7px;height:7px;border-radius:50%;background:#10b981;display:inline-block;animation:pulse 2s infinite"></span>
         <span id="deals-last-updated">Connecting…</span>
       </div>
-      <button class="btn bo" onclick="loadDealsData()">↻ Refresh</button>
-      <button class="btn bs" onclick="exportDealsCSV()">📊 Export</button>
+      <button class="btn bo" onclick="dealsRefreshAll()">↻ Refresh</button>
+      <button class="btn bs" onclick="dealsExportCSV()">⬇ Export CSV</button>
     </div>
   </div>
 
-  <!-- ERROR BANNER -->
-  <div id="deals-error" style="display:none;background:var(--rl);border:1px solid #fca5a5;border-radius:10px;padding:12px 16px;margin-bottom:16px;color:#991b1b;font-size:13px;display:none;align-items:center;gap:10px">
-    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
-    <span id="deals-error-msg">Could not load sheet data.</span>
-    <button class="btn bo" onclick="loadDealsData()" style="margin-left:auto;padding:4px 10px;font-size:11px">Retry</button>
+  <!-- ══ SUB-NAVIGATION (same style as CM Compliance) ══ -->
+  <div class="cm-subtab-bar">
+    <button class="cm-subtab active" id="dealstab-global" onclick="switchDealsSubTab('global')">
+      🌐 Global Team
+    </button>
+    <button class="cm-subtab" id="dealstab-dxb" onclick="switchDealsSubTab('dxb')">
+      🏙️ DXB Team
+    </button>
   </div>
 
-  <!-- FILTERS ROW -->
-  <div class="fp" style="margin-bottom:16px">
-    <div class="fr" style="flex-wrap:wrap;gap:12px">
-      <div class="fg">
-        <label>Date Range</label>
-        <div class="chips">
-          <button class="chip active" data-deals-range="all"      onclick="setDealsRange(this,'all')">All Time</button>
-          <button class="chip"        data-deals-range="thismonth" onclick="setDealsRange(this,'thismonth')">This Month</button>
-          <button class="chip"        data-deals-range="lastmonth" onclick="setDealsRange(this,'lastmonth')">Last Month</button>
-          <button class="chip"        data-deals-range="last7"    onclick="setDealsRange(this,'last7')">Last 7 Days</button>
-          <button class="chip"        data-deals-range="last28"   onclick="setDealsRange(this,'last28')">Last 4 Weeks</button>
-          <button class="chip"        data-deals-range="custom"   onclick="setDealsRange(this,'custom')">📅 Custom…</button>
-        </div>
-      </div>
-      <div class="fg">
-        <label>Consultant</label>
-        <select id="deals-consultant-filter" onchange="renderDealsTab()">
-          <option value="all">All Consultants</option>
-        </select>
-      </div>
-      <div class="fg">
-        <label>Stage</label>
-        <select id="deals-stage-filter" onchange="renderDealsTab()">
-          <option value="all">All Stages</option>
-        </select>
-      </div>
+  <!-- ══ FILTER STRIP ══ -->
+  <div style="background:var(--w);border:1px solid var(--b);border-radius:12px;padding:14px 18px;margin-bottom:18px;display:flex;align-items:center;flex-wrap:wrap;gap:12px">
+    <span style="font-size:10px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--mu);white-space:nowrap">Filter</span>
+    <div style="display:flex;gap:6px;flex-wrap:wrap">
+      <button class="chip active" data-deals-range="all"       onclick="setDealsRange(this,'all')">All Time</button>
+      <button class="chip"        data-deals-range="thismonth" onclick="setDealsRange(this,'thismonth')">This Month</button>
+      <button class="chip"        data-deals-range="lastmonth" onclick="setDealsRange(this,'lastmonth')">Last Month</button>
+      <button class="chip"        data-deals-range="last7"     onclick="setDealsRange(this,'last7')">Last 7 Days</button>
+      <button class="chip"        data-deals-range="last28"    onclick="setDealsRange(this,'last28')">Last 4 Weeks</button>
+      <button class="chip"        data-deals-range="custom"    onclick="setDealsRange(this,'custom')">📅 Custom…</button>
     </div>
-    <div id="deals-custom-box" class="cbox hidden">
-      <div class="fg"><label>Start Date</label><input type="date" id="deals-ds" onchange="renderDealsTab()"></div>
-      <div class="fg"><label>End Date</label><input type="date" id="deals-de" onchange="renderDealsTab()"></div>
+    <div style="width:1px;height:24px;background:var(--b);flex-shrink:0"></div>
+    <div style="display:flex;align-items:center;gap:8px">
+      <span style="font-size:10px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--mu)">Consultant</span>
+      <select id="deals-consultant-filter" onchange="dealsRenderActive()"
+        style="background:var(--s2);border:1px solid var(--b2);border-radius:7px;padding:5px 10px;color:var(--tx);font-size:12px;font-weight:600;font-family:'Nunito',sans-serif;cursor:pointer;outline:none">
+        <option value="all">All Consultants</option>
+      </select>
     </div>
+    <input class="srch" type="text" placeholder="🔍 Search…" id="deals-search-input" oninput="dealsOnSearch(this.value)" style="margin-left:auto">
+  </div>
+  <div id="deals-custom-box" class="cbox hidden" style="margin-bottom:14px">
+    <div class="fg"><label>Start Date</label><input type="date" id="deals-ds" onchange="dealsRenderActive()"></div>
+    <div class="fg"><label>End Date</label><input type="date" id="deals-de" onchange="dealsRenderActive()"></div>
   </div>
 
-  <!-- LOADING SKELETON -->
+  <!-- SKELETON -->
   <div id="deals-skeleton" style="display:none">
     <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:12px;margin-bottom:20px">
       <div class="skeleton" style="height:80px;border-radius:12px"></div>
@@ -1824,136 +1870,128 @@ footer{
       <div class="skeleton" style="height:80px;border-radius:12px"></div>
       <div class="skeleton" style="height:80px;border-radius:12px"></div>
       <div class="skeleton" style="height:80px;border-radius:12px"></div>
-      <div class="skeleton" style="height:80px;border-radius:12px"></div>
     </div>
-    <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:16px;margin-bottom:16px">
-      <div class="skeleton skel-chart"></div>
-      <div class="skeleton skel-chart"></div>
-      <div class="skeleton skel-chart"></div>
-    </div>
+    <div class="skeleton" style="height:420px;border-radius:12px"></div>
   </div>
 
-  <!-- MAIN CONTENT (hidden until data loads) -->
-  <div id="deals-content" style="display:none">
-  <!-- DEBUG INFO — shown only when data loads, auto-hides after 10s -->
-  <div id="deals-debug-box" style="display:none;background:var(--s2);border:1px solid var(--b);border-radius:8px;padding:10px 14px;margin-bottom:14px;font-family:'DM Mono',monospace;font-size:11px;color:var(--mu)">
-    <strong style="color:var(--tx)">🔍 Data Debug</strong>
-    <span id="deals-debug-source" style="margin-left:8px"></span>
-    <span id="deals-debug-rows" style="margin-left:8px"></span>
-    <br><span style="color:var(--mu)">Detected columns: </span><span id="deals-debug-cols" style="color:var(--t2)"></span>
-    <button onclick="document.getElementById('deals-debug-box').style.display='none'" style="float:right;background:none;border:none;cursor:pointer;color:var(--mu);font-size:13px">✕</button>
-  </div>
+  <!-- ══ GLOBAL TEAM SUB-PANEL ══ -->
+  <div class="cm-subpanel active" id="dealspanel-global">
 
-    <!-- KPI STRIP -->
-    <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(155px,1fr));gap:12px;margin-bottom:20px" id="deals-kpi-strip">
-      <div class="kcard"><div class="kbar" style="background:#2563eb"></div><div class="klabel">Total Deals</div><div class="kval" id="dk-total" style="color:#2563eb">—</div><div class="kdesc" id="dk-total-s">in period</div></div>
-      <div class="kcard"><div class="kbar" style="background:#7c3aed"></div><div class="klabel">Active Pipeline</div><div class="kval" id="dk-active" style="color:#7c3aed">—</div><div class="kdesc">open deals</div></div>
-      <div class="kcard"><div class="kbar" style="background:#059669"></div><div class="klabel">Closed Won</div><div class="kval" id="dk-won" style="color:#059669">—</div><div class="kdesc" id="dk-won-s">deals</div></div>
-      <div class="kcard"><div class="kbar" style="background:#dc2626"></div><div class="klabel">Closed Lost</div><div class="kval" id="dk-lost" style="color:#dc2626">—</div><div class="kdesc">deals</div></div>
-      <div class="kcard"><div class="kbar" style="background:#d97706"></div><div class="klabel">Win Rate</div><div class="kval" id="dk-winrate" style="color:#d97706">—</div><div class="kdesc">of closed deals</div></div>
-      <div class="kcard"><div class="kbar" style="background:#6366f1"></div><div class="klabel">Consultants</div><div class="kval" id="dk-consultants" style="color:#6366f1">—</div><div class="kdesc">active this period</div></div>
-    </div>
-
-    <!-- PIPELINE HEALTH BANNER (70% threshold) -->
-    <div id="pipeline-health-banner" style="background:linear-gradient(135deg,rgba(99,102,241,.08),rgba(139,92,246,.06));border:1.5px solid rgba(99,102,241,.25);border-radius:14px;padding:18px 22px;margin-bottom:20px">
-      <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:14px">
-        <div style="display:flex;align-items:center;gap:14px">
-          <div style="width:48px;height:48px;border-radius:12px;background:linear-gradient(135deg,#6366f1,#8b5cf6);display:flex;align-items:center;justify-content:center;flex-shrink:0">
-            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2"><polyline points="22,12 18,12 15,21 9,3 6,12 2,12"/></svg>
-          </div>
-          <div>
-            <div style="font-size:13px;font-weight:700;color:var(--tx);margin-bottom:2px">Correct Pipeline Stage Health</div>
-            <div style="font-size:11px;color:var(--mu);font-family:'DM Mono',monospace">Target: 70% of deals must be in the correct pipeline stage</div>
-          </div>
+    <!-- Hero compliance banner -->
+    <div id="deals-global-banner" style="background:linear-gradient(135deg,#0f172a 0%,#1e1b4b 50%,#0f172a 100%);border-radius:16px;padding:22px 26px;display:flex;align-items:center;gap:20px;flex-wrap:wrap;position:relative;overflow:hidden;border:1px solid rgba(99,102,241,.25);min-height:140px;margin-bottom:16px">
+      <div style="position:absolute;inset:0;background:repeating-linear-gradient(90deg,transparent,transparent 60px,rgba(99,102,241,.03) 60px,rgba(99,102,241,.03) 61px);pointer-events:none"></div>
+      <div style="position:absolute;right:-60px;top:-60px;width:240px;height:240px;border-radius:50%;background:radial-gradient(circle,rgba(99,102,241,.15) 0%,transparent 70%);pointer-events:none"></div>
+      <div style="text-align:center;min-width:120px;position:relative">
+        <div style="font-size:9px;font-weight:700;letter-spacing:2.5px;text-transform:uppercase;color:rgba(99,102,241,.7);font-family:'DM Mono',monospace;margin-bottom:6px">TEAM COMPLIANCE</div>
+        <div id="deals-global-bigpct" style="font-size:52px;font-weight:900;font-family:'Nunito',sans-serif;line-height:1;color:#6366f1;text-shadow:0 0 40px rgba(99,102,241,.5)">—%</div>
+        <div id="deals-global-status" style="font-size:11px;font-weight:700;margin-top:8px;padding:4px 12px;border-radius:20px;display:inline-block;background:rgba(99,102,241,.15);color:#a5b4fc">Loading…</div>
+      </div>
+      <div style="width:1px;height:80px;background:rgba(99,102,241,.25);flex-shrink:0"></div>
+      <div style="flex:1;min-width:200px;position:relative">
+        <div style="font-size:9px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:rgba(255,255,255,.3);font-family:'DM Mono',monospace;margin-bottom:10px">INDIVIDUAL COMPLIANCE</div>
+        <div id="deals-global-bars" style="display:flex;flex-direction:column;gap:5px"></div>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:10px;min-width:110px;position:relative">
+        <div style="background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.08);border-radius:10px;padding:10px 14px">
+          <div style="font-size:9px;color:rgba(255,255,255,.35);font-family:'DM Mono',monospace;letter-spacing:1px">CONSULTANTS</div>
+          <div id="deals-global-count" style="font-size:24px;font-weight:800;color:#e2e8f0;font-family:'Nunito',sans-serif">—</div>
         </div>
-        <div style="display:flex;align-items:center;gap:24px;flex-wrap:wrap">
-          <div style="text-align:center">
-            <div style="font-size:30px;font-weight:900;font-family:'Nunito',sans-serif;line-height:1" id="pipeline-correct-pct">—</div>
-            <div style="font-size:10px;color:var(--mu);font-family:'DM Mono',monospace;margin-top:2px">CORRECT %</div>
-          </div>
-          <div style="text-align:center">
-            <div style="font-size:30px;font-weight:900;font-family:'Nunito',sans-serif;line-height:1;color:#dc2626" id="pipeline-wrong-count">—</div>
-            <div style="font-size:10px;color:var(--mu);font-family:'DM Mono',monospace;margin-top:2px">WRONG STAGE</div>
-          </div>
-          <div>
-            <div style="display:flex;align-items:center;gap:8px;margin-bottom:6px">
-              <div style="font-size:11px;color:var(--mu);width:80px;font-family:'DM Mono',monospace">Correct</div>
-              <div style="flex:1;height:8px;background:var(--b);border-radius:4px;min-width:140px;overflow:hidden"><div id="pipeline-bar-correct" style="height:100%;background:#059669;border-radius:4px;transition:width .6s ease"></div></div>
-              <div style="font-size:11px;font-weight:700;color:#059669;width:38px;text-align:right;font-family:'DM Mono',monospace" id="pipeline-bar-correct-pct">—</div>
-            </div>
-            <div style="display:flex;align-items:center;gap:8px">
-              <div style="font-size:11px;color:var(--mu);width:80px;font-family:'DM Mono',monospace">Wrong</div>
-              <div style="flex:1;height:8px;background:var(--b);border-radius:4px;min-width:140px;overflow:hidden"><div id="pipeline-bar-wrong" style="height:100%;background:#dc2626;border-radius:4px;transition:width .6s ease"></div></div>
-              <div style="font-size:11px;font-weight:700;color:#dc2626;width:38px;text-align:right;font-family:'DM Mono',monospace" id="pipeline-bar-wrong-pct">—</div>
-            </div>
-          </div>
-          <div id="pipeline-status-badge" style="padding:8px 16px;border-radius:8px;font-size:12px;font-weight:700;font-family:'DM Mono',monospace">—</div>
+        <div style="background:rgba(255,255,255,.05);border:1px solid rgba(16,185,129,.2);border-radius:10px;padding:10px 14px">
+          <div style="font-size:9px;color:rgba(255,255,255,.35);font-family:'DM Mono',monospace;letter-spacing:1px">ABOVE 80%</div>
+          <div id="deals-global-above" style="font-size:24px;font-weight:800;color:#10b981;font-family:'Nunito',sans-serif">—</div>
         </div>
       </div>
     </div>
 
-    <!-- CHARTS ROW 1: Stage funnel + Consultant breakdown + Win/Loss trend -->
-    <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:16px;margin-bottom:16px">
-      <div class="card">
-        <div class="card-head"><div><div class="card-title">📊 Pipeline by Stage</div><div class="card-sub">Deal count per funnel stage</div></div></div>
-        <div class="card-body"><div style="position:relative;height:220px"><canvas id="deals-stage-chart"></canvas></div></div>
-      </div>
-      <div class="card">
-        <div class="card-head"><div><div class="card-title">🥧 Deals by Consultant</div><div class="card-sub">Share of deals per consultant</div></div></div>
-        <div class="card-body">
-          <div style="position:relative;height:180px"><canvas id="deals-consultant-chart"></canvas></div>
-          <div id="deals-consultant-legend" style="margin-top:8px;display:flex;flex-wrap:wrap;gap:6px;padding:0 4px"></div>
-        </div>
-      </div>
-      <div class="card">
-        <div class="card-head"><div><div class="card-title">✅ Won vs ❌ Lost</div><div class="card-sub">Closed deal outcomes by consultant</div></div></div>
-        <div class="card-body"><div style="position:relative;height:220px"><canvas id="deals-wonlost-chart"></canvas></div></div>
-      </div>
-    </div>
+    <!-- KPI strip -->
+    <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:10px;margin-bottom:16px" id="deals-kpi-global"></div>
 
-    <!-- CHARTS ROW 2: Leaderboard + Pipeline correct/wrong per consultant -->
-    <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:16px">
-      <div class="card">
-        <div class="card-head"><div><div class="card-title">🏆 Consultant Leaderboard</div><div class="card-sub">Ranked by total deals this period</div></div></div>
-        <div class="card-body" id="deals-leaderboard" style="padding:12px 16px"></div>
-      </div>
-      <div class="card">
-        <div class="card-head"><div><div class="card-title">🎯 Correct Pipeline % by Consultant</div><div class="card-sub">Who's hitting the 70% target</div></div></div>
-        <div class="card-body" id="deals-pipeline-per-consultant" style="padding:12px 16px"></div>
-      </div>
-    </div>
-
-    <!-- FULL DEALS TABLE -->
-    <div class="card">
+    <!-- Compliance table -->
+    <div class="card" style="margin-bottom:16px">
       <div class="card-head">
-        <div><div class="card-title">📋 All Deals</div><div class="card-sub" id="deals-table-count">Loading…</div></div>
-        <div style="display:flex;gap:8px;align-items:center">
-          <input class="srch" type="text" placeholder="🔍 Search…" oninput="filterDealsTable(this.value)" style="width:160px">
-          <select class="sb" id="deals-sort-select" onchange="sortDealsTable(this.value)" style="width:auto;font-size:12px;padding:5px 9px">
-            <option value="name">Sort: Name</option>
-            <option value="stage">Sort: Stage</option>
-            <option value="date">Sort: Date</option>
-            <option value="pipeline_correct">Sort: Pipeline ✓</option>
-          </select>
-        </div>
+        <div><div class="card-title">🌐 Global Team — Consultant Compliance</div><div class="card-sub" id="deals-count-global">Loading…</div></div>
       </div>
-      <div class="tw" style="max-height:500px;overflow-y:auto">
-        <table class="cmp-table" id="deals-main-table">
+      <div style="overflow-x:auto">
+        <table class="cmp-table" id="deals-table-global">
           <thead><tr>
-            <th onclick="sortDealsTable('name')">Consultant</th>
-            <th onclick="sortDealsTable('stage')">Stage</th>
-            <th onclick="sortDealsTable('date')">Date</th>
-            <th onclick="sortDealsTable('pipeline_correct')" style="text-align:center">Pipeline ✓</th>
-            <th onclick="sortDealsTable('value')">Value</th>
-            <th>Contact</th>
-            <th>Source</th>
+            <th>Consultant</th>
+            <th style="text-align:center">Audits</th>
+            <th style="text-align:center;color:#2563eb">Deal Stage</th>
+            <th style="text-align:center;color:#7c3aed">Pipeline</th>
+            <th style="text-align:center;color:#64748b">Notes</th>
+            <th style="text-align:center;color:#059669">WA/Email</th>
+            <th style="text-align:center;color:#0891b2">Close Date</th>
+            <th style="text-align:center;color:#d97706">Timeline</th>
+            <th style="text-align:center;color:#6366f1">Follow-up</th>
+            <th style="text-align:center;color:#dc2626">Lost Reason</th>
+            <th>Score %</th>
+            <th>Status</th>
           </tr></thead>
-          <tbody id="deals-tbody"></tbody>
+          <tbody id="deals-tbody-global"></tbody>
         </table>
       </div>
     </div>
 
-  </div><!-- /deals-content -->
+  </div><!-- /dealspanel-global -->
+
+  <!-- ══ DXB TEAM SUB-PANEL ══ -->
+  <div class="cm-subpanel" id="dealspanel-dxb">
+
+    <!-- Hero compliance banner -->
+    <div id="deals-dxb-banner" style="background:linear-gradient(135deg,#0f172a 0%,#1a1a2e 50%,#0f172a 100%);border-radius:16px;padding:22px 26px;display:flex;align-items:center;gap:20px;flex-wrap:wrap;position:relative;overflow:hidden;border:1px solid rgba(6,182,212,.25);min-height:140px;margin-bottom:16px">
+      <div style="position:absolute;right:-60px;top:-60px;width:240px;height:240px;border-radius:50%;background:radial-gradient(circle,rgba(6,182,212,.12) 0%,transparent 70%);pointer-events:none"></div>
+      <div style="text-align:center;min-width:120px;position:relative">
+        <div style="font-size:9px;font-weight:700;letter-spacing:2.5px;text-transform:uppercase;color:rgba(6,182,212,.7);font-family:'DM Mono',monospace;margin-bottom:6px">TEAM COMPLIANCE</div>
+        <div id="deals-dxb-bigpct" style="font-size:52px;font-weight:900;font-family:'Nunito',sans-serif;line-height:1;color:#06b6d4;text-shadow:0 0 40px rgba(6,182,212,.5)">—%</div>
+        <div id="deals-dxb-status" style="font-size:11px;font-weight:700;margin-top:8px;padding:4px 12px;border-radius:20px;display:inline-block;background:rgba(6,182,212,.15);color:#67e8f9">Loading…</div>
+      </div>
+      <div style="width:1px;height:80px;background:rgba(6,182,212,.25);flex-shrink:0"></div>
+      <div style="flex:1;min-width:200px;position:relative">
+        <div style="font-size:9px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:rgba(255,255,255,.3);font-family:'DM Mono',monospace;margin-bottom:10px">INDIVIDUAL COMPLIANCE</div>
+        <div id="deals-dxb-bars" style="display:flex;flex-direction:column;gap:5px"></div>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:10px;min-width:110px;position:relative">
+        <div style="background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.08);border-radius:10px;padding:10px 14px">
+          <div style="font-size:9px;color:rgba(255,255,255,.35);font-family:'DM Mono',monospace;letter-spacing:1px">CONSULTANTS</div>
+          <div id="deals-dxb-count" style="font-size:24px;font-weight:800;color:#e2e8f0;font-family:'Nunito',sans-serif">—</div>
+        </div>
+        <div style="background:rgba(255,255,255,.05);border:1px solid rgba(16,185,129,.2);border-radius:10px;padding:10px 14px">
+          <div style="font-size:9px;color:rgba(255,255,255,.35);font-family:'DM Mono',monospace;letter-spacing:1px">ABOVE 80%</div>
+          <div id="deals-dxb-above" style="font-size:24px;font-weight:800;color:#10b981;font-family:'Nunito',sans-serif">—</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- KPI strip -->
+    <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:10px;margin-bottom:16px" id="deals-kpi-dxb"></div>
+
+    <!-- Compliance table -->
+    <div class="card" style="margin-bottom:16px">
+      <div class="card-head">
+        <div><div class="card-title">🏙️ DXB Team — Consultant Compliance</div><div class="card-sub" id="deals-count-dxb">Loading…</div></div>
+      </div>
+      <div style="overflow-x:auto">
+        <table class="cmp-table" id="deals-table-dxb">
+          <thead><tr>
+            <th>Consultant</th>
+            <th style="text-align:center">Audits</th>
+            <th style="text-align:center;color:#2563eb">Deal Stage</th>
+            <th style="text-align:center;color:#7c3aed">Pipeline</th>
+            <th style="text-align:center;color:#64748b">Notes</th>
+            <th style="text-align:center;color:#059669">WA/Email</th>
+            <th style="text-align:center;color:#0891b2">Close Date</th>
+            <th style="text-align:center;color:#d97706">Timeline</th>
+            <th style="text-align:center;color:#6366f1">Follow-up</th>
+            <th style="text-align:center;color:#dc2626">Lost Reason</th>
+            <th>Score %</th>
+            <th>Status</th>
+          </tr></thead>
+          <tbody id="deals-tbody-dxb"></tbody>
+        </table>
+      </div>
+    </div>
+
+  </div><!-- /dealspanel-dxb -->
 
 </div><!-- /p-deals -->
 
@@ -2288,7 +2326,7 @@ function aggregateFromRawSheet(sheet, startDate, endDate, errorLinks) {
 //  API ENDPOINTS
 // ══════════════════════════════════════════════════════════════
 const APIS = {
-  hof:     'https://script.google.com/macros/s/AKfycbwm6zloihA05aeZ4pzKsJLe-u9zCSzxsku_KPUm44vFoR225aEBSGEguM20ecOu7LC7XQ/exec',
+  hof:     'https://script.google.com/macros/s/AKfycbyVjdgnax9UO9eyIFX-RLU4DxKZtnqfe6aQAHC5QU8N9CqboJ0t5b8nR8A7bxRJowwh/exec',
   daily:   'https://script.google.com/macros/s/AKfycbyOPHjjzxoFE75kiyc5XcyLlrcaU0M-JKtPet4c17mKqKXHVh8TrDP6Cl-Vc0zVqdjP/exec',
   weekly:  'https://script.google.com/macros/s/AKfycbxLkga97bUdGu1NGq6T5AeXXcW0UuUJt5UUWYvlzq2tlDsanbq9qYFsmtpjSzCjMLuI7A/exec',
   monthly: 'https://script.google.com/macros/s/AKfycbz1AW3E4P4vxBdlGVp_P3OvFARO63Jn_XLoPIKg95bbFOzFdi-PgtpDX5ayTykeQDAG/exec',
@@ -2697,7 +2735,10 @@ function getBounds(range) {
 
 async function hofFetch(silent=false) {
   document.getElementById('eb').classList.remove('on');
-  if (!silent) { showLdr('Fetching live data…'); showSkeleton(); }
+  if (!silent) {
+    showLdr('Fetching live data from Google Sheet…');
+    showSkeleton();
+  }
 
   const {s,e} = getBounds(activeRange);
   let url = APIS.hof;
@@ -2706,58 +2747,84 @@ async function hofFetch(silent=false) {
   if (e) p.push('end='+fmtDate(e));
   if (p.length) url += '?' + p.join('&');
 
-  const controller = new AbortController();
-  const tid = setTimeout(() => controller.abort(), 12000);
-
   try {
-    const res = await fetch(url, {redirect:'follow', signal: controller.signal});
-    clearTimeout(tid);
-    if (!res.ok) throw new Error('HTTP '+res.status);
+    // Timeout: abort fetch after 12 seconds to prevent infinite spinner
+    const controller = new AbortController();
+    const timeoutId = setTimeout(function(){ controller.abort(); }, 12000);
+    const res = await fetch(url, {redirect:'follow', signal: controller.signal}).finally(function(){ clearTimeout(timeoutId); });
+    if (!res.ok) throw new Error('HTTP ' + res.status);
     const raw = await res.text();
-    if (!raw || raw.trim()==='') throw new Error('Empty response');
+    if (!raw || raw.trim() === '') throw new Error('Empty response');
+
     let json;
     try { json = JSON.parse(raw); }
     catch(pe) {
       if (raw.includes('<html') || raw.includes('<!DOCTYPE'))
-        throw new Error('Apps Script returned HTML — re-deploy: Execute as Me, Anyone');
-      throw new Error('JSON parse failed: '+pe.message);
+        throw new Error('Apps Script returned HTML — check: Deploy → Web App → Execute as Me → Anyone (no sign-in)');
+      throw new Error('JSON parse failed: ' + pe.message);
     }
-    if (json.ok===false) throw new Error('Apps Script error: '+(json.error||'unknown'));
-    if (!Array.isArray(json.data)||json.data.length===0)
-      throw new Error('No data found. Try "All Time" to confirm data exists.');
+
+    if (json.ok === false) throw new Error('Apps Script error: ' + (json.error||'unknown'));
+    if (!Array.isArray(json.data) || json.data.length === 0)
+      throw new Error('No audit rows found for this date range. Try "All Time" to verify data exists.');
 
     HOF_ALL = json.data.map(d => ({
-      name:               String(d.name||''),
-      source:             String(d.source||'global'),
-      audits:             +d.audits||0,
-      pct:                +d.pct||0,
-      total:              +d.total||0,
-      catErr_call:        +d.catErr_call||0,
-      catErr_whatsapp:    +d.catErr_whatsapp||0,
-      catErr_email:       +d.catErr_email||0,
-      catErr_description: +d.catErr_description||0,
-      catErr_leadStage:   +d.catErr_leadStage||0,
-      catErr_deal:        +d.catErr_deal||0,
-      catErr_task:        +d.catErr_task||0,
-      catErr_followUp:    +d.catErr_followUp||0,
-      severityCritical:   +d.severityCritical||0,
-      severityWarning:    +d.severityWarning||0,
-      severityGood:       +d.severityGood||0,
-      errorLinks: (d.errorLinks && typeof d.errorLinks==='object') ? d.errorLinks : {},
+      name:         String(d.name||''),
+      audits:       +d.audits||0,
+      pct:          +d.pct||0,
+      total:        +d.total||0,
+      // Individual attribute errors
+      firstContact: +d.firstContact||0,
+      firstCall:    +d.firstCall||0,
+      callLogged:   +d.callLogged||0,
+      outcome:      +d.outcome||0,
+      callDesc:     +d.callDesc||0,
+      leadStage:    +d.leadStage||0,
+      correctStage: +d.correctStage||0,
+      qualifiedMark:+d.qualifiedMark||0,
+      deal:         +d.deal||0,
+      pipeline:     +d.pipeline||0,
+      timeline:     +d.timeline||0,
+      properties:   +d.properties||0,
+      emailSent:    +d.emailSent||0,
+      emailHub:     +d.emailHub||0,
+      profTone:     +d.profTone||0,
+      signature:    +d.signature||0,
+      waUsed:       +d.waUsed||0,
+      waLogged:     +d.waLogged||0,
+      waNote:       +d.waNote||0,
+      taskCreated:  +d.taskCreated||0,
+      taskDone:     +d.taskDone||0,
+      taskType:     +d.taskType||0,
+      // Category error counts (new - all-or-nothing per category)
+      catErr_outcome:   +d.catErr_outcome||0,
+      catErr_call:      +d.catErr_call||0,
+      catErr_leadStage: +d.catErr_leadStage||0,
+      catErr_deal:      +d.catErr_deal||0,
+      catErr_email:     +d.catErr_email||0,
+      catErr_whatsapp:  +d.catErr_whatsapp||0,
+      catErr_task:      +d.catErr_task||0,
+      // Legacy weight fields — set to 0 (no longer used)
+      wOutcome:0, wCall:0, wLeadStage:0, wDeal:0, wEmail:0, wWhatsApp:0, wTask:0,
+      wpOutcome:0, wpCall:0, wpLeadStage:0, wpDeal:0, wpEmail:0, wpWhatsApp:0, wpTask:0,
+      // Case type counts
+      caseQualified:  +d.caseQualified||0,
+      caseNoAnswer:   +d.caseNoAnswer||0,
+      caseCannotDial: +d.caseCannotDial||0,
+      caseIneligible: +d.caseIneligible||0,
+      caseOther:      +d.caseOther||0,
+      // Per case type compliance
+      qualPct:  d.qualPct  != null ? +d.qualPct  : null,
+      naPct:    d.naPct    != null ? +d.naPct    : null,
+      otherPct: null,
+      // SOP violations
+      mismatchQualNoDeal:     +d.mismatchQualNoDeal||0,
+      mismatchDealWrongStage: +d.mismatchDealWrongStage||0,
+      mismatchQualWrongStage: +d.mismatchQualWrongStage||0,
       trend: Array.isArray(d.trend) ? d.trend : [],
-      // Legacy compat fields
-      deal:               +d.catErr_deal||0,
-      qualPct:            null, naPct: null,
-      caseQualified:0, caseNoAnswer:0, caseCannotDial:0,
-      mismatchQualNoDeal:0, mismatchDealWrongStage:0, mismatchQualWrongStage:0,
-      firstContact:0,firstCall:0,callLogged:0,outcome:0,callDesc:0,
-      leadStage:0,correctStage:0,qualifiedMark:0,pipeline:0,
-      timeline:0,properties:0,emailSent:0,emailHub:0,profTone:0,
-      signature:0,waUsed:0,waLogged:0,waNote:0,
-      taskCreated:0,taskDone:0,taskType:0,timelyContact:0,
-      catErr_outcome:0, catErr_pipeline:0,
-      wOutcome:0,wCall:0,wLeadStage:0,wDeal:0,wEmail:0,wWhatsApp:0,wTask:0,
-      wpOutcome:0,wpCall:0,wpLeadStage:0,wpDeal:0,wpEmail:0,wpWhatsApp:0,wpTask:0,
+      // Case links for errors — keyed by attribute field name
+      // Each value is an array of {url, caseName} or just strings
+      errorLinks: (d.errorLinks && typeof d.errorLinks === 'object') ? d.errorLinks : {},
     }));
 
     HOF_totalAudits = json.totalAudits || HOF_ALL.reduce((s,d)=>s+d.audits,0);
@@ -2766,24 +2833,39 @@ async function hofFetch(silent=false) {
 
     setUpd();
     if (!silent) {
+      // First load — full render with skeleton + toast
       hofPopulateCF();
       hofRestoreUrl();
       applyFilters();
       hideSkeleton();
-      showToast('Data loaded — '+HOF_ALL.length+' agents ('+(json.sheets||[]).join(', ')+')');
-      try { renderWeightTable(); } catch(e2) { console.error('renderWeightTable:',e2.message); }
+      showToast('Data loaded — ' + HOF_ALL.length + ' agents');
+      try { renderWeightTable(); } catch(e) { console.error("renderWeightTable:", e.message); }
+
+      // errorLinks returned directly by Apps Script — no extra CSV fetch needed
+
     } else {
-      try { applyFilters(); renderWeightTable(); setUpd(); } catch(e2) {}
+      // Silent background refresh — just update numbers, no flicker
+      try {
+        applyFilters();
+        try { renderWeightTable(); } catch(e) {}
+        // Quietly update the timestamp only
+        setUpd();
+      } catch(e) { console.error('Silent refresh error:', e.message); }
     }
+
   } catch(err) {
-    clearTimeout(tid);
     if (!silent) {
+      // Only show error on manual load, not background refresh
       document.getElementById('emsg').textContent = err.message;
       document.getElementById('edet').textContent =
-        '1. Apps Script → Deploy → Manage\n2. Execute as: Me\n3. Who has access: Anyone\n4. New change? Create NEW deployment → paste new URL';
+        'Fix checklist:\n' +
+        '1. In Apps Script: Deploy → Manage deployments\n' +
+        '2. Make sure Execute as = Me\n' +
+        '3. Make sure Who has access = Anyone (NOT "Anyone with Google account")\n' +
+        '4. If script changed → create NEW deployment → paste new URL in this file';
       document.getElementById('eb').classList.add('on');
       if (!HOF_ALL.length) document.getElementById('tb').innerHTML =
-        '<tr><td colspan="15" style="text-align:center;padding:28px;color:var(--mu)">No data. Check error above.</td></tr>';
+        '<tr><td colspan="16" style="text-align:center;padding:28px;color:var(--mu)">No data. Check error above.</td></tr>';
     }
   } finally {
     if (!silent) hideLdr();
@@ -2849,141 +2931,203 @@ function hofSort(s) {
   else if (s==='errors-asc')  HOF_filtered.sort((a,b)=>a.total-b.total);
   else if (s==='pct-asc')     HOF_filtered.sort((a,b)=>a.pct-b.pct);
   else if (s==='pct-desc')    HOF_filtered.sort((a,b)=>b.pct-a.pct);
+  else if (s==='qual-asc')    HOF_filtered.sort((a,b)=>(a.qualPct??999)-(b.qualPct??999));
+  else if (s==='qual-desc')   HOF_filtered.sort((a,b)=>(b.qualPct??-1)-(a.qualPct??-1));
   else if (s==='audits-desc') HOF_filtered.sort((a,b)=>b.audits-a.audits);
   else if (s==='name')        HOF_filtered.sort((a,b)=>a.name.localeCompare(b.name));
 }
 
 function hofUpdateKPIs() {
-  const tot    = HOF_filtered.reduce((s,d)=>s+d.total,0);
-  const avg    = HOF_filtered.length ? HOF_filtered.reduce((s,d)=>s+d.pct,0)/HOF_filtered.length : 0;
-  const aud    = HOF_filtered.reduce((s,d)=>s+d.audits,0) || HOF_totalAudits;
-  const atRisk = HOF_filtered.filter(d=>d.pct<80).length;
-  const onTrack= HOF_filtered.filter(d=>d.pct>=90).length;
-  const dl     = HOF_filtered.reduce((s,d)=>s+d.catErr_deal,0);
-  const crit   = HOF_filtered.reduce((s,d)=>s+d.severityCritical,0);
-  const errPerAudit = aud>0 ? (tot/aud) : 0;
-  const pc = avg>=90?'#059669':avg>=80?'#d97706':'#dc2626';
+  const tot  = HOF_filtered.reduce((s,d)=>s+d.total,0);
+  const avg  = HOF_filtered.length ? HOF_filtered.reduce((s,d)=>s+d.pct,0)/HOF_filtered.length : 0;
+  const rep  = HOF_filtered.filter(d=>d.total>15).length;
+  const coa  = HOF_filtered.filter(d=>d.total>5&&d.total<=15).length;
+  const ok   = HOF_filtered.filter(d=>d.total<=5).length;
+  const dl   = HOF_filtered.reduce((s,d)=>s+d.deal,0);
+  const aud  = HOF_filtered.reduce((s,d)=>s+d.audits,0) || HOF_totalAudits;
+  const totalPtsLost = HOF_filtered.reduce((s,d)=>s+d.total,0);
+  const MAX_PER_AUDIT = 100;
+  const auditsPossible   = aud * MAX_PER_AUDIT;
+  const pctLost       = auditsPossible > 0 ? ((totalPtsLost/auditsPossible)*100) : 0;
+  const errPerAudit   = aud > 0 ? (tot/aud) : 0;
 
-  const catTotals = {
-    'Call':        HOF_filtered.reduce((s,d)=>s+(d.catErr_call||0),0),
-    'WhatsApp':    HOF_filtered.reduce((s,d)=>s+(d.catErr_whatsapp||0),0),
-    'Email':       HOF_filtered.reduce((s,d)=>s+(d.catErr_email||0),0),
-    'Description': HOF_filtered.reduce((s,d)=>s+(d.catErr_description||0),0),
-    'Lead Stage':  HOF_filtered.reduce((s,d)=>s+(d.catErr_leadStage||0),0),
-    'Deal':        HOF_filtered.reduce((s,d)=>s+(d.catErr_deal||0),0),
-    'Task':        HOF_filtered.reduce((s,d)=>s+(d.catErr_task||0),0),
-    'Follow Up':   HOF_filtered.reduce((s,d)=>s+(d.catErr_followUp||0),0),
-  };
-  const topCat = Object.entries(catTotals).sort((a,b)=>b[1]-a[1])[0];
+  // ── Executive Summary ────────────────────────────────────────────────────
+  const pc   = avg>=90?'#059669':avg>=80?'#d97706':'#dc2626';
+  const wpc  = pctLost<=5?'#059669':pctLost<=15?'#d97706':'#dc2626';
+  const acpc = pctLost<=5?'#059669':pctLost<=15?'#d97706':'#dc2626';
 
-  let headline, sub;
-  if (avg>=90 && atRisk===0) {
-    headline='Team is performing well';
-    sub=onTrack+' of '+HOF_filtered.length+' agents above 90%.';
-  } else if (avg>=80 && atRisk<=3) {
-    headline='Team needs targeted coaching';
-    sub=errPerAudit.toFixed(1)+' errors per audit. '+atRisk+' agent(s) below 80%.';
+  // Agents below 80% compliance = truly at risk
+  const atRisk    = HOF_filtered.filter(d=>d.pct<80).length;
+  const critical  = HOF_filtered.filter(d=>d.pct<70).length;
+  const onTrack   = HOF_filtered.filter(d=>d.pct>=90).length;
+
+  var headline, sub, statusEmoji;
+  if (avg >= 90 && atRisk === 0) {
+    statusEmoji = ''; headline = 'Team is performing well';
+    sub = onTrack+' of '+HOF_filtered.length+' agents above 90%. All agents meeting compliance threshold.';
+  } else if (avg >= 80 && atRisk <= 3) {
+    statusEmoji = ''; headline = 'Team needs targeted coaching';
+    sub = errPerAudit.toFixed(1)+' errors per audit. '+atRisk+' agent(s) below 80% — prioritise coaching for them.';
   } else {
-    headline='Team performance requires urgent attention';
-    sub=atRisk+' agents below 80%. Error rate: '+errPerAudit.toFixed(1)+'/audit.';
+    statusEmoji = ''; headline = 'Team performance requires urgent attention';
+    sub = atRisk+' agents below 80% compliance. Error rate: '+errPerAudit.toFixed(1)+'/audit. Immediate coaching required.';
   }
 
-  const he = document.getElementById('execHeadline'); if(he) he.textContent=headline;
-  const se = document.getElementById('execSub');
-  if(se) se.textContent=sub+(topCat?' Biggest gap: '+topCat[0]+' ('+topCat[1]+' fails).':'');
-  const be = document.getElementById('execBadges');
-  if(be) be.innerHTML=[
+  // Top problem area
+  const catTotals = {
+    'Outcome':    HOF_filtered.reduce((s,d)=>s+(d.catErr_outcome||0),0),
+    'Call':       HOF_filtered.reduce((s,d)=>s+(d.catErr_call||0),0),
+    'Lead Stage': HOF_filtered.reduce((s,d)=>s+(d.catErr_leadStage||0),0),
+    'Deal':       HOF_filtered.reduce((s,d)=>s+(d.catErr_deal||0),0),
+    'Email':      HOF_filtered.reduce((s,d)=>s+(d.catErr_email||0),0),
+    'WhatsApp':   HOF_filtered.reduce((s,d)=>s+(d.catErr_whatsapp||0),0),
+    'Task':       HOF_filtered.reduce((s,d)=>s+(d.catErr_task||0),0),
+  };
+  const topCat = Object.entries(catTotals).sort((a,b)=>b[1]-a[1])[0];
+  const topAgent = HOF_filtered.slice().sort((a,b)=>b.total-a.total)[0];
+
+  const execDot = document.getElementById('execDot');
+  if (execDot) {
+    execDot.style.background = statusEmoji===''? (atRisk===0?'#059669':atRisk<=3?'#d97706':'#dc2626') : '#dc2626';
+  }
+  document.getElementById('execHeadline').textContent = headline;
+  // Check for hidden risk — good overall but bad qualified score
+  // Hidden risk: only flag if 3+ qualified cases audited (enough to be meaningful)
+  const hiddenRisk = HOF_filtered.filter(d => d.qualPct!=null && (d.caseQualified||0)>=3 && d.qualPct < 80 && d.pct >= 80);
+  const hiddenWarn = hiddenRisk.length > 0
+    ? ' Hidden risk: '+hiddenRisk.map(d=>d.name.split(' ')[0]+' ('+d.qualPct.toFixed(0)+'% on '+d.caseQualified+' qualified)').join(', ')+' — overall looks good but qualified cases need attention.'
+    : '';
+  document.getElementById('execSub').textContent = sub + (topCat ? ' Biggest gap: '+topCat[0]+' category ('+topCat[1]+' pts lost).' : '') + hiddenWarn;
+  document.getElementById('execBadges').innerHTML = [
     `<span style="background:${pc}20;color:${pc};border:1px solid ${pc}40;padding:4px 10px;border-radius:20px;font-size:11px;font-weight:700">${avg.toFixed(1)}% compliance</span>`,
-    crit>0?`<span style="background:#dc262620;color:#dc2626;border:1px solid #dc262640;padding:4px 10px;border-radius:20px;font-size:11px;font-weight:700">⛔ ${crit} critical</span>`:'',
-    atRisk>0?`<span style="background:#dc262620;color:#dc2626;border:1px solid #dc262640;padding:4px 10px;border-radius:20px;font-size:11px;font-weight:700">${atRisk} below 80%</span>`
-            :'<span style="background:#05966920;color:#059669;border:1px solid #05966940;padding:4px 10px;border-radius:20px;font-size:11px;font-weight:700">✅ All above 80%</span>',
+    `<span style="background:${wpc}20;color:${wpc};border:1px solid ${wpc}40;padding:4px 10px;border-radius:20px;font-size:11px;font-weight:700">${pctLost.toFixed(1)}% err rate</span>`,
+    atRisk>0?`<span style="background:#dc262620;color:#dc2626;border:1px solid #dc262640;padding:4px 10px;border-radius:20px;font-size:11px;font-weight:700">${atRisk} below 80%</span>`:'<span style="background:#05966920;color:#059669;border:1px solid #05966940;padding:4px 10px;border-radius:20px;font-size:11px;font-weight:700">✅ All above 80%</span>',
     onTrack>0?`<span style="background:#05966920;color:#059669;border:1px solid #05966940;padding:4px 10px;border-radius:20px;font-size:11px;font-weight:700">${onTrack} excellent</span>`:'',
+    topAgent&&topAgent.pct<80?`<span style="background:#7c3aed20;color:#7c3aed;border:1px solid #7c3aed40;padding:4px 10px;border-radius:20px;font-size:11px;font-weight:700">Worst: ${topAgent.name.split(' ')[0]} (${topAgent.pct.toFixed(0)}%)</span>`:'',
   ].filter(Boolean).join('');
 
-  // Executive grid
-  const setText = (id,v,col) => { const e=document.getElementById(id); if(e){e.textContent=String(v);if(col)e.style.color=col;} };
+  // Executive metrics grid
   setText('es-aud', aud);
-  setText('es-pct', avg.toFixed(1)+'%', pc);
-  setText('es-pct-sub', avg>=90?'✅ Strong':avg>=80?'Needs work':'🔴 Critical');
-  setText('es-err', errPerAudit.toFixed(2), errPerAudit<=0.5?'#059669':errPerAudit<=1?'#d97706':'#dc2626');
-  setText('es-pts', tot, tot===0?'#059669':'#dc2626');
-  setText('es-pts-sub', 'Total category errors');
+  document.getElementById('es-pct').textContent = avg.toFixed(1)+'%';
+  document.getElementById('es-pct').style.color = pc;
+  // Get trend vs last month from aggregate trend data
+  var mMap = {}; HOF_filtered.forEach(function(d){(d.trend||[]).forEach(function(m){
+    if(!mMap[m.month]){mMap[m.month]={s:0,c:0};} mMap[m.month].s+=m.avgPct*m.audits; mMap[m.month].c+=m.audits;
+  });});
+  var mArr = Object.entries(mMap).map(function(e){return{m:e[0],avg:e[1].c>0?e[1].s/e[1].c:0};})
+    .sort(function(a,b){return new Date('01 '+a.m)-new Date('01 '+b.m);});
+  var trendArrow = '';
+  if(mArr.length>=2){
+    var delta = mArr[mArr.length-1].avg - mArr[mArr.length-2].avg;
+    trendArrow = delta>0?' ▲'+delta.toFixed(1)+'%':delta<0?' ▼'+Math.abs(delta).toFixed(1)+'%':' →';
+    var trendEl = document.getElementById('es-pct-trend');
+    if(trendEl){ trendEl.textContent=trendArrow; trendEl.style.color=delta>0?'#059669':delta<0?'#dc2626':'#64748b'; }
+  }
+  document.getElementById('es-pct-sub').textContent = avg>=90?'✅ Strong':avg>=80?'Needs work':'🔴 Critical';
+  document.getElementById('es-err').textContent = errPerAudit.toFixed(2);
+  document.getElementById('es-err').style.color = errPerAudit<=1?'#059669':errPerAudit<=2?'#d97706':'#dc2626';
+  (document.getElementById('es-pts')||{}).textContent = pctLost.toFixed(1)+'%';
+  (document.getElementById('es-pts')||{style:{}}).style.color = acpc;
+  (document.getElementById('es-pts-sub')||{}).textContent = totalPtsLost+' errors across '+aud+' audits';
 
-  // KPI cards
-  setText('k-pct', avg.toFixed(1)+'%', pc);
-  const kpctA=document.getElementById('k-pct-a'); if(kpctA) kpctA.style.background=pc;
-  setText('k-crit', crit, crit>0?'#dc2626':'#059669');
-  setText('k-ws', tot, '#7c3aed');
-  setText('k-acc', errPerAudit.toFixed(2), errPerAudit<=0.5?'#059669':errPerAudit<=1?'#d97706':'#dc2626');
-  setText('k-rep', atRisk);
-  setText('k-coa', HOF_filtered.filter(d=>d.pct>=80&&d.pct<90).length);
-  setText('k-ok', onTrack);
-  setText('k-dl', dl);
-  setText('k-aud', aud); setText('k-err', tot);
-  document.getElementById('dpct').textContent=avg.toFixed(0)+'%';
+  // KPI row
+  document.getElementById('k-pct').textContent    = avg.toFixed(1)+'%';
+
+  // Qualified case score — REVENUE CRITICAL
+  const qualAgents = HOF_filtered.filter(d=>d.qualPct!=null);
+  const qualAvg    = qualAgents.length ? qualAgents.reduce((s,d)=>s+(d.qualPct||0),0)/qualAgents.length : null;
+  const qel = document.getElementById('k-qual');
+  const qpc = qualAvg!=null ? (qualAvg>=90?'#059669':qualAvg>=80?'#d97706':'#dc2626') : '#94a3b8';
+  if (qel) {
+    qel.textContent = qualAvg!=null ? qualAvg.toFixed(1)+'%' : 'No data';
+    qel.style.color = qpc;
+    (document.getElementById('k-qual-a')||{style:{}}).style.background = qpc;
+    (document.getElementById('k-qual-s')||{}).textContent = qualAgents.length+' agents (audited qual cases)';
+  }
+  const totalErrors = HOF_filtered.reduce((s,d)=>s+d.total,0);
+  document.getElementById('k-ws').textContent     = totalErrors;
+  document.getElementById('k-ws-sub').textContent = (HOF_filtered.reduce((s,d)=>s+d.audits,0)||0)+' audits';
+  document.getElementById('k-ws-sub').textContent = 'total errors this period';
+  (document.getElementById('k-acc')||{}).textContent = pctLost.toFixed(1)+'%';
+  (document.getElementById('k-acc-sub')||{}).textContent = 'errors per audit';
+  document.getElementById('k-rep').textContent    = atRisk;
+  document.getElementById('k-coa').textContent    = HOF_filtered.filter(d=>d.pct>=80&&d.pct<90).length;
+  document.getElementById('k-ok').textContent     = onTrack;
+  document.getElementById('k-dl').textContent     = dl;
+  // hidden compat
+  document.getElementById('k-aud').textContent    = aud;
+  document.getElementById('k-err').textContent    = tot;
+  document.getElementById('k-tw').textContent     = aud>0?(totalPtsLost/aud).toFixed(2):0;
+  document.getElementById('dpct').textContent     = avg.toFixed(0)+'%';
+
+  document.getElementById('k-pct').style.color       = pc;
+  document.getElementById('k-pct-a').style.background= pc;
+  document.getElementById('k-ws').style.color        = wpc;
+  document.getElementById('k-ws-a').style.background = wpc;
+  (document.getElementById('k-acc')||{style:{}}).style.color       = acpc;
+  (document.getElementById('k-acc-a')||{style:{}}).style.background= acpc;
   setGBadge(avg);
 
-  const CATS8=[
-    {l:'Call',       v:HOF_filtered.reduce((s,d)=>s+(d.catErr_call||0),0)},
-    {l:'WhatsApp',   v:HOF_filtered.reduce((s,d)=>s+(d.catErr_whatsapp||0),0)},
-    {l:'Email',      v:HOF_filtered.reduce((s,d)=>s+(d.catErr_email||0),0)},
-    {l:'Description',v:HOF_filtered.reduce((s,d)=>s+(d.catErr_description||0),0)},
-    {l:'Lead Stage', v:HOF_filtered.reduce((s,d)=>s+(d.catErr_leadStage||0),0)},
-    {l:'Deal',       v:HOF_filtered.reduce((s,d)=>s+(d.catErr_deal||0),0)},
-    {l:'Task',       v:HOF_filtered.reduce((s,d)=>s+(d.catErr_task||0),0)},
-    {l:'Follow Up',  v:HOF_filtered.reduce((s,d)=>s+(d.catErr_followUp||0),0)},
-  ];
-  const mx=Math.max(...CATS8.map(c=>c.v),1);
-  const bd=document.getElementById('bd');
-  if(bd) bd.innerHTML=CATS8.map(c=>`<div class="bdr"><div class="bdl">${c.l}</div><div class="bdb"><div class="bdf" style="width:${(c.v/mx*100).toFixed(0)}%"></div></div><div class="bdc">${c.v}</div></div>`).join('');
+  function setText(id,v){var e=document.getElementById(id);if(e)e.textContent=v;}
+
+  const cats = ['Outcome','Call','Lead Stage','Deal','Email','WhatsApp','Task'];
+  const keys = ['catErr_outcome','catErr_call','catErr_leadStage','catErr_deal','catErr_email','catErr_whatsapp','catErr_task'];
+  const vals = keys.map(k => HOF_filtered.reduce((s,d)=>s+(d[k]||0),0));
+  const mx   = Math.max(...vals, 1);
+  document.getElementById('bd').innerHTML = cats.map((c,i) =>
+    `<div class="bdr"><div class="bdl">${c}</div><div class="bdb"><div class="bdf" style="width:${(vals[i]/mx*100).toFixed(0)}%"></div></div><div class="bdc">${vals[i]}</div></div>`
+  ).join('');
 }
 
 function hofRenderTable(data) {
   const tb = document.getElementById('tb');
-  if (!data.length) {
-    tb.innerHTML='<tr><td colspan="15" style="text-align:center;padding:24px;color:var(--mu)">No data for current filters.</td></tr>';
-    return;
-  }
-  const ec = (n, catKey, d) => {
-    if (n===0) return '<span style="color:#94a3b8">—</span>';
+  if (!data.length) { tb.innerHTML='<tr><td colspan="16" style="text-align:center;padding:24px;color:var(--mu)">No data for current filters.</td></tr>'; return; }
+
+  // Build a clickable error cell — ALWAYS clickable when count > 0
+  // If links are loaded they show; otherwise shows setup instructions
+  const ec = (n, fieldName, d) => {
+    if (n === 0) return '<span style="color:#94a3b8">—</span>';
     const col = n>=3?'#dc2626':n>=1?'#d97706':'inherit';
-    const links = (d.errorLinks && d.errorLinks[catKey] && d.errorLinks[catKey].length>0) ? d.errorLinks[catKey] : null;
+    const links = (d.errorLinks && d.errorLinks[fieldName] && d.errorLinks[fieldName].length > 0)
+      ? d.errorLinks[fieldName] : null;
+
+    // Encode everything safely for inline onclick
     const safeLinks = links ? JSON.stringify(links).replace(/\\/g,'\\\\').replace(/'/g,"\\'").replace(/"/g,'&quot;') : '[]';
     const safeName  = d.name.replace(/'/g,"\\'");
-    return `<span style="color:${col};font-weight:700;cursor:pointer;border-bottom:2px dashed ${col};padding-bottom:1px"
-      onclick="event.stopPropagation();showCatCaseLinkModal('${catKey}','${safeName}',${n},${safeLinks},${!!links})"
-      title="${n} error(s)">${n}${links?' <span style="font-size:9px">🔗</span>':' <span style="font-size:9px;opacity:.5">↗</span>'}</span>`;
+    const hasLinks  = links ? 'true' : 'false';
+
+    return `<span style="color:${col};font-weight:700;cursor:pointer;border-bottom:2px dashed ${col};padding-bottom:1px;transition:.15s" 
+      onmouseenter="this.style.opacity='.7'" onmouseleave="this.style.opacity='1'"
+      onclick="event.stopPropagation();showCaseLinkModal('${fieldName}','${safeName}',${n},${safeLinks},${hasLinks})" 
+      title="${n} error${n>1?'s':''} — click to see case${n>1?'s':''}">${n}${links ? ' <span style="font-size:9px">🔗</span>' : ' <span style="font-size:9px;opacity:.5">↗</span>'}</span>`;
   };
-  const srcBadge = s => s==='dxb'
-    ? '<span style="font-size:9px;background:rgba(6,182,212,.15);color:#06b6d4;border:1px solid rgba(6,182,212,.3);padding:1px 5px;border-radius:6px;margin-left:4px">DXB</span>'
-    : '<span style="font-size:9px;background:rgba(99,102,241,.12);color:#818cf8;border:1px solid rgba(99,102,241,.25);padding:1px 5px;border-radius:6px;margin-left:4px">GLB</span>';
-  const sevBadge = d => {
-    let b='';
-    if(d.severityCritical>0) b+=`<span style="background:#fef2f2;color:#dc2626;border:1px solid #fecaca;padding:1px 5px;border-radius:4px;font-size:9px;font-weight:700;display:inline-block;margin:1px">⛔${d.severityCritical}</span>`;
-    if(d.severityWarning>0)  b+=`<span style="background:#fffbeb;color:#d97706;border:1px solid #fde68a;padding:1px 5px;border-radius:4px;font-size:9px;font-weight:700;display:inline-block;margin:1px">⚠️${d.severityWarning}</span>`;
-    return b||'<span style="color:#94a3b8;font-size:11px">—</span>';
-  };
+
   tb.innerHTML = data.map(d => {
-    const pc=d.pct>=90?'#059669':d.pct>=80?'#d97706':'#dc2626';
-    const sl=d.pct<80?'sp-critical':d.pct<90?'sp-warning':'sp-good';
-    const st=d.pct<80?'AT RISK':d.pct<90?'WATCH':'GOOD';
-    const sn=d.name.replace(/'/g,"\\'");
-    return `<tr onclick="trainingCardClick('${sn}')" style="cursor:pointer" title="Click for ${d.name} training detail">
-      <td style="font-weight:600;color:var(--ac);white-space:nowrap">${d.name}${srcBadge(d.source)}</td>
-      <td class="tm">${d.audits}</td>
-      <td class="tm" style="border-left:2px solid rgba(37,99,235,.15)">${ec(d.catErr_call,'call',d)}</td>
-      <td class="tm">${ec(d.catErr_whatsapp,'whatsapp',d)}</td>
-      <td class="tm" style="border-left:2px solid rgba(217,119,6,.15)">${ec(d.catErr_email,'email',d)}</td>
-      <td class="tm">${ec(d.catErr_description,'description',d)}</td>
-      <td class="tm" style="border-left:2px solid rgba(124,58,237,.15)">${ec(d.catErr_leadStage,'leadStage',d)}</td>
-      <td class="tm" style="border-left:2px solid rgba(220,38,38,.15)">${ec(d.catErr_deal,'deal',d)}</td>
-      <td class="tm" style="border-left:2px solid rgba(99,102,241,.15)">${ec(d.catErr_task,'task',d)}</td>
-      <td class="tm" style="border-left:2px solid rgba(8,145,178,.15)">${ec(d.catErr_followUp,'followUp',d)}</td>
-      <td class="tm" style="color:${d.total>0?'#dc2626':'#059669'};font-weight:700;font-size:14px">${d.total}</td>
+    const sc = d.total>15?'r':d.total>5?'a':'g';
+    const sl = d.total>15?'CRITICAL':d.total>5?'COACHING':'GOOD';
+    const pc = d.pct>=90?'#059669':d.pct>=80?'#d97706':'#dc2626';
+    return `<tr onclick="showAgentRadar('${d.name.replace(/'/g,"\'")}')" style="cursor:pointer" title="Click for ${d.name} skill gap">
+      <td style="font-weight:600;color:var(--ac);white-space:nowrap">${d.name} <span style="font-size:10px;color:var(--mu)">↗</span></td>
+      <td class="tm" style="color:var(--ac);font-weight:600">${d.audits}</td>
+      <td class="tm" style="border-left:2px solid rgba(37,99,235,.2)">${ec(d.firstContact,'firstContact',d)}</td>
+      <td class="tm">${ec(d.firstCall,'firstCall',d)}</td><td class="tm">${ec(d.callLogged,'callLogged',d)}</td>
+      <td class="tm">${ec(d.outcome,'outcome',d)}</td><td class="tm">${ec(d.callDesc,'callDesc',d)}</td>
+      <td class="tm" style="border-left:2px solid rgba(124,58,237,.2)">${ec(d.leadStage,'leadStage',d)}</td>
+      <td class="tm">${ec(d.correctStage,'correctStage',d)}</td><td class="tm">${ec(d.qualifiedMark,'qualifiedMark',d)}</td>
+      <td class="tm" style="border-left:2px solid rgba(220,38,38,.2)">${ec(d.deal,'deal',d)}</td>
+      <td class="tm">${ec(d.pipeline,'pipeline',d)}</td><td class="tm">${ec(d.timeline,'timeline',d)}</td><td class="tm">${ec(d.properties,'properties',d)}</td>
+      <td class="tm" style="border-left:2px solid rgba(217,119,6,.2)">${ec(d.emailSent,'emailSent',d)}</td>
+      <td class="tm">${ec(d.emailHub,'emailHub',d)}</td><td class="tm">${ec(d.profTone,'profTone',d)}</td><td class="tm">${ec(d.signature,'signature',d)}</td>
+      <td class="tm" style="border-left:2px solid rgba(5,150,105,.2)">${ec(d.waUsed,'waUsed',d)}</td>
+      <td class="tm">${ec(d.waLogged,'waLogged',d)}</td><td class="tm">${ec(d.waNote,'waNote',d)}</td>
+      <td class="tm" style="border-left:2px solid rgba(99,102,241,.2)">${ec(d.taskCreated,'taskCreated',d)}</td>
+      <td class="tm">${ec(d.taskDone,'taskDone',d)}</td><td class="tm">${ec(d.taskType,'taskType',d)}</td>
+      <td class="tm" style="color:${d.total>15?'var(--red)':d.total>5?'var(--amb)':'var(--grn)'};font-weight:700;font-size:14px">${d.total}</td>
       <td><div class="pc"><span style="color:${pc};font-weight:700;font-family:'DM Mono',monospace;font-size:13px">${d.pct.toFixed(1)}%</span><div class="pb2"><div class="pbf" style="width:${Math.min(d.pct,100)}%;background:${pc}"></div></div></div></td>
-      <td>${sevBadge(d)}</td>
-      <td><span class="status-pill ${sl}">${st}</span></td>
-      <td class="tm"><button onclick="event.stopPropagation();quickDownloadPDF('${sn}')" style="background:var(--s2);border:1px solid var(--b);border-radius:6px;padding:3px 8px;cursor:pointer;font-size:11px;color:var(--ac);font-weight:600">📄</button></td>
+      <td class="tm">${d.qualPct!=null ? `<span style="font-weight:800;font-family:'DM Mono',monospace;font-size:13px;color:${d.qualPct>=90?'#059669':d.qualPct>=80?'#d97706':'#dc2626'}">${d.qualPct.toFixed(1)}%</span><br><span style="font-size:9px;color:var(--mu)">${d.caseQualified||0} audited</span>` : '<span style="color:#94a3b8;font-size:11px">—</span>'}</td>
+      <td class="tm">${d.naPct!=null ? `<span style="font-weight:700;font-family:'DM Mono',monospace;font-size:12px;color:${d.naPct>=90?'#059669':d.naPct>=80?'#d97706':'#dc2626'}">${d.naPct.toFixed(1)}%</span>` : '<span style="color:#94a3b8;font-size:11px">—</span>'}</td>
+      <td><span class="status-pill ${sc==='r'?'sp-critical':sc==='a'?'sp-warning':'sp-good'}">${sl}</span></td>
+      <td class="tm"><button onclick="event.stopPropagation();quickDownloadPDF('${d.name.replace(/'/g,"\'")}');" style="background:var(--s2);border:1px solid var(--b);border-radius:6px;padding:3px 8px;cursor:pointer;font-size:11px;color:var(--ac);font-weight:600" title="Download PDF report">📄</button></td>
     </tr>`;
   }).join('');
 }
@@ -3250,134 +3394,147 @@ function resetAgentRadar() {
 
 // ── Training Focus Panel (now dropdown-driven) ──────────────────────────────
 function showTrainingForConsultant(name) {
-  const detail=document.getElementById('trainingDetail');
-  if (!detail) return;
-  if (!name) { detail.innerHTML=''; return; }
-  const d=HOF_filtered.find(x=>x.name===name)||HOF_ALL.find(x=>x.name===name);
-  if (!d) { detail.innerHTML=`<div style="color:var(--mu);padding:14px">No data for ${name}</div>`; return; }
-  const CATS=[
-    {key:'catErr_call',        label:'📞 Call',        col:'#2563eb',link:'call'},
-    {key:'catErr_whatsapp',    label:'💬 WhatsApp',    col:'#059669',link:'whatsapp'},
-    {key:'catErr_email',       label:'📧 Email',       col:'#d97706',link:'email'},
-    {key:'catErr_description', label:'📝 Description', col:'#64748b',link:'description'},
-    {key:'catErr_leadStage',   label:'🎯 Lead Stage',  col:'#7c3aed',link:'leadStage'},
-    {key:'catErr_deal',        label:'💼 Deal',        col:'#dc2626',link:'deal'},
-    {key:'catErr_task',        label:'✅ Task',        col:'#6366f1',link:'task'},
-    {key:'catErr_followUp',    label:'⏱️ Follow Up',   col:'#0891b2',link:'followUp'},
+  var panel = document.getElementById('trainingPanel');
+  if (!panel) return;
+  if (!name) {
+    panel.innerHTML = '<div style="color:var(--mu);font-size:13px;padding:12px;text-align:center;grid-column:1/-1">Select a consultant from the dropdown above</div>';
+    return;
+  }
+  var d = HOF_filtered.find(function(x){return x.name===name;}) || (HOF_ALL||[]).find(function(x){return x.name===name;});
+  if (!d) { panel.innerHTML = '<div style="color:var(--mu);padding:12px;grid-column:1/-1">No data for '+name+'</div>'; return; }
+
+  var ATTRS = [
+    {name:'1st Contact',field:'firstContact',pts:4,cat:'📞 Call',col:'#2563eb'},
+    {name:'1st Call Made',field:'firstCall',pts:4,cat:'📞 Call',col:'#2563eb'},
+    {name:'Call Logged',field:'callLogged',pts:4,cat:'📞 Call',col:'#2563eb'},
+    {name:'Outcome',field:'outcome',pts:4,cat:'📞 Call',col:'#2563eb'},
+    {name:'Call Desc',field:'callDesc',pts:4,cat:'📞 Call',col:'#2563eb'},
+    {name:'Lead Stage Upd',field:'leadStage',pts:5,cat:'🎯 Lead Stage',col:'#7c3aed'},
+    {name:'Correct Stage',field:'correctStage',pts:5,cat:'🎯 Lead Stage',col:'#7c3aed'},
+    {name:'Qualified Mark',field:'qualifiedMark',pts:5,cat:'🎯 Lead Stage',col:'#7c3aed'},
+    {name:'Deal Created',field:'deal',pts:8,cat:'💼 Deal',col:'#dc2626'},
+    {name:'Pipeline',field:'pipeline',pts:8,cat:'💼 Deal',col:'#dc2626'},
+    {name:'Timeline',field:'timeline',pts:8,cat:'💼 Deal',col:'#dc2626'},
+    {name:'Properties',field:'properties',pts:8,cat:'💼 Deal',col:'#dc2626'},
+    {name:'Email Sent',field:'emailSent',pts:3,cat:'📧 Email',col:'#d97706'},
+    {name:'Email via Hub',field:'emailHub',pts:3,cat:'📧 Email',col:'#d97706'},
+    {name:'Prof Tone',field:'profTone',pts:3,cat:'📧 Email',col:'#d97706'},
+    {name:'Signature',field:'signature',pts:3,cat:'📧 Email',col:'#d97706'},
+    {name:'WA Used',field:'waUsed',pts:4,cat:'💬 WhatsApp',col:'#059669'},
+    {name:'WA Logged',field:'waLogged',pts:4,cat:'💬 WhatsApp',col:'#059669'},
+    {name:'WA Note',field:'waNote',pts:4,cat:'💬 WhatsApp',col:'#059669'},
+    {name:'Task Created',field:'taskCreated',pts:3,cat:'✅ Task',col:'#6366f1'},
+    {name:'Task Done',field:'taskDone',pts:3,cat:'✅ Task',col:'#6366f1'},
+    {name:'Task Type',field:'taskType',pts:3,cat:'✅ Task',col:'#6366f1'},
   ];
-  const pct=d.pct||0;
-  const pc=pct>=90?'#059669':pct>=80?'#d97706':'#dc2626';
-  const er=d.audits>0?(d.total/d.audits).toFixed(2):'0';
-  let html=`<div style="background:${pc}10;border:1.5px solid ${pc}30;border-radius:14px;padding:16px 20px;margin-bottom:12px;display:flex;align-items:center;gap:14px;flex-wrap:wrap">
-    <div style="text-align:center;min-width:80px">
-      <div style="font-size:9px;color:var(--mu);font-family:'DM Mono',monospace;letter-spacing:1px;text-transform:uppercase;margin-bottom:3px">Compliance</div>
-      <div style="font-size:36px;font-weight:900;color:${pc};font-family:'Nunito',sans-serif;line-height:1">${pct.toFixed(1)}%</div>
-    </div>
-    <div style="width:1px;height:50px;background:${pc}30;flex-shrink:0"></div>
-    <div style="flex:1;min-width:180px">
-      <div style="font-size:15px;font-weight:800;color:var(--tx)">${d.name}</div>
-      <div style="font-size:11px;color:var(--mu);margin-top:3px">${d.audits} audits · ${d.total} errors · ${er}/audit</div>
-      <div style="display:flex;gap:5px;margin-top:6px;flex-wrap:wrap">
-        ${d.severityCritical>0?`<span style="background:#fef2f2;color:#dc2626;border:1px solid #fecaca;padding:2px 7px;border-radius:10px;font-size:10px;font-weight:700">⛔ ${d.severityCritical} Critical</span>`:''}
-        ${d.severityWarning>0?`<span style="background:#fffbeb;color:#d97706;border:1px solid #fde68a;padding:2px 7px;border-radius:10px;font-size:10px;font-weight:700">⚠️ ${d.severityWarning} Warning</span>`:''}
-        ${d.source==='dxb'?'<span style="background:rgba(6,182,212,.1);color:#06b6d4;border:1px solid rgba(6,182,212,.3);padding:2px 7px;border-radius:10px;font-size:10px;font-weight:700">DXB</span>':'<span style="background:rgba(99,102,241,.1);color:#818cf8;border:1px solid rgba(99,102,241,.25);padding:2px 7px;border-radius:10px;font-size:10px;font-weight:700">Global</span>'}
-      </div>
-    </div>
-    <button onclick="closeTrainingDetail()" style="background:var(--b);border:1px solid var(--b2);color:var(--mu);border-radius:8px;padding:6px 14px;cursor:pointer;font-size:12px;font-weight:700;flex-shrink:0">✕ Close</button>
-  </div>`;
-  const hasErrors=CATS.some(c=>(d[c.key]||0)>0);
-  if (!hasErrors) {
-    html+=`<div style="background:#f0fdf4;border:1.5px solid #a7f3d0;border-radius:14px;padding:20px;text-align:center;margin-bottom:12px">
-      <div style="font-size:22px;margin-bottom:6px">🎉</div>
-      <div style="font-size:14px;font-weight:800;color:#059669">Zero errors this period!</div>
-    </div>`;
-  } else {
-    const sc=CATS.slice().sort((a,b)=>(d[b.key]||0)-(d[a.key]||0));
-    html+='<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:10px;margin-bottom:12px">';
-    sc.forEach(cat=>{
-      const count=d[cat.key]||0;
-      const pr=d.audits>0?Math.round(((d.audits-count)/d.audits)*100):100;
-      const links=(d.errorLinks&&d.errorLinks[cat.link])?d.errorLinks[cat.link]:[];
-      const ue=[...new Set(links.map(l=>l.errorText).filter(Boolean))];
-      if (count===0) {
-        html+=`<div style="background:rgba(5,150,105,.06);border:1.5px solid rgba(5,150,105,.2);border-radius:12px;padding:12px;display:flex;align-items:center;gap:8px">
-          <span style="font-size:16px">${cat.label.split(' ')[0]}</span>
-          <div><div style="font-size:12px;font-weight:700;color:#059669">${cat.label.substring(cat.label.indexOf(' ')+1)}</div>
-          <div style="font-size:10px;color:#059669">✅ 100% pass</div></div></div>`;
-      } else {
-        const sn=d.name.replace(/'/g,"\\'");
-        const sl=JSON.stringify(links).replace(/\\/g,'\\\\').replace(/'/g,"\\'").replace(/"/g,'&quot;');
-        const cl=cat.link.charAt(0).toUpperCase()+cat.link.slice(1);
-        html+=`<div style="background:var(--w);border:1.5px solid ${cat.col}30;border-left:4px solid ${cat.col};border-radius:12px;padding:13px">
-          <div style="display:flex;align-items:center;justify-content:space-between;gap:6px;margin-bottom:7px">
-            <div style="font-size:12px;font-weight:800;color:var(--tx)">${cat.label}</div>
-            <div style="display:flex;align-items:center;gap:5px">
-              ${links.length>0?`<button onclick="event.stopPropagation();showCatCaseLinkModal('${cl}','${sn}',${count},${sl},true)" style="background:${cat.col};color:#fff;border:none;border-radius:6px;padding:3px 9px;cursor:pointer;font-size:10px;font-weight:700">🔗 ${links.length}</button>`:''}
-              <span style="font-family:'DM Mono',monospace;font-size:16px;font-weight:900;color:${cat.col}">${count}×</span>
-            </div>
-          </div>
-          <div style="height:5px;background:var(--b);border-radius:3px;overflow:hidden;margin-bottom:7px"><div style="width:${pr}%;height:100%;background:${cat.col};border-radius:3px"></div></div>
-          <div style="font-size:10px;color:var(--mu);margin-bottom:6px">${pr}% pass · ${count}/${d.audits} failed</div>
-          ${ue.length>0?`<div style="display:flex;flex-direction:column;gap:3px">${ue.slice(0,4).map(e=>`<div style="font-size:11px;color:var(--t2);display:flex;gap:5px"><span style="color:${cat.col};flex-shrink:0">→</span><span>${e}</span></div>`).join('')}${ue.length>4?`<div style="font-size:10px;color:var(--mu)">+${ue.length-4} more…</div>`:''}</div>`:''}
-        </div>`;
-      }
-    });
-    html+='</div>';
-  }
-  const months=d.trend||[];
-  if (months.length>1) {
-    const last=months[months.length-1],prev=months[months.length-2];
-    const delta=(last.avgPct-prev.avgPct).toFixed(1);
-    const arrow=parseFloat(delta)>0?'▲':parseFloat(delta)<0?'▼':'→';
-    const ac=parseFloat(delta)>0?'#059669':parseFloat(delta)<0?'#dc2626':'#64748b';
-    html+=`<div style="background:var(--s2);border:1px solid var(--b);border-radius:12px;padding:13px 16px">
-      <div style="font-size:10px;font-weight:700;color:var(--mu);font-family:'DM Mono',monospace;letter-spacing:1px;margin-bottom:8px">📈 MONTHLY TREND</div>
-      <div style="display:flex;gap:8px;overflow-x:auto;padding-bottom:4px">
-        ${months.map(m=>{const mc=m.avgPct>=90?'#059669':m.avgPct>=80?'#d97706':'#dc2626';return `<div style="text-align:center;min-width:44px"><div style="height:36px;display:flex;align-items:flex-end;justify-content:center;margin-bottom:3px"><div style="width:24px;border-radius:3px 3px 0 0;background:${mc};height:${Math.max(4,Math.round(m.avgPct*.36))}px;opacity:.8"></div></div><div style="font-size:9px;font-weight:700;color:${mc}">${m.avgPct.toFixed(0)}%</div><div style="font-size:8px;color:var(--mu);font-family:'DM Mono',monospace">${m.month}</div></div>`;}).join('')}
-      </div>
-      <div style="font-size:11px;color:${ac};font-weight:700;margin-top:6px;font-family:'DM Mono',monospace">${arrow} ${Math.abs(delta)}% vs ${prev.month}</div>
-    </div>`;
-  }
-  detail.innerHTML=html;
+
+  var errors = ATTRS.map(function(a){return {name:a.name,field:a.field,pts:a.pts,cat:a.cat,col:a.col,count:d[a.field]||0,impact:(d[a.field]||0)*a.pts};}).filter(function(a){return a.count>0;}).sort(function(a,b){return b.impact-a.impact;});
+  var good   = ATTRS.filter(function(a){return (d[a.field]||0)===0;});
+  var pct = d.pct||0;
+  var pctCol = pct>=90?'#10b981':pct>=80?'#f59e0b':'#dc2626';
+
+  panel.innerHTML =
+    '<div style="grid-column:1/-1;background:linear-gradient(135deg,rgba(99,102,241,.08),transparent);border:1px solid var(--b);border-radius:12px;padding:14px 16px;display:flex;align-items:center;gap:14px;animation:fadeUp .3s ease">'
+      +'<div style="text-align:center;min-width:70px"><div style="font-size:9px;color:var(--mu);font-family:DM Mono,monospace;letter-spacing:1px">COMPLIANCE</div><div style="font-size:32px;font-weight:900;color:'+pctCol+';font-family:Nunito,sans-serif;line-height:1">'+pct.toFixed(1)+'%</div></div>'
+      +'<div style="flex:1"><div style="font-size:15px;font-weight:800;color:var(--tx)">'+d.name+'</div>'
+        +'<div style="font-size:11px;color:var(--mu);margin-top:2px">'+d.audits+' audits · '+d.total+' total errors · '+(d.audits>0?(d.total/d.audits).toFixed(1):0)+' err/audit</div>'
+        +'<div style="display:flex;gap:6px;margin-top:6px;flex-wrap:wrap">'
+          +(errors.length===0?'<span style="background:rgba(16,185,129,.1);color:#10b981;border:1px solid rgba(16,185,129,.3);padding:3px 10px;border-radius:20px;font-size:11px;font-weight:700">🎉 Zero errors!</span>':'<span style="background:rgba(239,68,68,.1);color:#ef4444;border:1px solid rgba(239,68,68,.3);padding:3px 10px;border-radius:20px;font-size:11px;font-weight:700">⚠️ '+errors.length+' error types</span>')
+          +'<span style="background:rgba(16,185,129,.1);color:#10b981;border:1px solid rgba(16,185,129,.3);padding:3px 10px;border-radius:20px;font-size:11px;font-weight:700">✅ '+good.length+' clean</span>'
+        +'</div></div></div>'
+    +(errors.length===0?'<div style="grid-column:1/-1;background:rgba(16,185,129,.06);border:1px solid rgba(16,185,129,.25);border-radius:12px;padding:20px;text-align:center;color:#10b981;font-weight:700">🎉 No errors this period!</div>':'')
+    +errors.map(function(a,i){
+      var bw=errors[0].impact>0?Math.round((a.impact/errors[0].impact)*100):0;
+      return '<div style="background:var(--s2);border:1px solid var(--b);border-left:4px solid '+a.col+';border-radius:12px;padding:14px;animation:fadeUp '+(0.1+i*0.04).toFixed(2)+'s ease">'
+        +'<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px">'
+          +'<div><div style="font-size:12px;font-weight:800;color:var(--tx)">'+a.name+'</div><div style="font-size:10px;color:var(--mu);font-family:DM Mono,monospace">'+a.cat+' · '+a.pts+' pts each</div></div>'
+          +'<div style="text-align:right"><div style="font-size:18px;font-weight:900;color:#ef4444;font-family:DM Mono,monospace">'+a.count+'×</div><div style="font-size:11px;color:var(--mu)">−'+a.impact+' pts</div></div>'
+        +'</div>'
+        +'<div style="height:6px;background:var(--b);border-radius:3px;overflow:hidden"><div style="width:'+bw+'%;height:100%;background:'+a.col+';border-radius:3px;transition:width .8s ease"></div></div>'
+      +'</div>';
+    }).join('')
+    +(good.length>0?'<div style="grid-column:1/-1;background:rgba(16,185,129,.04);border:1px solid rgba(16,185,129,.2);border-radius:12px;padding:14px"><div style="font-size:11px;font-weight:700;color:#10b981;font-family:DM Mono,monospace;margin-bottom:8px">✅ DOING WELL — NO ERRORS</div><div style="display:flex;flex-wrap:wrap;gap:6px">'+good.map(function(a){return '<span style="background:rgba(16,185,129,.1);color:#10b981;border:1px solid rgba(16,185,129,.25);padding:3px 9px;border-radius:6px;font-size:11px;font-weight:600">'+a.name+'</span>';}).join('')+'</div></div>':'');
 }
 
 // ── Training Focus Panel (legacy — now shows prompt to use dropdown) ──────────
 function renderTrainingPanel() {
-  const panel=document.getElementById('trainingPanel');
-  const sel=document.getElementById('trainingConsultantSel');
-  if (!panel||!HOF_filtered.length) return;
-  if (sel) sel.innerHTML='<option value="">— Select a Consultant —</option>'+HOF_filtered.map(d=>`<option value="${d.name}">${d.name}</option>`).join('');
-  const CATS=['catErr_call','catErr_whatsapp','catErr_email','catErr_description','catErr_leadStage','catErr_deal','catErr_task','catErr_followUp'];
-  const ICONS=['📞','💬','📧','📝','🎯','💼','✅','⏱️'];
-  const COLS=['#2563eb','#059669','#d97706','#64748b','#7c3aed','#dc2626','#6366f1','#0891b2'];
-  const sorted=HOF_filtered.slice().sort((a,b)=>b.total-a.total);
-  panel.innerHTML=sorted.map(d=>{
-    const pc=d.pct>=90?'#059669':d.pct>=80?'#d97706':'#dc2626';
-    const pl=d.pct>=90?'rgba(5,150,105,.08)':d.pct>=80?'rgba(217,119,6,.08)':'rgba(220,38,38,.06)';
-    const pb=d.pct>=90?'rgba(5,150,105,.25)':d.pct>=80?'rgba(217,119,6,.25)':'rgba(220,38,38,.2)';
-    const sn=d.name.replace(/'/g,"\\'");
-    const er=d.audits>0?(d.total/d.audits).toFixed(1):'0';
-    let wk='',wv=0; CATS.forEach((k,i)=>{if((d[k]||0)>wv){wv=d[k];wk=ICONS[i];}});
-    const sb=d.source==='dxb'
-      ?'<span style="font-size:9px;background:rgba(6,182,212,.15);color:#06b6d4;border:1px solid rgba(6,182,212,.3);padding:1px 5px;border-radius:6px">DXB</span>'
-      :'<span style="font-size:9px;background:rgba(99,102,241,.12);color:#818cf8;border:1px solid rgba(99,102,241,.25);padding:1px 5px;border-radius:6px">GLB</span>';
-    return `<div id="tc-card-${d.name.replace(/\s+/g,'-')}" onclick="trainingCardClick('${sn}')"
-      style="background:${pl};border:1.5px solid ${pb};border-radius:14px;padding:14px;cursor:pointer;transition:all .18s"
-      onmouseenter="this.style.transform='translateY(-2px)';this.style.boxShadow='0 8px 20px rgba(0,0,0,.1)'"
-      onmouseleave="this.style.transform='';this.style.boxShadow=''">
-      <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:6px;margin-bottom:8px">
-        <div style="font-size:13px;font-weight:800;color:var(--tx);line-height:1.2">${d.name}</div>${sb}
+  const panel = document.getElementById('trainingPanel');
+  if (!panel || !HOF_filtered.length) return;
+
+  // All 22 attributes with name, field, weight, category color
+  const ATTRS = [
+    {name:'1st Contact',    field:'firstContact', pts:4,  cat:'Call',       col:'#2563eb'},
+    {name:'1st Call Made',  field:'firstCall',    pts:4,  cat:'Call',       col:'#2563eb'},
+    {name:'Call Logged',    field:'callLogged',   pts:4,  cat:'Call',       col:'#2563eb'},
+    {name:'Outcome',        field:'outcome',      pts:4,  cat:'Call',       col:'#2563eb'},
+    {name:'Call Desc',      field:'callDesc',     pts:4,  cat:'Call',       col:'#2563eb'},
+    {name:'Lead Stage Upd', field:'leadStage',    pts:5,  cat:'Lead Stage', col:'#7c3aed'},
+    {name:'Correct Stage',  field:'correctStage', pts:5,  cat:'Lead Stage', col:'#7c3aed'},
+    {name:'Qualified Mark', field:'qualifiedMark',pts:5,  cat:'Lead Stage', col:'#7c3aed'},
+    {name:'Deal Created',   field:'deal',         pts:8,  cat:'Deal',       col:'#dc2626'},
+    {name:'Pipeline',       field:'pipeline',     pts:8,  cat:'Deal',       col:'#dc2626'},
+    {name:'Timeline',       field:'timeline',     pts:8,  cat:'Deal',       col:'#dc2626'},
+    {name:'Properties',     field:'properties',   pts:8,  cat:'Deal',       col:'#dc2626'},
+    {name:'Email Sent',     field:'emailSent',    pts:3,  cat:'Email',      col:'#d97706'},
+    {name:'Email via Hub',  field:'emailHub',     pts:3,  cat:'Email',      col:'#d97706'},
+    {name:'Prof Tone',      field:'profTone',     pts:3,  cat:'Email',      col:'#d97706'},
+    {name:'Signature',      field:'signature',    pts:3,  cat:'Email',      col:'#d97706'},
+    {name:'WA Used',        field:'waUsed',       pts:4,  cat:'WhatsApp',   col:'#059669'},
+    {name:'WA Logged',      field:'waLogged',     pts:4,  cat:'WhatsApp',   col:'#059669'},
+    {name:'WA Note',        field:'waNote',       pts:4,  cat:'WhatsApp',   col:'#059669'},
+    {name:'Task Created',   field:'taskCreated',  pts:3,  cat:'Task',       col:'#6366f1'},
+    {name:'Task Done',      field:'taskDone',     pts:3,  cat:'Task',       col:'#6366f1'},
+    {name:'Task Type',      field:'taskType',     pts:3,  cat:'Task',       col:'#6366f1'},
+  ];
+
+  // Sort agents by total pts lost descending
+  const sorted = HOF_filtered.slice().sort((a,b)=>
+    (b.catErr_call+b.catErr_leadStage+b.catErr_deal+b.catErr_email+b.catErr_whatsapp+b.catErr_task) -
+    (a.catErr_call+a.catErr_leadStage+a.catErr_deal+a.catErr_email+a.catErr_whatsapp+a.catErr_task)
+  );
+
+  panel.innerHTML = sorted.map(agent => {
+    // Get attrs with errors, sorted by pts impact (errors * weight)
+    const agentAttrs = ATTRS
+      .map(a => ({...a, count: agent[a.field]||0, impact: (agent[a.field]||0)*a.pts}))
+      .filter(a => a.count > 0)
+      .sort((a,b) => b.impact - a.impact);
+
+    if (!agentAttrs.length) return '';
+
+    const totalPtsLost = agent.total || 0;
+    const pctLost = agent.audits > 0 ? (totalPtsLost/agent.audits).toFixed(1) : 0;
+    const pc = agent.pct>=90?'#059669':agent.pct>=80?'#d97706':'#dc2626';
+
+    return `<div style="background:var(--w);border:1px solid var(--b);border-radius:12px;padding:14px;border-top:3px solid ${pc}">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px">
+        <div style="font-weight:700;font-size:13px;color:var(--tx)">${agent.name}</div>
+        <div style="display:flex;gap:6px;align-items:center">
+          <span style="font-family:'DM Mono',monospace;font-size:11px;color:${pc};font-weight:700">${agent.pct.toFixed(1)}%</span>
+          <span style="font-family:'DM Mono',monospace;font-size:10px;color:#7c3aed;background:var(--s2);padding:2px 6px;border-radius:4px">${totalPtsLost} errors (${pctLost}/audit)</span>
+        </div>
       </div>
-      <div style="font-size:26px;font-weight:900;color:${pc};font-family:'DM Mono',monospace;line-height:1;margin-bottom:5px">${d.pct.toFixed(1)}%</div>
-      <div style="font-size:10px;color:var(--mu);font-family:'DM Mono',monospace;margin-bottom:8px">${d.audits} audits · ${er} err/audit${wk?' · worst: '+wk:''}</div>
-      <div style="display:flex;gap:2px;height:4px;border-radius:2px;overflow:hidden">
-        ${CATS.map((k,i)=>{const v=d[k]||0;const w=d.audits>0?Math.min(Math.round((v/d.audits)*100),100):0;return `<div style="flex:1;background:${w>0?COLS[i]:'var(--b)'};opacity:${w>0?'1':'.3'}" title="${k}:${v}"></div>`;}).join('')}
+      <div style="display:flex;flex-direction:column;gap:5px">
+        ${agentAttrs.map(a => {
+          const barW = Math.min(100, Math.round((a.impact / (agent.audits * a.pts)) * 100));
+          return `<div>
+            <div style="display:flex;justify-content:space-between;margin-bottom:2px">
+              <span style="font-size:11px;color:var(--t2);display:flex;align-items:center;gap:4px">
+                <span style="width:8px;height:8px;border-radius:50%;background:${a.col};display:inline-block"></span>
+                ${a.name} <span style="color:var(--mu);font-size:10px">(${a.cat})</span>
+              </span>
+              <span style="font-family:'DM Mono',monospace;font-size:11px;color:${a.count>=5?'#dc2626':a.count>=3?'#d97706':'#475569'};font-weight:700">
+                ${a.count}x = -${a.impact}pts
+              </span>
+            </div>
+            <div style="height:4px;background:var(--b);border-radius:2px;overflow:hidden">
+              <div style="width:${barW}%;height:100%;background:${a.col};border-radius:2px;opacity:0.7"></div>
+            </div>
+          </div>`;
+        }).join('')}
       </div>
-      <div style="font-size:10px;color:var(--mu);margin-top:6px;font-family:'DM Mono',monospace">🔍 click to drill down</div>
     </div>`;
-  }).join('')||'<div style="color:var(--mu);font-size:13px;grid-column:1/-1;text-align:center;padding:20px">No data</div>';
-  const s2=document.getElementById('trainingConsultantSel');
-  if(s2&&s2.value) highlightTrainingCard(s2.value);
+  }).filter(Boolean).join('');
 }
 
 
@@ -4111,57 +4268,56 @@ function showCatCaseLinkModal(catLabel, agentName, count, links, hasLinks) {
 }
 
 function renderWeightTable() {
-  const wtb = document.getElementById('wtb');
+  var wtb = document.getElementById('wtb');
   if (!wtb) return;
-  if (!HOF_filtered.length) { wtb.innerHTML='<tr><td colspan="12" style="text-align:center;padding:16px;color:var(--mu)">No data</td></tr>'; return; }
-  const sorted = HOF_filtered.slice().sort((a,b)=>
-    (b.catErr_call+b.catErr_whatsapp+b.catErr_email+b.catErr_description+
-     b.catErr_leadStage+b.catErr_deal+b.catErr_task+b.catErr_followUp) -
-    (a.catErr_call+a.catErr_whatsapp+a.catErr_email+a.catErr_description+
-     a.catErr_leadStage+a.catErr_deal+a.catErr_task+a.catErr_followUp));
-  const cell = (catErr, aud, catKey, d) => {
-    if (!aud) return '<span style="color:#94a3b8">—</span>';
-    if (catErr===0) return '<span style="color:#059669;font-weight:700">✓</span>';
-    const pr=Math.round(((aud-catErr)/aud)*100);
-    const col=pr>=80?'#d97706':'#dc2626';
-    const links=(d.errorLinks&&d.errorLinks[catKey]&&d.errorLinks[catKey].length>0)?d.errorLinks[catKey]:null;
-    const sl=links?JSON.stringify(links).replace(/\\/g,'\\\\').replace(/'/g,"\\'").replace(/"/g,'&quot;'):'[]';
-    const sn=d.name.replace(/'/g,"\\'");
-    const cl=catKey.charAt(0).toUpperCase()+catKey.slice(1);
-    return `<span style="color:${col};font-weight:700;cursor:pointer;border-bottom:1px dashed ${col}"
-      onclick="event.stopPropagation();showCatCaseLinkModal('${cl}','${sn}',${catErr},${sl},${!!links})">${catErr}</span><br><span style="font-size:10px;color:var(--mu)">${pr}%</span>`;
-  };
+  if (!HOF_filtered.length) { wtb.innerHTML = '<tr><td colspan="14" style="text-align:center;padding:16px;color:var(--mu)">No data</td></tr>'; return; }
+
+  // Sort by total category failures descending
+  var sorted = HOF_filtered.slice().sort((a,b) =>
+    (b.catErr_call+b.catErr_whatsapp+b.catErr_email+b.catErr_description+b.catErr_leadStage+b.catErr_outcome+b.catErr_deal+b.catErr_pipeline+b.catErr_task+b.catErr_followUp) -
+    (a.catErr_call+a.catErr_whatsapp+a.catErr_email+a.catErr_description+a.catErr_leadStage+a.catErr_outcome+a.catErr_deal+a.catErr_pipeline+a.catErr_task+a.catErr_followUp)
+  );
+
   wtb.innerHTML = sorted.map(d => {
-    const total=d.catErr_call+d.catErr_whatsapp+d.catErr_email+d.catErr_description+d.catErr_leadStage+d.catErr_deal+d.catErr_task+d.catErr_followUp;
-    const pc=d.pct>=90?'#059669':d.pct>=80?'#d97706':'#dc2626';
+    var total = (d.catErr_call||0)+(d.catErr_whatsapp||0)+(d.catErr_email||0)+(d.catErr_description||0)+(d.catErr_leadStage||0)+(d.catErr_outcome||0)+(d.catErr_deal||0)+(d.catErr_pipeline||0)+(d.catErr_task||0)+(d.catErr_followUp||0);
+    var pc = d.pct>=90?'#059669':d.pct>=80?'#d97706':'#dc2626';
     return `<tr>
-      <td style="font-weight:600">${d.name}</td><td class="tm">${d.audits}</td>
-      <td class="tm">${cell(d.catErr_call,d.audits,'call',d)}</td>
-      <td class="tm">${cell(d.catErr_whatsapp,d.audits,'whatsapp',d)}</td>
-      <td class="tm">${cell(d.catErr_email,d.audits,'email',d)}</td>
-      <td class="tm">${cell(d.catErr_description,d.audits,'description',d)}</td>
-      <td class="tm">${cell(d.catErr_leadStage,d.audits,'leadStage',d)}</td>
-      <td class="tm">${cell(d.catErr_deal,d.audits,'deal',d)}</td>
-      <td class="tm">${cell(d.catErr_task,d.audits,'task',d)}</td>
-      <td class="tm">${cell(d.catErr_followUp,d.audits,'followUp',d)}</td>
-      <td class="tm" style="font-weight:700;color:${total===0?'#059669':total>5?'#dc2626':'#d97706'}">${total}</td>
+      <td style="font-weight:600">${d.name}</td>
+      <td class="tm">${d.audits}</td>
+      <td class="tm">${catPctClickable(d.catErr_call||0,d.audits,'call',d)}</td>
+      <td class="tm">${catPctClickable(d.catErr_whatsapp||0,d.audits,'whatsapp',d)}</td>
+      <td class="tm">${catPctClickable(d.catErr_email||0,d.audits,'email',d)}</td>
+      <td class="tm">${catPctClickable(d.catErr_description||0,d.audits,'description',d)}</td>
+      <td class="tm">${catPctClickable(d.catErr_leadStage||0,d.audits,'leadStage',d)}</td>
+      <td class="tm">${catPctClickable(d.catErr_outcome||0,d.audits,'outcome',d)}</td>
+      <td class="tm">${catPctClickable(d.catErr_deal||0,d.audits,'deal',d)}</td>
+      <td class="tm">${catPctClickable(d.catErr_pipeline||0,d.audits,'pipeline',d)}</td>
+      <td class="tm">${catPctClickable(d.catErr_task||0,d.audits,'task',d)}</td>
+      <td class="tm">${catPctClickable(d.catErr_followUp||0,d.audits,'followUp',d)}</td>
+      <td class="tm" style="font-weight:700;color:${total===0?'#059669':total>(d.audits*0.5)?'#dc2626':'#d97706'}">${total}</td>
       <td class="tm"><span style="color:${pc};font-weight:800;font-family:'DM Mono',monospace;font-size:13px">${d.pct.toFixed(1)}%</span></td>
     </tr>`;
   }).join('');
-  const tAud=HOF_filtered.reduce((s,d)=>s+d.audits,0)||1;
-  const tavg=HOF_filtered.length?HOF_filtered.reduce((s,d)=>s+d.pct,0)/HOF_filtered.length:0;
-  const tpc=tavg>=90?'#059669':tavg>=80?'#d97706':'#dc2626';
-  wtb.innerHTML+=`<tr style="background:var(--s2);font-weight:700;border-top:2px solid var(--b)">
-    <td>📊 TEAM TOTAL</td><td class="tm">${tAud}</td>
+
+  // Team totals row
+  var ttotal = HOF_filtered.reduce((s,d)=>s+d.total,0);
+  var tavg = HOF_filtered.length ? HOF_filtered.reduce((s,d)=>s+d.pct,0)/HOF_filtered.length : 0;
+  var tpc = tavg>=90?'#059669':tavg>=80?'#d97706':'#dc2626';
+  var tAud = HOF_filtered.reduce((s,d)=>s+d.audits,0)||1;
+  wtb.innerHTML += `<tr style="background:var(--m2);font-weight:700;border-top:2px solid var(--m3)">
+    <td>📊 TEAM TOTAL</td>
+    <td class="tm">${tAud}</td>
     <td class="tm" style="color:#2563eb">${HOF_filtered.reduce((s,d)=>s+(d.catErr_call||0),0)}</td>
     <td class="tm" style="color:#059669">${HOF_filtered.reduce((s,d)=>s+(d.catErr_whatsapp||0),0)}</td>
     <td class="tm" style="color:#d97706">${HOF_filtered.reduce((s,d)=>s+(d.catErr_email||0),0)}</td>
     <td class="tm" style="color:#64748b">${HOF_filtered.reduce((s,d)=>s+(d.catErr_description||0),0)}</td>
     <td class="tm" style="color:#7c3aed">${HOF_filtered.reduce((s,d)=>s+(d.catErr_leadStage||0),0)}</td>
+    <td class="tm" style="color:#e11d48">${HOF_filtered.reduce((s,d)=>s+(d.catErr_outcome||0),0)}</td>
     <td class="tm" style="color:#dc2626">${HOF_filtered.reduce((s,d)=>s+(d.catErr_deal||0),0)}</td>
+    <td class="tm" style="color:#f59e0b">${HOF_filtered.reduce((s,d)=>s+(d.catErr_pipeline||0),0)}</td>
     <td class="tm" style="color:#6366f1">${HOF_filtered.reduce((s,d)=>s+(d.catErr_task||0),0)}</td>
     <td class="tm" style="color:#0891b2">${HOF_filtered.reduce((s,d)=>s+(d.catErr_followUp||0),0)}</td>
-    <td class="tm">${HOF_filtered.reduce((s,d)=>s+d.total,0)}</td>
+    <td class="tm">${ttotal}</td>
     <td class="tm"><span style="color:${tpc};font-family:'DM Mono',monospace;font-weight:800">${tavg.toFixed(1)}%</span></td>
   </tr>`;
 }
@@ -5496,32 +5652,6 @@ window.addEventListener('keydown', function(e){
   if(e.key==='Escape') { closeCaseLinkModal(); closeAppsScriptModal(); }
 });
 
-
-
-function trainingCardClick(name) {
-  const sel=document.getElementById('trainingConsultantSel');
-  if(sel) sel.value=name;
-  highlightTrainingCard(name);
-  showTrainingForConsultant(name);
-  setTimeout(()=>{const d=document.getElementById('trainingDetail');if(d)d.scrollIntoView({behavior:'smooth',block:'nearest'});},100);
-}
-
-
-
-function highlightTrainingCard(name) {
-  document.querySelectorAll('[id^="tc-card-"]').forEach(el=>{el.style.outline='';el.style.boxShadow='';});
-  const el=document.getElementById('tc-card-'+name.replace(/\s+/g,'-'));
-  if(el){el.style.outline='2px solid #6366f1';el.style.boxShadow='0 0 0 4px rgba(99,102,241,.15)';}
-}
-
-
-
-function closeTrainingDetail() {
-  const d=document.getElementById('trainingDetail'); if(d) d.innerHTML='';
-  const s=document.getElementById('trainingConsultantSel'); if(s) s.value='';
-  document.querySelectorAll('[id^="tc-card-"]').forEach(el=>{el.style.outline='';el.style.boxShadow='';});
-}
-
 // ── BOOT ──────────────────────────────────────────────────────
 
 // ══════════════════════════════════════════════════════════════════════════════
@@ -5754,641 +5884,360 @@ function scrollAIToBottom() {
 // ══════════════════════════════════════════════════════════════════
 //  DEALS — Apps Script endpoint (deployed, no public sheet needed)
 // ══════════════════════════════════════════════════════════════════
-const DEALS_APPS_SCRIPT_URL = 'https://script.googleusercontent.com/a/macros/hofmigration.com/echo?user_content_key=AWDtjMVsHqmx8rk_fNTZsKAOc4DkqhV62LhuyH5GbVp4MA0_66gvBukhbI7NglvGCBn61ZkI1pQ1MLBIbFiQOxiqYhA5cnHgqWSW3toL3-EHfQvLd5_VcOq9EztZHitBI7wOiWqAL283bXTnCj8dOsX5mXycBB4APF9NdHQgnyIG2UDq2TZpC49yP-My8a1VhEv_-ROG9dw2GhJccuOaQjstOKP7TLbUbrY-rF5ApCCN037cshyoXnfqIMXol4md1yb-hg5wsnkyXJm7uHbZTWnpLMSGqTKykYANTUz1IqE-3O7clEy_aJ858Eh9m_ZMfQ&lib=MM24DuhvXS4QO0ry8prKPWHpNs2xkhEAc';
 
-// Fallback: direct CSV if Apps Script fails
-const DEALS_SHEET_ID = '1K07taCArn1qEIjTyWwXJUYnvIc9f72kWHSRUTPTlCqM';
-const DEALS_GID      = '1453544142';
+// ═══════════════════════════════════════════════════════════
+//  DEALS OVERVIEW — Global + DXB compliance engine
+//  Single Apps Script URL returns both tabs:
+//    { ok:true, global:[...rows], dxb:[...rows] }
+// ═══════════════════════════════════════════════════════════
 
-var dealsRawData   = [];
-var dealsFiltered  = [];
-var dealsRange     = 'all';
-var dealsCharts    = {};
-var dealsSortField = 'name';
-var dealsSortDir   = 1;
-var _dealsDataSource = '';  // 'appsscript' | 'csv' — for display
+const DEALS_APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbyefiPeN-kzsdNj4M00ZSbVB3lQ9Qs0v9XfNJHwbfE9o0IEIvrkyFN7LucN8-saEHeLkQ/exec';
 
-// ── Main loader — tries Apps Script first, CSV fallback ────────────
-async function loadDealsData() {
-  showDealsState('loading');
-  var rows = null;
-  var errorMessages = [];
+var dealsGlobalRaw  = [];
+var dealsDXBRaw     = [];
+var dealsGlobalAgg  = [];
+var dealsDXBAgg     = [];
+var dealsActiveTab  = 'global';
+var dealsRange      = 'all';
+var dealsSearchStr  = '';
+var _dealsLoaded    = false;
 
-  // ── ATTEMPT 1: Apps Script endpoint ──────────────────────────────
-  try {
-    rows = await fetchFromAppsScript();
-    _dealsDataSource = 'Apps Script';
-  } catch(e1) {
-    console.warn('[Deals] Apps Script failed:', e1.message);
-    errorMessages.push('Apps Script: ' + e1.message);
+// ── Column keys matching Apps Script output ───────────────
+const DC = {
+  name:       'consultant name',
+  date:       'audit date',
+  dealStage:  'correct deal stage',
+  pipeline:   'correct pipeline',
+  notes:      'notes or description',
+  waEmail:    'whatsapp/ email logged',
+  closeDate:  'close date',
+  timeline:   'postponed/ contact back timeline',
+  followup:   'follow-up ( 2 days ) / task',
+  lostReason: 'deal lost reason/ corect outcome',
+  score:      'score',
+};
 
-    // ── ATTEMPT 2: Direct Google Sheets CSV ────────────────────────
-    try {
-      rows = await fetchFromCSV();
-      _dealsDataSource = 'Google Sheets CSV';
-    } catch(e2) {
-      console.warn('[Deals] CSV fallback failed:', e2.message);
-      errorMessages.push('CSV fallback: ' + e2.message);
-      rows = null;
-    }
-  }
-
-  if (!rows || rows.length === 0) {
-    showDealsState('error');
-    var msg = rows !== null
-      ? 'Sheet connected but returned 0 rows — check that the sheet has data and the correct column headers.'
-      : errorMessages.join(' | ');
-    var el = document.getElementById('deals-error-msg');
-    if (el) el.innerHTML = dealsDiagnosticMessage(msg);
-    document.getElementById('deals-source-label').textContent = 'Connection failed';
-    return;
-  }
-
-  dealsRawData = rows;
-  populateDealFilters();
-  renderDealsTab();
-  showDealsState('ready');
-  var now = new Date().toLocaleTimeString('en-GB',{hour:'2-digit',minute:'2-digit',second:'2-digit'});
-  document.getElementById('deals-last-updated').textContent = 'Updated ' + now;
-  document.getElementById('deals-source-label').textContent =
-    'Live · ' + _dealsDataSource + ' · ' + dealsRawData.length + ' rows';
-  document.getElementById('nc-deals').textContent = dealsRawData.length;
-  // Debug info
-  var dbg = document.getElementById('deals-debug-box');
-  if (dbg && dealsRawData.length) {
-    dbg.style.display = 'block';
-    document.getElementById('deals-debug-source').textContent = '· Source: ' + _dealsDataSource;
-    document.getElementById('deals-debug-rows').textContent = '· ' + dealsRawData.length + ' rows';
-    var cols = Object.keys(dealsRawData[0]).slice(0,20).join(', ');
-    document.getElementById('deals-debug-cols').textContent = cols;
-    setTimeout(function(){ if(dbg) dbg.style.display='none'; }, 15000);
-  }
-}
-
-// ── Fetch from Apps Script ─────────────────────────────────────────
-// Apps Script can return several formats depending on the doGet() implementation:
-//   1. { ok:true, data: [{...},{...}] }          ← HOF standard
-//   2. { ok:true, rows: [{...},{...}] }           ← alternate key
-//   3. [ {...}, {...} ]                           ← bare array
-//   4. { values: [[header,...],[val,...]] }        ← Sheets API style
-//   5. "col1,col2\nval1,val2\n..."               ← plain CSV text/plain
-//   6. HTML error page                           ← deployment issue
-async function fetchFromAppsScript() {
-  var controller = new AbortController();
-  var timeout = setTimeout(function(){ controller.abort(); }, 12000);
-  var res;
-  try {
-    res = await fetch(DEALS_APPS_SCRIPT_URL, {
-      signal: controller.signal,
-      headers: { 'Accept': 'application/json, text/plain, */*' }
-    });
-  } finally {
-    clearTimeout(timeout);
-  }
-
-  if (!res.ok) throw new Error('HTTP ' + res.status);
-
-  var contentType = (res.headers.get('content-type') || '').toLowerCase();
-  var text = await res.text();
-
-  if (!text || text.trim() === '') throw new Error('Empty response');
-
-  // Detect HTML error page (deployment misconfigured)
-  if (text.trim().startsWith('<!') || text.trim().startsWith('<html')) {
-    throw new Error('Got HTML — check: Deploy → Execute as "Me" → Access: "Anyone"');
-  }
-
-  // Try JSON first
-  var json = null;
-  try { json = JSON.parse(text); } catch(e) { /* not JSON */ }
-
-  if (json !== null) {
-    return extractRowsFromJSON(json);
-  }
-
-  // Plain CSV/TSV text
-  if (text.includes(',') || text.includes('\t')) {
-    var rows = parseDealsCSV(text);
-    if (rows.length) return rows;
-  }
-
-  throw new Error('Could not parse response. First 100 chars: ' + text.slice(0,100));
-}
-
-// ── Extract rows from any JSON shape ──────────────────────────────
-function extractRowsFromJSON(json) {
-  // Bare array of objects
-  if (Array.isArray(json)) {
-    if (!json.length) return [];
-    // Array of objects already
-    if (typeof json[0] === 'object' && !Array.isArray(json[0])) return json;
-    // Array of arrays (values format)
-    if (Array.isArray(json[0])) return arraysToObjects(json);
-    return json;
-  }
-
-  // { ok, data/rows/deals/records/items/results/entries }
-  var dataKey = ['data','rows','deals','records','items','results','entries','sheet','sheets','list']
-    .find(function(k){ return json[k] && (Array.isArray(json[k]) || typeof json[k] === 'object'); });
-
-  if (dataKey) {
-    var payload = json[dataKey];
-    if (Array.isArray(payload)) {
-      if (!payload.length) return [];
-      if (typeof payload[0] === 'object' && !Array.isArray(payload[0])) return payload;
-      if (Array.isArray(payload[0])) return arraysToObjects(payload);
-    }
-  }
-
-  // { values: [[header...],[row...]] } — Sheets API style
-  if (json.values && Array.isArray(json.values)) return arraysToObjects(json.values);
-
-  // Single object with status message
-  if (json.ok === false) throw new Error(json.error || json.message || 'Apps Script returned ok:false');
-
-  // Last resort — if the root object looks like a single row
-  if (Object.keys(json).length > 2) return [json];
-
-  throw new Error('JSON received but could not find data array. Keys: ' + Object.keys(json).join(', '));
-}
-
-// Convert [[header,header],[val,val]] → [{header:val}]
-function arraysToObjects(arrays) {
-  if (arrays.length < 2) return [];
-  var headers = arrays[0].map(function(h){ return String(h).trim().toLowerCase(); });
-  return arrays.slice(1).map(function(row) {
-    var obj = {};
-    headers.forEach(function(h,i){ obj[h] = String(row[i] !== undefined ? row[i] : '').trim(); });
-    return obj;
+// ── Sub-tab switcher (reuses CM style) ───────────────────
+function switchDealsSubTab(tab) {
+  dealsActiveTab = tab;
+  document.querySelectorAll('[id^="dealstab-"]').forEach(function(b){
+    b.classList.remove('active');
   });
+  document.querySelectorAll('[id^="dealspanel-"]').forEach(function(p){
+    p.classList.remove('active');
+  });
+  var btn = document.getElementById('dealstab-' + tab);
+  var pan = document.getElementById('dealspanel-' + tab);
+  if (btn) btn.classList.add('active');
+  if (pan) pan.classList.add('active');
 }
 
-// ── CSV fallback ───────────────────────────────────────────────────
-async function fetchFromCSV() {
-  var url = 'https://docs.google.com/spreadsheets/d/' + DEALS_SHEET_ID +
-            '/export?format=csv&gid=' + DEALS_GID;
-  var res = await fetch(url);
-  if (!res.ok) throw new Error('HTTP ' + res.status + ' — make the sheet public or use Apps Script');
-  var csv = await res.text();
-  return parseDealsCSV(csv);
-}
-
-// ── CSV Parser (robust) ────────────────────────────────────────────
-function parseDealsCSV(csvText) {
-  var lines = csvText.trim().split(/\r?\n/);
-  if (lines.length < 2) return [];
-  var headers = parseCSVLine(lines[0]).map(function(h){ return h.trim().toLowerCase(); });
-  var rows = [];
-  for (var i = 1; i < lines.length; i++) {
-    var line = lines[i].trim();
-    if (!line) continue;
-    var vals = parseCSVLine(line);
-    var obj = {};
-    headers.forEach(function(h, idx){ obj[h] = (vals[idx] || '').trim(); });
-    rows.push(obj);
-  }
-  return rows;
-}
-
-function parseCSVLine(line) {
-  var result = [], cur = '', inQ = false;
-  for (var i = 0; i < line.length; i++) {
-    var c = line[i];
-    if (c === '"') { inQ = !inQ; }
-    else if (c === ',' && !inQ) { result.push(cur); cur = ''; }
-    else cur += c;
-  }
-  result.push(cur);
-  return result;
-}
-
-// ── Diagnostic error message ────────────────────────────────────────
-function dealsDiagnosticMessage(raw) {
-  var tips = '';
-  if (raw.includes('HTML') || raw.includes('sign-in')) {
-    tips = '<br><br><strong>Fix:</strong> In Apps Script → Deploy → Manage deployments → Edit → <br>' +
-           '• Execute as: <strong>Me</strong><br>• Who has access: <strong>Anyone</strong> (not "Anyone with Google account")';
-  } else if (raw.includes('401') || raw.includes('403') || raw.includes('PERMISSION')) {
-    tips = '<br><br><strong>Fix:</strong> Re-deploy the Apps Script as "Anyone" access, or make the sheet publicly viewable.';
-  } else if (raw.includes('0 rows') || raw.includes('no data')) {
-    tips = '<br><br><strong>Fix:</strong> Check that the sheet tab has data and headers in row 1 ' +
-           '(Consultant, Stage, Date, Pipeline Correct, Contact, Source).';
-  } else if (raw.includes('fetch') || raw.includes('network') || raw.includes('abort')) {
-    tips = '<br><br><strong>Fix:</strong> Check your internet connection, or the Apps Script URL may have expired — re-deploy.';
-  }
-  return raw + tips;
-}
-
-function showDealsState(state) {
-  var skeleton  = document.getElementById('deals-skeleton');
-  var content   = document.getElementById('deals-content');
-  var errBanner = document.getElementById('deals-error');
-  if (skeleton)  skeleton.style.display  = state === 'loading' ? 'block' : 'none';
-  if (content)   content.style.display   = state === 'ready'   ? 'block' : 'none';
-  if (errBanner) errBanner.style.display = state === 'error'   ? 'flex'  : 'none';
-}
-
-// ── Find column value by multiple possible header names ────────────
-function dealsGet(row, candidates) {
-  for (var i = 0; i < candidates.length; i++) {
-    var k = candidates[i].toLowerCase();
-    if (row[k] !== undefined && row[k] !== '') return row[k];
-  }
-  return '';
-}
-
-// ── Normalise a row into a clean deal object ───────────────────────
-// Accepts any column naming convention — maps generously
-function normaliseDealsRow(row) {
-  // Lower-case all keys for safe lookup
-  var lrow = {};
-  Object.keys(row).forEach(function(k){ lrow[k.toLowerCase().trim()] = String(row[k]||'').trim(); });
-
-  var name     = dealsGet(lrow, ['consultant name','consultant','agent name','agent','owner name','owner','assigned to','name','rep']);
-  var stage    = dealsGet(lrow, ['deal stage','dealstage','stage','pipeline stage','status','deal status','lifecycle stage','lifecyclestage']);
-  var dateRaw  = dealsGet(lrow, ['close date','closedate','date','create date','createdate','created date','deal date','audit date','deal close date','close_date']);
-  var contact  = dealsGet(lrow, ['contact name','contactname','client name','lead name','contact','client','company','deal name','dealname']);
-  var source   = dealsGet(lrow, ['lead source','leadsource','source','deal source','channel','marketing channel']);
-  var value    = dealsGet(lrow, ['amount','deal value','value','deal amount','revenue','price','aed','usd']);
-  var pipeCorr = dealsGet(lrow, [
-    'pipeline','pipeline correct','correct pipeline','pipeline stage correct',
-    'correct stage','is pipeline correct','pipeline_correct','pipelinecorrect',
-    'correct','stage correct','stage_correct'
-  ]);
-
-  // Pipeline correctness — generous detection
-  var isPipelineCorrect = false;
-  var pc = pipeCorr.toLowerCase();
-  if (pc === 'yes' || pc === '1' || pc === 'true' || pc === 'correct' || pc === 'y' ||
-      pc === 'ok' || pc === '✓' || pc === 'pass' || pc === 'passed') {
-    isPipelineCorrect = true;
-  }
-
-  // Parse date — handle MM/DD/YYYY, DD/MM/YYYY, YYYY-MM-DD, and serial numbers
-  var dateObj = null;
-  if (dateRaw) {
-    // Google Sheets serial date (e.g. 45678)
-    if (/^\d{4,5}$/.test(dateRaw)) {
-      var serial = parseInt(dateRaw);
-      dateObj = new Date(Date.UTC(1899,11,30) + serial * 86400000);
-    } else {
-      var d = new Date(dateRaw);
-      if (!isNaN(d.getTime())) dateObj = d;
-    }
-  }
-
-  // Numeric value
-  var dealValue = 0;
-  if (value) {
-    dealValue = parseFloat(String(value).replace(/[^0-9.\-]/g,'')) || 0;
-  }
-
-  // Stage classification
-  var stageLower = (stage || '').toLowerCase();
-  var isWon  = stageLower.includes('won') || stageLower.includes('closed won') ||
-               stageLower === 'win' || stageLower === 'won' || stageLower === 'closed - won';
-  var isLost = stageLower.includes('lost') || stageLower.includes('closed lost') ||
-               stageLower === 'lose' || stageLower === 'lost' || stageLower === 'closed - lost' ||
-               stageLower === 'disqualified' || stageLower === 'dead';
-
-  return { name, stage, dateObj, contact, source, dealValue, isPipelineCorrect, isWon, isLost, raw: lrow };
-}
-
-// ── Date filter helper ──────────────────────────────────────────────
-function dealsDateInRange(dateObj) {
+// ── Date helper ───────────────────────────────────────────
+function dealsDateInRange(dateStr) {
   if (dealsRange === 'all') return true;
-  if (!dateObj) return true; // include rows without dates in "all"
-  var today = new Date(); today.setHours(23,59,59,999);
-  var from, to = today;
-  if (dealsRange === 'thismonth') {
-    from = new Date(today.getFullYear(), today.getMonth(), 1);
-  } else if (dealsRange === 'lastmonth') {
-    from = new Date(today.getFullYear(), today.getMonth()-1, 1);
-    to   = new Date(today.getFullYear(), today.getMonth(), 0, 23,59,59);
-  } else if (dealsRange === 'last7') {
-    from = new Date(today); from.setDate(from.getDate()-6); from.setHours(0,0,0,0);
-  } else if (dealsRange === 'last28') {
-    from = new Date(today); from.setDate(from.getDate()-27); from.setHours(0,0,0,0);
-  } else if (dealsRange === 'custom') {
-    var ds = document.getElementById('deals-ds').value;
-    var de = document.getElementById('deals-de').value;
-    if (!ds || !de) return true;
-    from = new Date(ds); to = new Date(de); to.setHours(23,59,59,999);
+  if (!dateStr) return false;
+  // Handle DD/MM/YYYY format from Apps Script
+  var d;
+  if (/^\d{2}\/\d{2}\/\d{4}$/.test(dateStr)) {
+    var parts = dateStr.split('/');
+    d = new Date(parts[2], parts[1]-1, parts[0]);
+  } else {
+    d = new Date(dateStr);
   }
-  return from ? (dateObj >= from && dateObj <= to) : true;
+  if (isNaN(d)) return false;
+  var now = new Date();
+  if (dealsRange === 'thismonth')  return d.getFullYear()===now.getFullYear() && d.getMonth()===now.getMonth();
+  if (dealsRange === 'lastmonth') {
+    var lm = new Date(now.getFullYear(), now.getMonth()-1, 1);
+    return d.getFullYear()===lm.getFullYear() && d.getMonth()===lm.getMonth();
+  }
+  if (dealsRange === 'last7')  return (now-d) <= 7*86400000;
+  if (dealsRange === 'last28') return (now-d) <= 28*86400000;
+  if (dealsRange === 'custom') {
+    var ds = document.getElementById('deals-ds') ? document.getElementById('deals-ds').value : '';
+    var de = document.getElementById('deals-de') ? document.getElementById('deals-de').value : '';
+    if (ds && d < new Date(ds)) return false;
+    if (de && d > new Date(de+'T23:59:59')) return false;
+    return true;
+  }
+  return true;
 }
 
-// ── Populate filter dropdowns ───────────────────────────────────────
-function populateDealFilters() {
-  var deals = dealsRawData.map(normaliseDealsRow);
-  var names  = [...new Set(deals.map(d=>d.name).filter(Boolean))].sort();
-  var stages = [...new Set(deals.map(d=>d.stage).filter(Boolean))].sort();
-  var cSel = document.getElementById('deals-consultant-filter');
-  var sSel = document.getElementById('deals-stage-filter');
-  cSel.innerHTML = '<option value="all">All Consultants</option>' + names.map(n=>'<option value="'+n+'">'+n+'</option>').join('');
-  sSel.innerHTML = '<option value="all">All Stages</option>' + stages.map(s=>'<option value="'+s+'">'+s+'</option>').join('');
+// ── YES/NO normaliser ─────────────────────────────────────
+function dcYes(v) {
+  if (!v) return null;
+  var s = String(v).trim().toUpperCase();
+  if (s==='YES'||s==='Y') return true;
+  if (s==='NO'||s==='N')  return false;
+  return null;
 }
 
-// ── Main render ────────────────────────────────────────────────────
-function renderDealsTab() {
-  var cfVal  = (document.getElementById('deals-consultant-filter')||{}).value || 'all';
-  var sfVal  = (document.getElementById('deals-stage-filter')||{}).value || 'all';
-  var deals = dealsRawData.map(normaliseDealsRow).filter(function(d) {
-    if (cfVal !== 'all' && d.name !== cfVal) return false;
-    if (sfVal !== 'all' && d.stage !== sfVal) return false;
-    if (!dealsDateInRange(d.dateObj)) return false;
+// ── Aggregate rows → per-consultant stats ─────────────────
+function dealsAggregate(rows) {
+  var cSel = (document.getElementById('deals-consultant-filter')||{}).value || 'all';
+  var filtered = rows.filter(function(r) {
+    if (!dealsDateInRange(r[DC.date])) return false;
+    if (cSel !== 'all' && String(r[DC.name]||'').trim() !== cSel) return false;
     return true;
   });
-  dealsFiltered = deals;
-  renderDealsKPIs(deals);
-  renderPipelineHealth(deals);
-  renderDealsCharts(deals);
-  renderDealsLeaderboard(deals);
-  renderDealsPipelinePerConsultant(deals);
-  renderDealsTable(deals);
-  document.getElementById('deals-table-count').textContent = deals.length + ' deal' + (deals.length!==1?'s':'') + ' matching filters';
+
+  var map = {};
+  filtered.forEach(function(r) {
+    var name = String(r[DC.name]||'').trim();
+    if (!name) return;
+    if (!map[name]) map[name] = {
+      name:name, audits:0,
+      dealStage:0,  dealStageT:0,
+      pipeline:0,   pipelineT:0,
+      notes:0,      notesT:0,
+      waEmail:0,    waEmailT:0,
+      closeDate:0,  closeDateT:0,
+      timeline:0,   timelineT:0,
+      followup:0,   followupT:0,
+      lostReason:0, lostReasonT:0,
+      scoreSum:0,   scoreN:0,
+    };
+    var c = map[name];
+    c.audits++;
+    function tally(key, tKey, val) {
+      var v = dcYes(val);
+      if (v !== null) { c[tKey]++; if (v) c[key]++; }
+    }
+    tally('dealStage',  'dealStageT',  r[DC.dealStage]);
+    tally('pipeline',   'pipelineT',   r[DC.pipeline]);
+    tally('notes',      'notesT',      r[DC.notes]);
+    tally('waEmail',    'waEmailT',    r[DC.waEmail]);
+    tally('closeDate',  'closeDateT',  r[DC.closeDate]);
+    tally('timeline',   'timelineT',   r[DC.timeline]);
+    tally('followup',   'followupT',   r[DC.followup]);
+    tally('lostReason', 'lostReasonT', r[DC.lostReason]);
+    var sc = parseFloat(r[DC.score]);
+    if (!isNaN(sc)) { c.scoreSum += sc; c.scoreN++; }
+  });
+
+  return Object.values(map).sort(function(a,b){ return a.name.localeCompare(b.name); });
 }
 
-// ── KPIs ───────────────────────────────────────────────────────────
-function renderDealsKPIs(deals) {
-  var total = deals.length;
-  var won = deals.filter(d=>d.isWon).length;
-  var lost = deals.filter(d=>d.isLost).length;
-  var active = deals.filter(d=>!d.isWon&&!d.isLost).length;
-  var closed = won + lost;
-  var winRate = closed > 0 ? Math.round(won/closed*100) : 0;
-  var names = new Set(deals.map(d=>d.name).filter(Boolean));
-  document.getElementById('dk-total').textContent   = total;
-  document.getElementById('dk-active').textContent  = active;
-  document.getElementById('dk-won').textContent     = won;
-  document.getElementById('dk-lost').textContent    = lost;
-  document.getElementById('dk-winrate').textContent = winRate + '%';
-  document.getElementById('dk-consultants').textContent = names.size;
-}
+// ── Render hero banner ────────────────────────────────────
+function dealsRenderBanner(agg, prefix, accentColor) {
+  var avgScore = agg.length ? agg.reduce(function(s,c){ return s+(c.scoreN?(c.scoreSum/c.scoreN):0); },0)/agg.length : 0;
+  var pc = avgScore>=90?'#059669':avgScore>=80?'#d97706':'#dc2626';
+  var st = avgScore>=90?'✅ Strong Performance':avgScore>=80?'⚠️ Needs Work':'🔴 Requires Attention';
+  var above = agg.filter(function(c){ return c.scoreN&&(c.scoreSum/c.scoreN)>=80; }).length;
 
-// ── Pipeline Health Banner ─────────────────────────────────────────
-function renderPipelineHealth(deals) {
-  var total   = deals.length;
-  var correct = deals.filter(d=>d.isPipelineCorrect).length;
-  var wrong   = total - correct;
-  var pct     = total > 0 ? Math.round(correct/total*100) : 0;
-  var TARGET  = 70;
-  var isGood  = pct >= TARGET;
-  var color   = isGood ? '#059669' : (pct >= 50 ? '#d97706' : '#dc2626');
-  document.getElementById('pipeline-correct-pct').textContent = pct + '%';
-  document.getElementById('pipeline-correct-pct').style.color = color;
-  document.getElementById('pipeline-wrong-count').textContent = wrong;
-  document.getElementById('pipeline-bar-correct').style.width = pct + '%';
-  document.getElementById('pipeline-bar-wrong').style.width = (100-pct) + '%';
-  document.getElementById('pipeline-bar-correct-pct').textContent = pct + '%';
-  document.getElementById('pipeline-bar-wrong-pct').textContent = (100-pct) + '%';
-  var badge = document.getElementById('pipeline-status-badge');
-  if (isGood) {
-    badge.style.background = 'rgba(5,150,105,.12)'; badge.style.color = '#059669';
-    badge.style.border = '1px solid rgba(5,150,105,.3)';
-    badge.textContent = '✓ TARGET MET';
-  } else {
-    badge.style.background = 'rgba(220,38,38,.1)'; badge.style.color = '#dc2626';
-    badge.style.border = '1px solid rgba(220,38,38,.3)';
-    badge.textContent = '⚑ BELOW TARGET';
-  }
-}
+  var bigEl = document.getElementById('deals-'+prefix+'-bigpct');
+  var stEl  = document.getElementById('deals-'+prefix+'-status');
+  var cntEl = document.getElementById('deals-'+prefix+'-count');
+  var abvEl = document.getElementById('deals-'+prefix+'-above');
+  var barsEl= document.getElementById('deals-'+prefix+'-bars');
 
-// ── Charts ─────────────────────────────────────────────────────────
-var DEAL_COLORS = ['#6366f1','#2563eb','#059669','#d97706','#dc2626','#0891b2','#9333ea','#10b981','#f59e0b','#ef4444'];
-
-function destroyDealChart(id) {
-  if (dealsCharts[id]) { dealsCharts[id].destroy(); delete dealsCharts[id]; }
-}
-
-function renderDealsCharts(deals) {
-  // 1. Pipeline by Stage (horizontal bar)
-  var stageCounts = {};
-  deals.forEach(function(d){ if(d.stage) stageCounts[d.stage] = (stageCounts[d.stage]||0)+1; });
-  var stageLabels = Object.keys(stageCounts).sort(function(a,b){ return stageCounts[b]-stageCounts[a]; });
-  destroyDealChart('deals-stage-chart');
-  var ctx1 = document.getElementById('deals-stage-chart');
-  if (ctx1) {
-    dealsCharts['deals-stage-chart'] = new Chart(ctx1.getContext('2d'), {
-      type: 'bar',
-      data: {
-        labels: stageLabels,
-        datasets: [{ data: stageLabels.map(function(s){ return stageCounts[s]; }),
-          backgroundColor: stageLabels.map(function(_,i){ return DEAL_COLORS[i%DEAL_COLORS.length]+'cc'; }),
-          borderWidth: 0, borderRadius: 4 }]
-      },
-      options: {
-        indexAxis: 'y', responsive: true, maintainAspectRatio: false,
-        plugins: { legend: { display: false } },
-        scales: {
-          x: { grid:{color:'rgba(128,128,128,.1)'}, ticks:{color:'var(--mu)',font:{family:'Nunito',size:11}} },
-          y: { grid:{display:false}, ticks:{color:'var(--tx)',font:{family:'Nunito',size:11}} }
-        }
-      }
-    });
-  }
-
-  // 2. Deals by Consultant (doughnut)
-  var consultantCounts = {};
-  deals.forEach(function(d){ if(d.name) consultantCounts[d.name] = (consultantCounts[d.name]||0)+1; });
-  var cNames = Object.keys(consultantCounts).sort(function(a,b){ return consultantCounts[b]-consultantCounts[a]; }).slice(0,8);
-  destroyDealChart('deals-consultant-chart');
-  var ctx2 = document.getElementById('deals-consultant-chart');
-  if (ctx2) {
-    dealsCharts['deals-consultant-chart'] = new Chart(ctx2.getContext('2d'), {
-      type: 'doughnut',
-      data: {
-        labels: cNames,
-        datasets: [{ data: cNames.map(function(n){ return consultantCounts[n]; }),
-          backgroundColor: cNames.map(function(_,i){ return DEAL_COLORS[i%DEAL_COLORS.length]; }),
-          borderWidth: 2, borderColor: 'var(--w)' }]
-      },
-      options: {
-        responsive: true, maintainAspectRatio: false, cutout: '60%',
-        plugins: { legend: { display: false } }
-      }
-    });
-    // Custom legend
-    var legEl = document.getElementById('deals-consultant-legend');
-    if (legEl) legEl.innerHTML = cNames.map(function(n,i){
-      return '<span style="display:inline-flex;align-items:center;gap:4px;font-size:11px;color:var(--t2)">' +
-             '<span style="width:9px;height:9px;border-radius:2px;background:'+DEAL_COLORS[i%DEAL_COLORS.length]+';flex-shrink:0"></span>' +
-             n.split(' ')[0] + ' ('+consultantCounts[n]+')' + '</span>';
+  if (bigEl) { bigEl.textContent = avgScore.toFixed(1)+'%'; bigEl.style.color = accentColor||pc; }
+  if (stEl)  { stEl.textContent  = st; }
+  if (cntEl) { cntEl.textContent = agg.length; }
+  if (abvEl) { abvEl.textContent = above; }
+  if (barsEl) {
+    barsEl.innerHTML = agg.slice(0,6).map(function(c) {
+      var avg = c.scoreN ? c.scoreSum/c.scoreN : 0;
+      var bc  = avg>=90?'#10b981':avg>=80?'#f59e0b':'#ef4444';
+      return '<div style="display:flex;align-items:center;gap:8px">'
+        + '<div style="font-size:10px;color:rgba(255,255,255,.55);width:90px;truncate;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-family:\'DM Mono\',monospace">'+c.name+'</div>'
+        + '<div style="flex:1;height:5px;background:rgba(255,255,255,.1);border-radius:3px;overflow:hidden">'
+        +   '<div style="width:'+Math.min(avg,100).toFixed(0)+'%;height:100%;background:'+bc+';border-radius:3px"></div>'
+        + '</div>'
+        + '<div style="font-size:10px;font-weight:700;color:'+bc+';width:38px;text-align:right;font-family:\'DM Mono\',monospace">'+avg.toFixed(0)+'%</div>'
+        + '</div>';
     }).join('');
   }
-
-  // 3. Won vs Lost per consultant (grouped bar)
-  var wonMap = {}, lostMap = {};
-  deals.forEach(function(d){
-    if (!d.name) return;
-    if (d.isWon)  wonMap[d.name]  = (wonMap[d.name]||0)+1;
-    if (d.isLost) lostMap[d.name] = (lostMap[d.name]||0)+1;
-  });
-  var wlNames = [...new Set(deals.filter(function(d){ return d.isWon||d.isLost; }).map(function(d){ return d.name; }))];
-  if (wlNames.length === 0) wlNames = cNames;
-  destroyDealChart('deals-wonlost-chart');
-  var ctx3 = document.getElementById('deals-wonlost-chart');
-  if (ctx3) {
-    dealsCharts['deals-wonlost-chart'] = new Chart(ctx3.getContext('2d'), {
-      type: 'bar',
-      data: {
-        labels: wlNames,
-        datasets: [
-          { label: 'Won',  data: wlNames.map(function(n){ return wonMap[n]||0; }),  backgroundColor: '#05966999', borderRadius: 3 },
-          { label: 'Lost', data: wlNames.map(function(n){ return lostMap[n]||0; }), backgroundColor: '#dc262699', borderRadius: 3 }
-        ]
-      },
-      options: {
-        responsive: true, maintainAspectRatio: false,
-        plugins: { legend: { display: true, labels: { color: 'var(--tx)', font:{ family:'Nunito', size:11 } } } },
-        scales: {
-          x: { grid:{display:false}, ticks:{color:'var(--tx)',font:{family:'Nunito',size:11},maxRotation:30} },
-          y: { grid:{color:'rgba(128,128,128,.1)'}, ticks:{color:'var(--mu)',font:{family:'Nunito',size:11}} }
-        }
-      }
-    });
-  }
 }
 
-// ── Leaderboard ────────────────────────────────────────────────────
-function renderDealsLeaderboard(deals) {
-  var el = document.getElementById('deals-leaderboard');
+// ── KPI strip ─────────────────────────────────────────────
+function dealsRenderKPIs(agg, panelId) {
+  var el = document.getElementById(panelId);
   if (!el) return;
-  var counts = {};
-  deals.forEach(function(d){ if(d.name) counts[d.name] = (counts[d.name]||0)+1; });
-  var sorted = Object.keys(counts).sort(function(a,b){ return counts[b]-counts[a]; });
-  var maxVal = sorted.length ? counts[sorted[0]] : 1;
-  if (!sorted.length) { el.innerHTML = '<div style="text-align:center;padding:20px;color:var(--mu);font-family:\'DM Mono\',monospace;font-size:12px">No data for selected filters</div>'; return; }
-  el.innerHTML = sorted.map(function(name, i) {
-    var pct = Math.round(counts[name]/maxVal*100);
-    var col = DEAL_COLORS[i%DEAL_COLORS.length];
-    var medal = i===0?'🥇':i===1?'🥈':i===2?'🥉':'';
-    return '<div style="display:flex;align-items:center;gap:10px;margin-bottom:10px">' +
-      '<div style="width:20px;text-align:center;font-size:13px">'+(medal||'<span style="font-family:\'DM Mono\',monospace;color:var(--mu);font-size:11px">'+(i+1)+'</span>')+'</div>' +
-      '<div style="flex:1">' +
-        '<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:3px">' +
-          '<span style="font-size:13px;font-weight:600;color:var(--tx)">' + name + '</span>' +
-          '<span style="font-size:12px;font-weight:700;color:'+col+';font-family:\'DM Mono\',monospace">' + counts[name] + ' deals</span>' +
-        '</div>' +
-        '<div style="height:5px;background:var(--b);border-radius:3px;overflow:hidden">' +
-          '<div style="height:100%;background:'+col+';border-radius:3px;width:'+pct+'%;transition:width .5s ease"></div>' +
-        '</div>' +
-      '</div>' +
-    '</div>';
-  }).join('');
+  var total   = agg.reduce(function(s,c){ return s+c.audits; },0);
+  var avgScore= agg.length ? agg.reduce(function(s,c){ return s+(c.scoreN?(c.scoreSum/c.scoreN):0); },0)/agg.length : 0;
+  var atRisk  = agg.filter(function(c){ return c.scoreN&&(c.scoreSum/c.scoreN)<80; }).length;
+  var onTrack = agg.filter(function(c){ return c.scoreN&&(c.scoreSum/c.scoreN)>=90; }).length;
+  var pc      = avgScore>=90?'#059669':avgScore>=80?'#d97706':'#dc2626';
+  el.innerHTML = [
+    kcard('#2563eb','Total Audits',total,'in period'),
+    kcard(pc,'Avg Score',avgScore.toFixed(1)+'%','compliance'),
+    kcard('#6366f1','Consultants',agg.length,'active'),
+    kcard('#dc2626','At Risk',atRisk,'below 80%'),
+    kcard('#d97706','Coaching',agg.filter(function(c){return c.scoreN&&(c.scoreSum/c.scoreN)>=80&&(c.scoreSum/c.scoreN)<90;}).length,'80–90%'),
+    kcard('#059669','Excellent',onTrack,'above 90%'),
+  ].join('');
 }
 
-// ── Pipeline per consultant ─────────────────────────────────────────
-function renderDealsPipelinePerConsultant(deals) {
-  var el = document.getElementById('deals-pipeline-per-consultant');
-  if (!el) return;
-  var totalMap = {}, corrMap = {};
-  deals.forEach(function(d){
-    if (!d.name) return;
-    totalMap[d.name] = (totalMap[d.name]||0)+1;
-    if (d.isPipelineCorrect) corrMap[d.name] = (corrMap[d.name]||0)+1;
-  });
-  var names = Object.keys(totalMap).sort(function(a,b){ return totalMap[b]-totalMap[a]; });
-  if (!names.length) { el.innerHTML = '<div style="text-align:center;padding:20px;color:var(--mu);font-family:\'DM Mono\',monospace;font-size:12px">No data for selected filters</div>'; return; }
-  var TARGET = 70;
-  el.innerHTML = names.map(function(name) {
-    var total = totalMap[name], corr = corrMap[name]||0;
-    var pct = Math.round(corr/total*100);
-    var col = pct >= TARGET ? '#059669' : (pct >= 50 ? '#d97706' : '#dc2626');
-    var status = pct >= TARGET ? '✓' : '⚑';
-    return '<div style="display:flex;align-items:center;gap:10px;margin-bottom:10px">' +
-      '<div style="width:16px;font-size:12px;text-align:center">'+status+'</div>' +
-      '<div style="flex:1">' +
-        '<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:3px">' +
-          '<span style="font-size:12px;font-weight:600;color:var(--tx)">'+name+'</span>' +
-          '<span style="font-size:12px;font-weight:700;color:'+col+';font-family:\'DM Mono\',monospace">'+pct+'%</span>' +
-        '</div>' +
-        '<div style="height:5px;background:var(--b);border-radius:3px;overflow:hidden">' +
-          '<div style="height:100%;background:'+col+';width:'+pct+'%;border-radius:3px;transition:width .5s ease"></div>' +
-        '</div>' +
-        '<div style="font-size:10px;color:var(--mu);margin-top:2px;font-family:\'DM Mono\',monospace">'+corr+' / '+total+' correct · Target: '+TARGET+'%</div>' +
-      '</div>' +
-    '</div>';
-  }).join('');
+function kcard(color, label, val, desc) {
+  return '<div class="kcard" style="background:linear-gradient(160deg,var(--w) 70%,'+color+'0d);border-color:'+color+'33">'
+    + '<div class="kbar" style="background:'+color+'"></div>'
+    + '<div class="klabel">'+label+'</div>'
+    + '<div class="kval" style="color:'+color+'">'+val+'</div>'
+    + '<div class="kdesc">'+desc+'</div>'
+    + '</div>';
 }
 
-// ── Deals Table ─────────────────────────────────────────────────────
-var dealsTableSearch = '';
-function filterDealsTable(q) { dealsTableSearch = q.toLowerCase(); buildDealsTable(); }
-function sortDealsTable(field) {
-  if (dealsSortField === field) dealsSortDir *= -1; else { dealsSortField = field; dealsSortDir = 1; }
-  buildDealsTable();
-}
-function renderDealsTable(deals) { dealsFiltered = deals; buildDealsTable(); }
-
-function buildDealsTable() {
-  var tbody = document.getElementById('deals-tbody');
+// ── Table renderer ────────────────────────────────────────
+function dealsRenderTable(agg, tbodyId, countId, search) {
+  var tbody  = document.getElementById(tbodyId);
+  var cntEl  = document.getElementById(countId);
   if (!tbody) return;
-  var rows = dealsFiltered.filter(function(d){
-    if (!dealsTableSearch) return true;
-    return (d.name+d.stage+d.contact+d.source).toLowerCase().includes(dealsTableSearch);
-  }).sort(function(a,b){
-    var va, vb;
-    if (dealsSortField === 'name')            { va = a.name||''; vb = b.name||''; }
-    else if (dealsSortField === 'stage')      { va = a.stage||''; vb = b.stage||''; }
-    else if (dealsSortField === 'date')       { va = a.dateObj?a.dateObj.getTime():0; vb = b.dateObj?b.dateObj.getTime():0; }
-    else if (dealsSortField === 'pipeline_correct') { va = a.isPipelineCorrect?1:0; vb = b.isPipelineCorrect?1:0; }
-    else if (dealsSortField === 'value') { va = a.dealValue||0; vb = b.dealValue||0; }
-    else { va = a.name||''; vb = b.name||''; }
-    if (typeof va === 'string') return va.localeCompare(vb)*dealsSortDir;
-    return (va-vb)*dealsSortDir;
-  });
+  var rows = search
+    ? agg.filter(function(c){ return c.name.toLowerCase().includes(search.toLowerCase()); })
+    : agg;
+  if (cntEl) cntEl.textContent = rows.length+' consultant'+(rows.length!==1?'s':'')+' · '+rows.reduce(function(s,c){return s+c.audits;},0)+' audits';
 
-  var stageColors = { won:'#05966920', lost:'#dc262620' };
-  tbody.innerHTML = rows.map(function(d){
-    var stageLow = (d.stage||'').toLowerCase();
-    var rowBg = d.isWon ? 'background:rgba(5,150,105,.04)' : d.isLost ? 'background:rgba(220,38,38,.04)' : '';
-    var stagePill = '<span style="display:inline-block;padding:2px 8px;border-radius:4px;font-size:10px;font-weight:700;font-family:\'DM Mono\',monospace;' +
-      (d.isWon?'background:#05966920;color:#059669':d.isLost?'background:#dc262618;color:#dc2626':'background:var(--al);color:var(--ac)') + '">' + (d.stage||'—') + '</span>';
-    var pipelinePill = d.isPipelineCorrect ?
-      '<span style="display:inline-block;padding:2px 8px;border-radius:4px;font-size:10px;font-weight:700;background:#05966918;color:#059669;font-family:\'DM Mono\',monospace">✓ Yes</span>' :
-      '<span style="display:inline-block;padding:2px 8px;border-radius:4px;font-size:10px;font-weight:700;background:#dc262614;color:#dc2626;font-family:\'DM Mono\',monospace">⚑ No</span>';
-    var dateStr = d.dateObj ? d.dateObj.toLocaleDateString('en-GB',{day:'2-digit',month:'short',year:'numeric'}) : '—';
-    return '<tr style="'+rowBg+'">' +
-      '<td style="font-weight:600;color:var(--tx)">'+(d.name||'—')+'</td>' +
-      '<td>'+stagePill+'</td>' +
-      '<td style="font-family:\'DM Mono\',monospace;font-size:11px;color:var(--mu)">'+dateStr+'</td>' +
-      '<td style="text-align:center">'+pipelinePill+'</td>' +
-      '<td style="font-family:\'DM Mono\',monospace;font-size:11px;color:var(--mu)">'+(d.dealValue?'AED '+d.dealValue.toLocaleString():'—')+'</td>' +
-      '<td style="color:var(--t2)">'+(d.contact||'—')+'</td>' +
-      '<td style="color:var(--mu);font-family:\'DM Mono\',monospace;font-size:11px">'+(d.source||'—')+'</td>' +
-    '</tr>';
-  }).join('') || '<tr><td colspan="7" style="text-align:center;padding:28px;color:var(--mu);font-family:\'DM Mono\',monospace;font-size:12px">No deals match the current filters</td></tr>';
+  function pct(pass, total) {
+    if (!total) return '<td class="tm" style="color:var(--mu);text-align:center">—</td>';
+    var p = Math.round((pass/total)*100);
+    var c = p>=90?'#059669':p>=80?'#d97706':'#dc2626';
+    return '<td class="tm" style="text-align:center">'
+      + '<span style="color:'+c+';font-weight:700;font-size:12px">'+p+'%</span>'
+      + '<br><span style="font-size:9px;color:var(--mu)">'+pass+'/'+total+'</span></td>';
+  }
+
+  tbody.innerHTML = rows.map(function(c) {
+    var avg = c.scoreN ? c.scoreSum/c.scoreN : 0;
+    var pc  = avg>=90?'#059669':avg>=80?'#d97706':'#dc2626';
+    var sl  = avg<80?'sp-critical':avg<90?'sp-warning':'sp-good';
+    var st  = avg<80?'AT RISK':avg<90?'WATCH':'GOOD';
+    return '<tr>'
+      + '<td style="font-weight:700;color:var(--ac)">'+c.name+'</td>'
+      + '<td class="tm" style="text-align:center">'+c.audits+'</td>'
+      + pct(c.dealStage,  c.dealStageT)
+      + pct(c.pipeline,   c.pipelineT)
+      + pct(c.notes,      c.notesT)
+      + pct(c.waEmail,    c.waEmailT)
+      + pct(c.closeDate,  c.closeDateT)
+      + pct(c.timeline,   c.timelineT)
+      + pct(c.followup,   c.followupT)
+      + pct(c.lostReason, c.lostReasonT)
+      + '<td><div style="display:flex;align-items:center;gap:8px">'
+      +   '<span style="color:'+pc+';font-weight:800;font-family:\'DM Mono\',monospace;font-size:13px">'+(c.scoreN?avg.toFixed(1)+'%':'—')+'</span>'
+      +   '<div style="flex:1;height:6px;background:var(--b);border-radius:3px;overflow:hidden;min-width:50px">'
+      +     '<div style="width:'+Math.min(c.scoreN?avg:0,100).toFixed(0)+'%;height:100%;background:'+pc+';border-radius:3px"></div>'
+      +   '</div>'
+      + '</div></td>'
+      + '<td><span class="status-pill '+sl+'">'+st+'</span></td>'
+      + '</tr>';
+  }).join('') || '<tr><td colspan="12" style="text-align:center;padding:28px;color:var(--mu)">No data for current filters</td></tr>';
 }
 
-// ── Range selector ─────────────────────────────────────────────────
+// ── Populate consultant filter ────────────────────────────
+function dealsPopulateFilter() {
+  var names = [...new Set(
+    dealsGlobalRaw.concat(dealsDXBRaw)
+      .map(function(r){ return String(r[DC.name]||'').trim(); })
+      .filter(Boolean)
+  )].sort();
+  var sel = document.getElementById('deals-consultant-filter');
+  if (!sel) return;
+  sel.innerHTML = '<option value="all">All Consultants</option>'
+    + names.map(function(n){ return '<option value="'+n+'">'+n+'</option>'; }).join('');
+}
+
+// ── Render both panels ────────────────────────────────────
+function dealsRenderActive() {
+  dealsGlobalAgg = dealsAggregate(dealsGlobalRaw);
+  dealsDXBAgg    = dealsAggregate(dealsDXBRaw);
+  dealsRenderBanner(dealsGlobalAgg, 'global', '#6366f1');
+  dealsRenderKPIs(dealsGlobalAgg, 'deals-kpi-global');
+  dealsRenderTable(dealsGlobalAgg, 'deals-tbody-global', 'deals-count-global', dealsSearchStr);
+  dealsRenderBanner(dealsDXBAgg,   'dxb',    '#06b6d4');
+  dealsRenderKPIs(dealsDXBAgg,    'deals-kpi-dxb');
+  dealsRenderTable(dealsDXBAgg,   'deals-tbody-dxb',    'deals-count-dxb',    dealsSearchStr);
+}
+
+function dealsOnSearch(q) {
+  dealsSearchStr = q;
+  dealsRenderTable(dealsGlobalAgg, 'deals-tbody-global', 'deals-count-global', q);
+  dealsRenderTable(dealsDXBAgg,    'deals-tbody-dxb',    'deals-count-dxb',    q);
+}
+
+// ── Date range setter ─────────────────────────────────────
 function setDealsRange(btn, range) {
   dealsRange = range;
   document.querySelectorAll('[data-deals-range]').forEach(function(b){ b.classList.remove('active'); });
   if (btn) btn.classList.add('active');
-  var customBox = document.getElementById('deals-custom-box');
-  if (customBox) customBox.classList.toggle('hidden', range !== 'custom');
-  if (range !== 'custom') renderDealsTab();
+  var cb = document.getElementById('deals-custom-box');
+  if (cb) cb.classList.toggle('hidden', range !== 'custom');
+  if (range !== 'custom') dealsRenderActive();
 }
 
-// ── CSV Export ─────────────────────────────────────────────────────
-function exportDealsCSV() {
-  var rows = [['Consultant','Stage','Date','Pipeline Correct','Contact','Source']];
-  dealsFiltered.forEach(function(d){
-    rows.push([
-      '"'+(d.name||'')+'\"',
-      '"'+(d.stage||'')+'\"',
-      d.dateObj ? d.dateObj.toLocaleDateString('en-GB') : '',
-      d.isPipelineCorrect ? 'Yes' : 'No',
-      '"'+(d.contact||'')+'\"',
-      '"'+(d.source||'')+'\"'
-    ]);
-  });
-  var blob = new Blob([rows.map(function(r){ return r.join(','); }).join('\n')], {type:'text/csv'});
-  var url = URL.createObjectURL(blob);
-  var a = document.createElement('a'); a.href = url;
-  a.download = 'HOF-Deals-Export.csv'; a.click();
-  URL.revokeObjectURL(url);
+// ── Fetch helper ──────────────────────────────────────────
+async function dealsFetch(url) {
+  var ctrl = new AbortController();
+  var tid  = setTimeout(function(){ ctrl.abort(); }, 12000);
+  try {
+    var res  = await fetch(url, { redirect:'follow', signal: ctrl.signal });
+    clearTimeout(tid);
+    if (!res.ok) throw new Error('HTTP '+res.status);
+    var text = await res.text();
+    if (!text||!text.trim()) throw new Error('Empty response');
+    var json = JSON.parse(text);
+    if (json.ok===false) throw new Error(json.error||'Apps Script error');
+    return json;
+  } catch(e) { clearTimeout(tid); throw e; }
+}
+
+// ── Main loader ───────────────────────────────────────────
+async function loadDealsData() {
+  var skel = document.getElementById('deals-skeleton');
+  var errEl= document.getElementById('deals-eb');
+  var gpan = document.getElementById('dealspanel-global');
+  var dpan = document.getElementById('dealspanel-dxb');
+
+  if (skel) skel.style.display = 'block';
+  if (errEl) errEl.style.display = 'none';
+  if (gpan) gpan.style.display = 'none';
+  if (dpan) dpan.style.display = 'none';
+
+  try {
+    var json = await dealsFetch(DEALS_APPS_SCRIPT_URL);
+    // Expected: { ok:true, global:[...], dxb:[...] }
+    dealsGlobalRaw = Array.isArray(json.global) ? json.global : (Array.isArray(json.data)?json.data:[]);
+    dealsDXBRaw    = Array.isArray(json.dxb)    ? json.dxb    : [];
+  } catch(e) {
+    if (skel) skel.style.display = 'none';
+    if (errEl) {
+      errEl.style.display = 'flex';
+      var em = document.getElementById('deals-em');
+      if (em) em.textContent = e.message || 'Could not load deals data';
+    }
+    return;
+  }
+
+  if (skel) skel.style.display = 'none';
+  dealsPopulateFilter();
+  dealsRenderActive();
+  switchDealsSubTab(dealsActiveTab);
+
+  var now = new Date().toLocaleTimeString('en-GB',{hour:'2-digit',minute:'2-digit',second:'2-digit'});
+  var lu  = document.getElementById('deals-last-updated');
+  var sl  = document.getElementById('deals-source-label');
+  var nc  = document.getElementById('nc-deals');
+  if (lu) lu.textContent = 'Updated '+now;
+  if (sl) sl.textContent = 'Live · '+dealsGlobalRaw.length+' global · '+dealsDXBRaw.length+' DXB rows';
+  if (nc) nc.textContent = dealsGlobalRaw.length + dealsDXBRaw.length;
+}
+
+function dealsRefreshAll() { _dealsLoaded = false; loadDealsData(); }
+
+function dealsExportCSV() {
+  var agg  = dealsActiveTab === 'global' ? dealsGlobalAgg : dealsDXBAgg;
+  var hdr  = ['Consultant','Audits','Deal Stage %','Pipeline %','Notes %','WA/Email %','Close Date %','Timeline %','Follow-up %','Lost Reason %','Avg Score %','Status'];
+  var rows = [hdr].concat(agg.map(function(c) {
+    function p(pass,tot){ return tot?Math.round((pass/tot)*100)+'%':'—'; }
+    var avg = c.scoreN?(c.scoreSum/c.scoreN).toFixed(1):'—';
+    var st  = !c.scoreN?'—':(c.scoreSum/c.scoreN)<80?'AT RISK':(c.scoreSum/c.scoreN)<90?'WATCH':'GOOD';
+    return [c.name,c.audits,p(c.dealStage,c.dealStageT),p(c.pipeline,c.pipelineT),p(c.notes,c.notesT),p(c.waEmail,c.waEmailT),p(c.closeDate,c.closeDateT),p(c.timeline,c.timelineT),p(c.followup,c.followupT),p(c.lostReason,c.lostReasonT),avg,st];
+  }));
+  var blob = new Blob([rows.map(function(r){return r.join(',');}).join('\n')],{type:'text/csv'});
+  var url  = URL.createObjectURL(blob);
+  var a    = document.createElement('a'); a.href=url;
+  a.download='HOF-Deals-'+dealsActiveTab.toUpperCase()+'-'+new Date().toISOString().slice(0,10)+'.csv';
+  a.click(); URL.revokeObjectURL(url);
 }
 
 // ── Auto-load when tab is opened ───────────────────────────────────
