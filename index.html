@@ -1826,14 +1826,10 @@ footer{
     </div>
   </div>
 
-  <!-- ══ SUB-NAVIGATION (same style as CM Compliance) ══ -->
+  <!-- ══ SUB-NAVIGATION ══ -->
   <div class="cm-subtab-bar">
-    <button class="cm-subtab active" id="dealstab-global" onclick="switchDealsSubTab('global')">
-      🌐 Global Team
-    </button>
-    <button class="cm-subtab" id="dealstab-dxb" onclick="switchDealsSubTab('dxb')">
-      🏙️ DXB Team
-    </button>
+    <button class="cm-subtab active" id="dealstab-global" onclick="switchDealsSubTab('global')">🌐 Global Team</button>
+    <button class="cm-subtab"        id="dealstab-dxb"    onclick="switchDealsSubTab('dxb')">🏙️ DXB Team</button>
   </div>
 
   <!-- ══ FILTER STRIP ══ -->
@@ -1855,7 +1851,7 @@ footer{
         <option value="all">All Consultants</option>
       </select>
     </div>
-    <input class="srch" type="text" placeholder="🔍 Search…" id="deals-search-input" oninput="dealsOnSearch(this.value)" style="margin-left:auto">
+    <input class="srch" type="text" placeholder="🔍 Search…" oninput="dealsOnSearch(this.value)" style="margin-left:auto">
   </div>
   <div id="deals-custom-box" class="cbox hidden" style="margin-bottom:14px">
     <div class="fg"><label>Start Date</label><input type="date" id="deals-ds" onchange="dealsRenderActive()"></div>
@@ -1864,21 +1860,21 @@ footer{
 
   <!-- SKELETON -->
   <div id="deals-skeleton" style="display:none">
-    <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:12px;margin-bottom:20px">
+    <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:12px;margin-bottom:16px">
       <div class="skeleton" style="height:80px;border-radius:12px"></div>
       <div class="skeleton" style="height:80px;border-radius:12px"></div>
       <div class="skeleton" style="height:80px;border-radius:12px"></div>
       <div class="skeleton" style="height:80px;border-radius:12px"></div>
       <div class="skeleton" style="height:80px;border-radius:12px"></div>
     </div>
-    <div class="skeleton" style="height:420px;border-radius:12px"></div>
+    <div class="skeleton" style="height:400px;border-radius:12px"></div>
   </div>
 
   <!-- ══ GLOBAL TEAM SUB-PANEL ══ -->
   <div class="cm-subpanel active" id="dealspanel-global">
 
-    <!-- Hero compliance banner -->
-    <div id="deals-global-banner" style="background:linear-gradient(135deg,#0f172a 0%,#1e1b4b 50%,#0f172a 100%);border-radius:16px;padding:22px 26px;display:flex;align-items:center;gap:20px;flex-wrap:wrap;position:relative;overflow:hidden;border:1px solid rgba(99,102,241,.25);min-height:140px;margin-bottom:16px">
+    <!-- Hero banner -->
+    <div style="background:linear-gradient(135deg,#0f172a 0%,#1e1b4b 50%,#0f172a 100%);border-radius:16px;padding:22px 26px;display:flex;align-items:center;gap:20px;flex-wrap:wrap;position:relative;overflow:hidden;border:1px solid rgba(99,102,241,.25);min-height:140px;margin-bottom:16px">
       <div style="position:absolute;inset:0;background:repeating-linear-gradient(90deg,transparent,transparent 60px,rgba(99,102,241,.03) 60px,rgba(99,102,241,.03) 61px);pointer-events:none"></div>
       <div style="position:absolute;right:-60px;top:-60px;width:240px;height:240px;border-radius:50%;background:radial-gradient(circle,rgba(99,102,241,.15) 0%,transparent 70%);pointer-events:none"></div>
       <div style="text-align:center;min-width:120px;position:relative">
@@ -1906,13 +1902,13 @@ footer{
     <!-- KPI strip -->
     <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:10px;margin-bottom:16px" id="deals-kpi-global"></div>
 
-    <!-- Compliance table -->
+    <!-- Table -->
     <div class="card" style="margin-bottom:16px">
       <div class="card-head">
         <div><div class="card-title">🌐 Global Team — Consultant Compliance</div><div class="card-sub" id="deals-count-global">Loading…</div></div>
       </div>
       <div style="overflow-x:auto">
-        <table class="cmp-table" id="deals-table-global">
+        <table class="cmp-table">
           <thead><tr>
             <th>Consultant</th>
             <th style="text-align:center">Audits</th>
@@ -1937,8 +1933,8 @@ footer{
   <!-- ══ DXB TEAM SUB-PANEL ══ -->
   <div class="cm-subpanel" id="dealspanel-dxb">
 
-    <!-- Hero compliance banner -->
-    <div id="deals-dxb-banner" style="background:linear-gradient(135deg,#0f172a 0%,#1a1a2e 50%,#0f172a 100%);border-radius:16px;padding:22px 26px;display:flex;align-items:center;gap:20px;flex-wrap:wrap;position:relative;overflow:hidden;border:1px solid rgba(6,182,212,.25);min-height:140px;margin-bottom:16px">
+    <!-- Hero banner -->
+    <div style="background:linear-gradient(135deg,#0f172a 0%,#0c1a2e 50%,#0f172a 100%);border-radius:16px;padding:22px 26px;display:flex;align-items:center;gap:20px;flex-wrap:wrap;position:relative;overflow:hidden;border:1px solid rgba(6,182,212,.25);min-height:140px;margin-bottom:16px">
       <div style="position:absolute;right:-60px;top:-60px;width:240px;height:240px;border-radius:50%;background:radial-gradient(circle,rgba(6,182,212,.12) 0%,transparent 70%);pointer-events:none"></div>
       <div style="text-align:center;min-width:120px;position:relative">
         <div style="font-size:9px;font-weight:700;letter-spacing:2.5px;text-transform:uppercase;color:rgba(6,182,212,.7);font-family:'DM Mono',monospace;margin-bottom:6px">TEAM COMPLIANCE</div>
@@ -1965,13 +1961,13 @@ footer{
     <!-- KPI strip -->
     <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:10px;margin-bottom:16px" id="deals-kpi-dxb"></div>
 
-    <!-- Compliance table -->
+    <!-- Table -->
     <div class="card" style="margin-bottom:16px">
       <div class="card-head">
         <div><div class="card-title">🏙️ DXB Team — Consultant Compliance</div><div class="card-sub" id="deals-count-dxb">Loading…</div></div>
       </div>
       <div style="overflow-x:auto">
-        <table class="cmp-table" id="deals-table-dxb">
+        <table class="cmp-table">
           <thead><tr>
             <th>Consultant</th>
             <th style="text-align:center">Audits</th>
@@ -5884,14 +5880,11 @@ function scrollAIToBottom() {
 // ══════════════════════════════════════════════════════════════════
 //  DEALS — Apps Script endpoint (deployed, no public sheet needed)
 // ══════════════════════════════════════════════════════════════════
-
-// ═══════════════════════════════════════════════════════════
-//  DEALS OVERVIEW — Global + DXB compliance engine
-//  Single Apps Script URL returns both tabs:
-//    { ok:true, global:[...rows], dxb:[...rows] }
-// ═══════════════════════════════════════════════════════════
-
 const DEALS_APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbyefiPeN-kzsdNj4M00ZSbVB3lQ9Qs0v9XfNJHwbfE9o0IEIvrkyFN7LucN8-saEHeLkQ/exec';
+
+// ── Fallback CSV (kept for compatibility) ─────────────────
+const DEALS_SHEET_ID = '1K07taCArn1qEIjTyWwXJUYnvIc9f72kWHSRUTPTlCqM';
+const DEALS_GID      = '1453544142';
 
 var dealsGlobalRaw  = [];
 var dealsDXBRaw     = [];
@@ -5900,9 +5893,9 @@ var dealsDXBAgg     = [];
 var dealsActiveTab  = 'global';
 var dealsRange      = 'all';
 var dealsSearchStr  = '';
+var dealsCharts     = {};
 var _dealsLoaded    = false;
 
-// ── Column keys matching Apps Script output ───────────────
 const DC = {
   name:       'consultant name',
   date:       'audit date',
@@ -5917,30 +5910,23 @@ const DC = {
   score:      'score',
 };
 
-// ── Sub-tab switcher (reuses CM style) ───────────────────
 function switchDealsSubTab(tab) {
   dealsActiveTab = tab;
-  document.querySelectorAll('[id^="dealstab-"]').forEach(function(b){
-    b.classList.remove('active');
-  });
-  document.querySelectorAll('[id^="dealspanel-"]').forEach(function(p){
-    p.classList.remove('active');
-  });
+  document.querySelectorAll('[id^="dealstab-"]').forEach(function(b){ b.classList.remove('active'); });
+  document.querySelectorAll('[id^="dealspanel-"]').forEach(function(p){ p.classList.remove('active'); });
   var btn = document.getElementById('dealstab-' + tab);
   var pan = document.getElementById('dealspanel-' + tab);
   if (btn) btn.classList.add('active');
   if (pan) pan.classList.add('active');
 }
 
-// ── Date helper ───────────────────────────────────────────
 function dealsDateInRange(dateStr) {
   if (dealsRange === 'all') return true;
   if (!dateStr) return false;
-  // Handle DD/MM/YYYY format from Apps Script
   var d;
-  if (/^\d{2}\/\d{2}\/\d{4}$/.test(dateStr)) {
-    var parts = dateStr.split('/');
-    d = new Date(parts[2], parts[1]-1, parts[0]);
+  if (/^\d{2}\/\d{2}\/\d{4}$/.test(String(dateStr))) {
+    var pts = String(dateStr).split('/');
+    d = new Date(pts[2], pts[1]-1, pts[0]);
   } else {
     d = new Date(dateStr);
   }
@@ -5954,8 +5940,8 @@ function dealsDateInRange(dateStr) {
   if (dealsRange === 'last7')  return (now-d) <= 7*86400000;
   if (dealsRange === 'last28') return (now-d) <= 28*86400000;
   if (dealsRange === 'custom') {
-    var ds = document.getElementById('deals-ds') ? document.getElementById('deals-ds').value : '';
-    var de = document.getElementById('deals-de') ? document.getElementById('deals-de').value : '';
+    var ds = (document.getElementById('deals-ds')||{}).value || '';
+    var de = (document.getElementById('deals-de')||{}).value || '';
     if (ds && d < new Date(ds)) return false;
     if (de && d > new Date(de+'T23:59:59')) return false;
     return true;
@@ -5963,7 +5949,6 @@ function dealsDateInRange(dateStr) {
   return true;
 }
 
-// ── YES/NO normaliser ─────────────────────────────────────
 function dcYes(v) {
   if (!v) return null;
   var s = String(v).trim().toUpperCase();
@@ -5972,7 +5957,6 @@ function dcYes(v) {
   return null;
 }
 
-// ── Aggregate rows → per-consultant stats ─────────────────
 function dealsAggregate(rows) {
   var cSel = (document.getElementById('deals-consultant-filter')||{}).value || 'all';
   var filtered = rows.filter(function(r) {
@@ -5980,264 +5964,198 @@ function dealsAggregate(rows) {
     if (cSel !== 'all' && String(r[DC.name]||'').trim() !== cSel) return false;
     return true;
   });
-
   var map = {};
   filtered.forEach(function(r) {
     var name = String(r[DC.name]||'').trim();
     if (!name) return;
     if (!map[name]) map[name] = {
-      name:name, audits:0,
-      dealStage:0,  dealStageT:0,
-      pipeline:0,   pipelineT:0,
-      notes:0,      notesT:0,
-      waEmail:0,    waEmailT:0,
-      closeDate:0,  closeDateT:0,
-      timeline:0,   timelineT:0,
-      followup:0,   followupT:0,
-      lostReason:0, lostReasonT:0,
-      scoreSum:0,   scoreN:0,
+      name:name,audits:0,
+      dealStage:0,dealStageT:0,pipeline:0,pipelineT:0,
+      notes:0,notesT:0,waEmail:0,waEmailT:0,
+      closeDate:0,closeDateT:0,timeline:0,timelineT:0,
+      followup:0,followupT:0,lostReason:0,lostReasonT:0,
+      scoreSum:0,scoreN:0,
     };
-    var c = map[name];
-    c.audits++;
-    function tally(key, tKey, val) {
-      var v = dcYes(val);
-      if (v !== null) { c[tKey]++; if (v) c[key]++; }
-    }
-    tally('dealStage',  'dealStageT',  r[DC.dealStage]);
-    tally('pipeline',   'pipelineT',   r[DC.pipeline]);
-    tally('notes',      'notesT',      r[DC.notes]);
-    tally('waEmail',    'waEmailT',    r[DC.waEmail]);
-    tally('closeDate',  'closeDateT',  r[DC.closeDate]);
-    tally('timeline',   'timelineT',   r[DC.timeline]);
-    tally('followup',   'followupT',   r[DC.followup]);
-    tally('lostReason', 'lostReasonT', r[DC.lostReason]);
-    var sc = parseFloat(r[DC.score]);
-    if (!isNaN(sc)) { c.scoreSum += sc; c.scoreN++; }
+    var c = map[name]; c.audits++;
+    function tally(k,t,val){ var v=dcYes(val); if(v!==null){c[t]++;if(v)c[k]++;} }
+    tally('dealStage','dealStageT',r[DC.dealStage]);
+    tally('pipeline','pipelineT',r[DC.pipeline]);
+    tally('notes','notesT',r[DC.notes]);
+    tally('waEmail','waEmailT',r[DC.waEmail]);
+    tally('closeDate','closeDateT',r[DC.closeDate]);
+    tally('timeline','timelineT',r[DC.timeline]);
+    tally('followup','followupT',r[DC.followup]);
+    tally('lostReason','lostReasonT',r[DC.lostReason]);
+    var sc=parseFloat(r[DC.score]); if(!isNaN(sc)){c.scoreSum+=sc;c.scoreN++;}
   });
-
-  return Object.values(map).sort(function(a,b){ return a.name.localeCompare(b.name); });
+  return Object.values(map).sort(function(a,b){return a.name.localeCompare(b.name);});
 }
 
-// ── Render hero banner ────────────────────────────────────
-function dealsRenderBanner(agg, prefix, accentColor) {
-  var avgScore = agg.length ? agg.reduce(function(s,c){ return s+(c.scoreN?(c.scoreSum/c.scoreN):0); },0)/agg.length : 0;
-  var pc = avgScore>=90?'#059669':avgScore>=80?'#d97706':'#dc2626';
-  var st = avgScore>=90?'✅ Strong Performance':avgScore>=80?'⚠️ Needs Work':'🔴 Requires Attention';
-  var above = agg.filter(function(c){ return c.scoreN&&(c.scoreSum/c.scoreN)>=80; }).length;
+function dealsRenderBanner(agg, prefix, accentCol) {
+  var avg = agg.length ? agg.reduce(function(s,c){return s+(c.scoreN?c.scoreSum/c.scoreN:0);},0)/agg.length : 0;
+  var pc  = avg>=90?'#059669':avg>=80?'#d97706':'#dc2626';
+  var st  = avg>=90?'✅ Strong Performance':avg>=80?'⚠️ Needs Work':'🔴 Requires Attention';
+  var above = agg.filter(function(c){return c.scoreN&&(c.scoreSum/c.scoreN)>=80;}).length;
+  var set = function(id,v,col){ var e=document.getElementById(id); if(e){e.textContent=v;if(col)e.style.color=col;} };
+  set('deals-'+prefix+'-bigpct', avg.toFixed(1)+'%', accentCol);
+  set('deals-'+prefix+'-status', st);
+  set('deals-'+prefix+'-count', agg.length);
+  set('deals-'+prefix+'-above', above);
+  var barsEl = document.getElementById('deals-'+prefix+'-bars');
+  if (barsEl) barsEl.innerHTML = agg.slice(0,6).map(function(c){
+    var a=c.scoreN?c.scoreSum/c.scoreN:0;
+    var bc=a>=90?'#10b981':a>=80?'#f59e0b':'#ef4444';
+    return '<div style="display:flex;align-items:center;gap:8px">'
+      +'<div style="font-size:10px;color:rgba(255,255,255,.55);width:90px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-family:\'DM Mono\',monospace">'+c.name+'</div>'
+      +'<div style="flex:1;height:5px;background:rgba(255,255,255,.1);border-radius:3px;overflow:hidden"><div style="width:'+Math.min(a,100).toFixed(0)+'%;height:100%;background:'+bc+';border-radius:3px"></div></div>'
+      +'<div style="font-size:10px;font-weight:700;color:'+bc+';width:38px;text-align:right;font-family:\'DM Mono\',monospace">'+a.toFixed(0)+'%</div>'
+      +'</div>';
+  }).join('');
+}
 
-  var bigEl = document.getElementById('deals-'+prefix+'-bigpct');
-  var stEl  = document.getElementById('deals-'+prefix+'-status');
-  var cntEl = document.getElementById('deals-'+prefix+'-count');
-  var abvEl = document.getElementById('deals-'+prefix+'-above');
-  var barsEl= document.getElementById('deals-'+prefix+'-bars');
-
-  if (bigEl) { bigEl.textContent = avgScore.toFixed(1)+'%'; bigEl.style.color = accentColor||pc; }
-  if (stEl)  { stEl.textContent  = st; }
-  if (cntEl) { cntEl.textContent = agg.length; }
-  if (abvEl) { abvEl.textContent = above; }
-  if (barsEl) {
-    barsEl.innerHTML = agg.slice(0,6).map(function(c) {
-      var avg = c.scoreN ? c.scoreSum/c.scoreN : 0;
-      var bc  = avg>=90?'#10b981':avg>=80?'#f59e0b':'#ef4444';
-      return '<div style="display:flex;align-items:center;gap:8px">'
-        + '<div style="font-size:10px;color:rgba(255,255,255,.55);width:90px;truncate;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-family:\'DM Mono\',monospace">'+c.name+'</div>'
-        + '<div style="flex:1;height:5px;background:rgba(255,255,255,.1);border-radius:3px;overflow:hidden">'
-        +   '<div style="width:'+Math.min(avg,100).toFixed(0)+'%;height:100%;background:'+bc+';border-radius:3px"></div>'
-        + '</div>'
-        + '<div style="font-size:10px;font-weight:700;color:'+bc+';width:38px;text-align:right;font-family:\'DM Mono\',monospace">'+avg.toFixed(0)+'%</div>'
-        + '</div>';
-    }).join('');
+function dealsRenderKPIs(agg, elId) {
+  var el=document.getElementById(elId); if(!el) return;
+  var tot=agg.reduce(function(s,c){return s+c.audits;},0);
+  var avg=agg.length?agg.reduce(function(s,c){return s+(c.scoreN?c.scoreSum/c.scoreN:0);},0)/agg.length:0;
+  var atRisk=agg.filter(function(c){return c.scoreN&&(c.scoreSum/c.scoreN)<80;}).length;
+  var watch=agg.filter(function(c){return c.scoreN&&(c.scoreSum/c.scoreN)>=80&&(c.scoreSum/c.scoreN)<90;}).length;
+  var good=agg.filter(function(c){return c.scoreN&&(c.scoreSum/c.scoreN)>=90;}).length;
+  var pc=avg>=90?'#059669':avg>=80?'#d97706':'#dc2626';
+  function kc(col,lbl,val,desc){
+    return '<div class="kcard" style="background:linear-gradient(160deg,var(--w) 70%,'+col+'0d);border-color:'+col+'33">'
+      +'<div class="kbar" style="background:'+col+'"></div>'
+      +'<div class="klabel">'+lbl+'</div><div class="kval" style="color:'+col+'">'+val+'</div>'
+      +'<div class="kdesc">'+desc+'</div></div>';
   }
-}
-
-// ── KPI strip ─────────────────────────────────────────────
-function dealsRenderKPIs(agg, panelId) {
-  var el = document.getElementById(panelId);
-  if (!el) return;
-  var total   = agg.reduce(function(s,c){ return s+c.audits; },0);
-  var avgScore= agg.length ? agg.reduce(function(s,c){ return s+(c.scoreN?(c.scoreSum/c.scoreN):0); },0)/agg.length : 0;
-  var atRisk  = agg.filter(function(c){ return c.scoreN&&(c.scoreSum/c.scoreN)<80; }).length;
-  var onTrack = agg.filter(function(c){ return c.scoreN&&(c.scoreSum/c.scoreN)>=90; }).length;
-  var pc      = avgScore>=90?'#059669':avgScore>=80?'#d97706':'#dc2626';
-  el.innerHTML = [
-    kcard('#2563eb','Total Audits',total,'in period'),
-    kcard(pc,'Avg Score',avgScore.toFixed(1)+'%','compliance'),
-    kcard('#6366f1','Consultants',agg.length,'active'),
-    kcard('#dc2626','At Risk',atRisk,'below 80%'),
-    kcard('#d97706','Coaching',agg.filter(function(c){return c.scoreN&&(c.scoreSum/c.scoreN)>=80&&(c.scoreSum/c.scoreN)<90;}).length,'80–90%'),
-    kcard('#059669','Excellent',onTrack,'above 90%'),
+  el.innerHTML=[
+    kc('#2563eb','Total Audits',tot,'in period'),
+    kc(pc,'Avg Score',avg.toFixed(1)+'%','compliance'),
+    kc('#6366f1','Consultants',agg.length,'active'),
+    kc('#dc2626','At Risk',atRisk,'below 80%'),
+    kc('#d97706','Coaching',watch,'80–90%'),
+    kc('#059669','Excellent',good,'above 90%'),
   ].join('');
 }
 
-function kcard(color, label, val, desc) {
-  return '<div class="kcard" style="background:linear-gradient(160deg,var(--w) 70%,'+color+'0d);border-color:'+color+'33">'
-    + '<div class="kbar" style="background:'+color+'"></div>'
-    + '<div class="klabel">'+label+'</div>'
-    + '<div class="kval" style="color:'+color+'">'+val+'</div>'
-    + '<div class="kdesc">'+desc+'</div>'
-    + '</div>';
-}
-
-// ── Table renderer ────────────────────────────────────────
 function dealsRenderTable(agg, tbodyId, countId, search) {
-  var tbody  = document.getElementById(tbodyId);
-  var cntEl  = document.getElementById(countId);
-  if (!tbody) return;
-  var rows = search
-    ? agg.filter(function(c){ return c.name.toLowerCase().includes(search.toLowerCase()); })
-    : agg;
-  if (cntEl) cntEl.textContent = rows.length+' consultant'+(rows.length!==1?'s':'')+' · '+rows.reduce(function(s,c){return s+c.audits;},0)+' audits';
-
-  function pct(pass, total) {
-    if (!total) return '<td class="tm" style="color:var(--mu);text-align:center">—</td>';
-    var p = Math.round((pass/total)*100);
-    var c = p>=90?'#059669':p>=80?'#d97706':'#dc2626';
-    return '<td class="tm" style="text-align:center">'
-      + '<span style="color:'+c+';font-weight:700;font-size:12px">'+p+'%</span>'
-      + '<br><span style="font-size:9px;color:var(--mu)">'+pass+'/'+total+'</span></td>';
+  var tbody=document.getElementById(tbodyId);
+  var cntEl=document.getElementById(countId);
+  if(!tbody) return;
+  var rows=search ? agg.filter(function(c){return c.name.toLowerCase().includes(search.toLowerCase());}) : agg;
+  if(cntEl) cntEl.textContent=rows.length+' consultant'+(rows.length!==1?'s':'')+' · '+rows.reduce(function(s,c){return s+c.audits;},0)+' audits';
+  function pct(pass,tot){
+    if(!tot) return '<td class="tm" style="text-align:center;color:var(--mu)">—</td>';
+    var p=Math.round((pass/tot)*100);
+    var c=p>=90?'#059669':p>=80?'#d97706':'#dc2626';
+    return '<td class="tm" style="text-align:center"><span style="color:'+c+';font-weight:700;font-size:12px">'+p+'%</span><br><span style="font-size:9px;color:var(--mu)">'+pass+'/'+tot+'</span></td>';
   }
-
-  tbody.innerHTML = rows.map(function(c) {
-    var avg = c.scoreN ? c.scoreSum/c.scoreN : 0;
-    var pc  = avg>=90?'#059669':avg>=80?'#d97706':'#dc2626';
-    var sl  = avg<80?'sp-critical':avg<90?'sp-warning':'sp-good';
-    var st  = avg<80?'AT RISK':avg<90?'WATCH':'GOOD';
+  tbody.innerHTML=rows.map(function(c){
+    var avg=c.scoreN?c.scoreSum/c.scoreN:0;
+    var pc=avg>=90?'#059669':avg>=80?'#d97706':'#dc2626';
+    var sl=avg<80?'sp-critical':avg<90?'sp-warning':'sp-good';
+    var st=avg<80?'AT RISK':avg<90?'WATCH':'GOOD';
     return '<tr>'
-      + '<td style="font-weight:700;color:var(--ac)">'+c.name+'</td>'
-      + '<td class="tm" style="text-align:center">'+c.audits+'</td>'
-      + pct(c.dealStage,  c.dealStageT)
-      + pct(c.pipeline,   c.pipelineT)
-      + pct(c.notes,      c.notesT)
-      + pct(c.waEmail,    c.waEmailT)
-      + pct(c.closeDate,  c.closeDateT)
-      + pct(c.timeline,   c.timelineT)
-      + pct(c.followup,   c.followupT)
-      + pct(c.lostReason, c.lostReasonT)
-      + '<td><div style="display:flex;align-items:center;gap:8px">'
-      +   '<span style="color:'+pc+';font-weight:800;font-family:\'DM Mono\',monospace;font-size:13px">'+(c.scoreN?avg.toFixed(1)+'%':'—')+'</span>'
-      +   '<div style="flex:1;height:6px;background:var(--b);border-radius:3px;overflow:hidden;min-width:50px">'
-      +     '<div style="width:'+Math.min(c.scoreN?avg:0,100).toFixed(0)+'%;height:100%;background:'+pc+';border-radius:3px"></div>'
-      +   '</div>'
-      + '</div></td>'
-      + '<td><span class="status-pill '+sl+'">'+st+'</span></td>'
-      + '</tr>';
-  }).join('') || '<tr><td colspan="12" style="text-align:center;padding:28px;color:var(--mu)">No data for current filters</td></tr>';
+      +'<td style="font-weight:700;color:var(--ac)">'+c.name+'</td>'
+      +'<td class="tm" style="text-align:center">'+c.audits+'</td>'
+      +pct(c.dealStage,c.dealStageT)+pct(c.pipeline,c.pipelineT)
+      +pct(c.notes,c.notesT)+pct(c.waEmail,c.waEmailT)
+      +pct(c.closeDate,c.closeDateT)+pct(c.timeline,c.timelineT)
+      +pct(c.followup,c.followupT)+pct(c.lostReason,c.lostReasonT)
+      +'<td><div style="display:flex;align-items:center;gap:8px">'
+      +'<span style="color:'+pc+';font-weight:800;font-family:\'DM Mono\',monospace;font-size:13px">'+(c.scoreN?avg.toFixed(1)+'%':'—')+'</span>'
+      +'<div style="flex:1;height:6px;background:var(--b);border-radius:3px;overflow:hidden;min-width:50px"><div style="width:'+Math.min(c.scoreN?avg:0,100).toFixed(0)+'%;height:100%;background:'+pc+';border-radius:3px"></div></div>'
+      +'</div></td>'
+      +'<td><span class="status-pill '+sl+'">'+st+'</span></td>'
+      +'</tr>';
+  }).join('')||'<tr><td colspan="12" style="text-align:center;padding:28px;color:var(--mu)">No data for current filters</td></tr>';
 }
 
-// ── Populate consultant filter ────────────────────────────
 function dealsPopulateFilter() {
-  var names = [...new Set(
-    dealsGlobalRaw.concat(dealsDXBRaw)
-      .map(function(r){ return String(r[DC.name]||'').trim(); })
-      .filter(Boolean)
-  )].sort();
-  var sel = document.getElementById('deals-consultant-filter');
-  if (!sel) return;
-  sel.innerHTML = '<option value="all">All Consultants</option>'
-    + names.map(function(n){ return '<option value="'+n+'">'+n+'</option>'; }).join('');
+  var names=[...new Set(dealsGlobalRaw.concat(dealsDXBRaw).map(function(r){return String(r[DC.name]||'').trim();}).filter(Boolean))].sort();
+  var sel=document.getElementById('deals-consultant-filter'); if(!sel) return;
+  sel.innerHTML='<option value="all">All Consultants</option>'+names.map(function(n){return '<option value="'+n+'">'+n+'</option>';}).join('');
 }
 
-// ── Render both panels ────────────────────────────────────
 function dealsRenderActive() {
-  dealsGlobalAgg = dealsAggregate(dealsGlobalRaw);
-  dealsDXBAgg    = dealsAggregate(dealsDXBRaw);
-  dealsRenderBanner(dealsGlobalAgg, 'global', '#6366f1');
-  dealsRenderKPIs(dealsGlobalAgg, 'deals-kpi-global');
-  dealsRenderTable(dealsGlobalAgg, 'deals-tbody-global', 'deals-count-global', dealsSearchStr);
-  dealsRenderBanner(dealsDXBAgg,   'dxb',    '#06b6d4');
-  dealsRenderKPIs(dealsDXBAgg,    'deals-kpi-dxb');
-  dealsRenderTable(dealsDXBAgg,   'deals-tbody-dxb',    'deals-count-dxb',    dealsSearchStr);
+  dealsGlobalAgg=dealsAggregate(dealsGlobalRaw);
+  dealsDXBAgg=dealsAggregate(dealsDXBRaw);
+  dealsRenderBanner(dealsGlobalAgg,'global','#6366f1');
+  dealsRenderKPIs(dealsGlobalAgg,'deals-kpi-global');
+  dealsRenderTable(dealsGlobalAgg,'deals-tbody-global','deals-count-global',dealsSearchStr);
+  dealsRenderBanner(dealsDXBAgg,'dxb','#06b6d4');
+  dealsRenderKPIs(dealsDXBAgg,'deals-kpi-dxb');
+  dealsRenderTable(dealsDXBAgg,'deals-tbody-dxb','deals-count-dxb',dealsSearchStr);
 }
 
 function dealsOnSearch(q) {
-  dealsSearchStr = q;
-  dealsRenderTable(dealsGlobalAgg, 'deals-tbody-global', 'deals-count-global', q);
-  dealsRenderTable(dealsDXBAgg,    'deals-tbody-dxb',    'deals-count-dxb',    q);
+  dealsSearchStr=q;
+  dealsRenderTable(dealsGlobalAgg,'deals-tbody-global','deals-count-global',q);
+  dealsRenderTable(dealsDXBAgg,'deals-tbody-dxb','deals-count-dxb',q);
 }
 
-// ── Date range setter ─────────────────────────────────────
 function setDealsRange(btn, range) {
-  dealsRange = range;
-  document.querySelectorAll('[data-deals-range]').forEach(function(b){ b.classList.remove('active'); });
-  if (btn) btn.classList.add('active');
-  var cb = document.getElementById('deals-custom-box');
-  if (cb) cb.classList.toggle('hidden', range !== 'custom');
-  if (range !== 'custom') dealsRenderActive();
+  dealsRange=range;
+  document.querySelectorAll('[data-deals-range]').forEach(function(b){b.classList.remove('active');});
+  if(btn) btn.classList.add('active');
+  var cb=document.getElementById('deals-custom-box'); if(cb) cb.classList.toggle('hidden',range!=='custom');
+  if(range!=='custom') dealsRenderActive();
 }
 
-// ── Fetch helper ──────────────────────────────────────────
-async function dealsFetch(url) {
-  var ctrl = new AbortController();
-  var tid  = setTimeout(function(){ ctrl.abort(); }, 12000);
-  try {
-    var res  = await fetch(url, { redirect:'follow', signal: ctrl.signal });
-    clearTimeout(tid);
-    if (!res.ok) throw new Error('HTTP '+res.status);
-    var text = await res.text();
-    if (!text||!text.trim()) throw new Error('Empty response');
-    var json = JSON.parse(text);
-    if (json.ok===false) throw new Error(json.error||'Apps Script error');
-    return json;
-  } catch(e) { clearTimeout(tid); throw e; }
-}
-
-// ── Main loader ───────────────────────────────────────────
 async function loadDealsData() {
-  var skel = document.getElementById('deals-skeleton');
-  var errEl= document.getElementById('deals-eb');
-  var gpan = document.getElementById('dealspanel-global');
-  var dpan = document.getElementById('dealspanel-dxb');
-
-  if (skel) skel.style.display = 'block';
-  if (errEl) errEl.style.display = 'none';
-  if (gpan) gpan.style.display = 'none';
-  if (dpan) dpan.style.display = 'none';
+  var skel=document.getElementById('deals-skeleton');
+  var errEl=document.getElementById('deals-eb');
+  var gp=document.getElementById('dealspanel-global');
+  var dp=document.getElementById('dealspanel-dxb');
+  if(skel) skel.style.display='block';
+  if(errEl) errEl.style.display='none';
+  if(gp){gp.classList.remove('active');} if(dp){dp.classList.remove('active');}
 
   try {
-    var json = await dealsFetch(DEALS_APPS_SCRIPT_URL);
-    // Expected: { ok:true, global:[...], dxb:[...] }
-    dealsGlobalRaw = Array.isArray(json.global) ? json.global : (Array.isArray(json.data)?json.data:[]);
-    dealsDXBRaw    = Array.isArray(json.dxb)    ? json.dxb    : [];
+    var ctrl=new AbortController();
+    var tid=setTimeout(function(){ctrl.abort();},12000);
+    var res=await fetch(DEALS_APPS_SCRIPT_URL,{redirect:'follow',signal:ctrl.signal});
+    clearTimeout(tid);
+    if(!res.ok) throw new Error('HTTP '+res.status);
+    var text=await res.text();
+    if(!text||!text.trim()) throw new Error('Empty response');
+    var json=JSON.parse(text);
+    if(json.ok===false) throw new Error(json.error||'Apps Script error');
+    dealsGlobalRaw=Array.isArray(json.global)?json.global:[];
+    dealsDXBRaw=Array.isArray(json.dxb)?json.dxb:[];
   } catch(e) {
-    if (skel) skel.style.display = 'none';
-    if (errEl) {
-      errEl.style.display = 'flex';
-      var em = document.getElementById('deals-em');
-      if (em) em.textContent = e.message || 'Could not load deals data';
-    }
+    if(skel) skel.style.display='none';
+    if(errEl){errEl.style.display='flex'; var em=document.getElementById('deals-em'); if(em) em.textContent=e.message||'Could not load deals data';}
     return;
   }
 
-  if (skel) skel.style.display = 'none';
+  if(skel) skel.style.display='none';
   dealsPopulateFilter();
   dealsRenderActive();
   switchDealsSubTab(dealsActiveTab);
 
-  var now = new Date().toLocaleTimeString('en-GB',{hour:'2-digit',minute:'2-digit',second:'2-digit'});
-  var lu  = document.getElementById('deals-last-updated');
-  var sl  = document.getElementById('deals-source-label');
-  var nc  = document.getElementById('nc-deals');
-  if (lu) lu.textContent = 'Updated '+now;
-  if (sl) sl.textContent = 'Live · '+dealsGlobalRaw.length+' global · '+dealsDXBRaw.length+' DXB rows';
-  if (nc) nc.textContent = dealsGlobalRaw.length + dealsDXBRaw.length;
+  var now=new Date().toLocaleTimeString('en-GB',{hour:'2-digit',minute:'2-digit',second:'2-digit'});
+  var lu=document.getElementById('deals-last-updated'); if(lu) lu.textContent='Updated '+now;
+  var sl=document.getElementById('deals-source-label'); if(sl) sl.textContent='Live · '+dealsGlobalRaw.length+' global · '+dealsDXBRaw.length+' DXB rows';
+  var nc=document.getElementById('nc-deals'); if(nc) nc.textContent=dealsGlobalRaw.length+dealsDXBRaw.length;
 }
 
-function dealsRefreshAll() { _dealsLoaded = false; loadDealsData(); }
+function dealsRefreshAll(){ _dealsLoaded=false; loadDealsData(); }
 
 function dealsExportCSV() {
-  var agg  = dealsActiveTab === 'global' ? dealsGlobalAgg : dealsDXBAgg;
-  var hdr  = ['Consultant','Audits','Deal Stage %','Pipeline %','Notes %','WA/Email %','Close Date %','Timeline %','Follow-up %','Lost Reason %','Avg Score %','Status'];
-  var rows = [hdr].concat(agg.map(function(c) {
-    function p(pass,tot){ return tot?Math.round((pass/tot)*100)+'%':'—'; }
-    var avg = c.scoreN?(c.scoreSum/c.scoreN).toFixed(1):'—';
-    var st  = !c.scoreN?'—':(c.scoreSum/c.scoreN)<80?'AT RISK':(c.scoreSum/c.scoreN)<90?'WATCH':'GOOD';
+  var agg=dealsActiveTab==='global'?dealsGlobalAgg:dealsDXBAgg;
+  var hdr=['Consultant','Audits','Deal Stage %','Pipeline %','Notes %','WA/Email %','Close Date %','Timeline %','Follow-up %','Lost Reason %','Avg Score %','Status'];
+  var rows=[hdr].concat(agg.map(function(c){
+    function p(ps,t){return t?Math.round((ps/t)*100)+'%':'—';}
+    var avg=c.scoreN?(c.scoreSum/c.scoreN).toFixed(1):'—';
+    var st=!c.scoreN?'—':(c.scoreSum/c.scoreN)<80?'AT RISK':(c.scoreSum/c.scoreN)<90?'WATCH':'GOOD';
     return [c.name,c.audits,p(c.dealStage,c.dealStageT),p(c.pipeline,c.pipelineT),p(c.notes,c.notesT),p(c.waEmail,c.waEmailT),p(c.closeDate,c.closeDateT),p(c.timeline,c.timelineT),p(c.followup,c.followupT),p(c.lostReason,c.lostReasonT),avg,st];
   }));
-  var blob = new Blob([rows.map(function(r){return r.join(',');}).join('\n')],{type:'text/csv'});
-  var url  = URL.createObjectURL(blob);
-  var a    = document.createElement('a'); a.href=url;
+  var blob=new Blob([rows.map(function(r){return r.join(',');}).join('\n')],{type:'text/csv'});
+  var url=URL.createObjectURL(blob);
+  var a=document.createElement('a'); a.href=url;
   a.download='HOF-Deals-'+dealsActiveTab.toUpperCase()+'-'+new Date().toISOString().slice(0,10)+'.csv';
-  a.click(); URL.revokeObjectURL(url);
+  a.click();
+  URL.revokeObjectURL(url);
 }
 
 // ── Auto-load when tab is opened ───────────────────────────────────
