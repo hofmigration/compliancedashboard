@@ -1716,11 +1716,13 @@ function perfRenderCMTable(cmArr, stageMap, total) { perfRenderTable(Object.valu
 var perfStages = ['IELTS','Petition Writing','Active','Inactive','Initial Contact','Assessment','Submission','Approved','Rejected'];
 
 // ── Auto-refresh every 5 minutes ─────────────────────────────────────────────
-var AUTO_REFRESH_MS = 30 * 1000; // 30 seconds — silent
+var AUTO_REFRESH_MS = 5 * 60 * 1000; // 5 minutes — silent (was 30s, which caused lag + constant chart redraws)
 var autoRefreshTimer = null;
 function startAutoRefresh() {
   if (autoRefreshTimer) clearInterval(autoRefreshTimer);
   autoRefreshTimer = setInterval(function() {
+    // Don't churn while the tab is hidden/in the background — saves CPU and stops redraws
+    if (document.hidden) return;
     // Silent background refresh — no loader, no skeleton, no toast
     loadedTabs.hof = false;
     hofFetch(true);
