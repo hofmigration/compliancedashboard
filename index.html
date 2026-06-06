@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>HOF — Compliance Command Centre</title>
 <script src="config.js"></script>
-<link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Nunito:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Nunito:wght@400;500;600;700;800;900&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <!-- ── AI ASSISTANT DRAWER ─────────────────────────────────────────── -->
 <div id="aiOverlay" onclick="toggleAIChat()" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.4);z-index:999;backdrop-filter:blur(2px)"></div>
 <div id="aiDrawer" style="position:fixed;top:0;right:-520px;width:520px;max-width:96vw;height:100vh;background:#0a0f1e;z-index:1000;display:flex;flex-direction:column;box-shadow:-4px 0 40px rgba(0,0,0,.6),-1px 0 0 rgba(99,102,241,.2);transition:right .35s cubic-bezier(.4,0,.2,1)">
@@ -76,33 +76,41 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.8.2/jspdf.plugin.autotable.min.js"></script>
 <style>
 :root{
-  --bg:#f5f7fa;--w:#fff;--s2:#f0f3f8;
-  --b:#e2e8f0;--b2:#cbd5e1;
-  --ac:#2563eb;--al:#eff6ff;--a2:#7c3aed;
-  --red:#dc2626;--rl:#fef2f2;
-  --amb:#d97706;--aml:#fffbeb;
-  --grn:#059669;--gl:#f0fdf4;
-  --tx:#0f172a;--t2:#334155;--mu:#64748b;--m2:#94a3b8;
-  --sh:0 1px 3px rgba(0,0,0,.07),0 1px 2px rgba(0,0,0,.04);
-  --shm:0 4px 14px rgba(0,0,0,.08);
-  --ink:#0f172a;--paper:#f5f7fa;--card:#fff;
-  --blue:#2563eb;--blue-l:#eff6ff;--blue-d:#1d4ed8;
-  --purple:#7c3aed;--purple-l:#f3f0ff;
-  --green:#059669;--green-l:#f0fdf4;
-  --amber:#d97706;--amber-l:#fffbeb;
-  --red-l:#fef2f2;--m3:#cbd5e1;
-  --shm2:0 8px 24px rgba(10,15,30,.08);
+  --bg:#eef0f4;--w:#ffffff;--s2:#f5f6f9;
+  --b:#e9ebf0;--b2:#dfe2ea;
+  --ac:#3b6fe0;--al:#eef3fc;--a2:#8b5cf6;
+  --red:#e2585f;--rl:#fdeeef;
+  --amb:#c07d12;--aml:#fbf4e6;
+  --grn:#16a35a;--gl:#eaf6ef;
+  --tx:#15181f;--t2:#3a3f4b;--mu:#727683;--m2:#a6abb8;
+  --sh:0 1px 2px rgba(16,24,40,.06),0 4px 14px -6px rgba(16,24,40,.08);
+  --shm:0 4px 16px -4px rgba(16,24,40,.12);
+  --ink:#15181f;--paper:#eef0f4;--card:#ffffff;
+  --blue:#3b6fe0;--blue-l:#eef3fc;--blue-d:#2b59c0;
+  --purple:#8b5cf6;--purple-l:#f1ecfe;
+  --green:#16a35a;--green-l:#eaf6ef;
+  --amber:#c07d12;--amber-l:#fbf4e6;
+  --red-l:#fdeeef;--m3:#dfe2ea;
+  --shm2:0 8px 28px -8px rgba(16,24,40,.16);
 }
 /* ── DARK MODE ── */
 body.dark{
-  --bg:#0f1117;--w:#1a1d27;--s2:#1e2130;
-  --b:#2a2f45;--b2:#3a4060;
-  --al:#1e2a4a;--aml:#2a1f0a;--gl:#0a2015;--rl:#2a0a0a;
-  --tx:#e2e8f0;--t2:#94a3b8;--mu:#64748b;--m2:#475569;
-  --sh:0 1px 3px rgba(0,0,0,.3),0 1px 2px rgba(0,0,0,.2);
-  --shm:0 4px 14px rgba(0,0,0,.4);
-  --ink:#1a1d27;--paper:#0f1117;--card:#1a1d27;
-  --m3:#2a2f45;--shm2:0 8px 24px rgba(0,0,0,.4);
+  --bg:#0a0c12;--w:#181d2a;--s2:#1c2230;
+  --b:#272e3d;--b2:#313a4d;
+  --ac:#5b86f0;--al:#1b2740;--a2:#9b7cf6;
+  --red:#f06b72;--rl:#2a1416;
+  --amb:#e0a23a;--aml:#2a2110;
+  --grn:#2bbd73;--gl:#0f2418;
+  --tx:#eef1f7;--t2:#c3cad8;--mu:#9aa2b3;--m2:#6a7283;
+  --sh:0 1px 2px rgba(0,0,0,.4),0 4px 14px -6px rgba(0,0,0,.5);
+  --shm:0 4px 16px -4px rgba(0,0,0,.55);
+  --ink:#141925;--paper:#0a0c12;--card:#181d2a;
+  --blue:#5b86f0;--blue-l:#1b2740;--blue-d:#3b6fe0;
+  --purple:#9b7cf6;--purple-l:#241c3a;
+  --green:#2bbd73;--green-l:#0f2418;
+  --amber:#e0a23a;--amber-l:#2a2110;
+  --red-l:#2a1416;--m3:#313a4d;
+  --shm2:0 8px 28px -8px rgba(0,0,0,.6);
 }
 /* ── SKELETON LOADER ── */
 .skeleton{background:linear-gradient(90deg,var(--b) 25%,var(--s2) 50%,var(--b) 75%);background-size:200% 100%;animation:shimmer 1.5s infinite;border-radius:6px}
@@ -271,20 +279,21 @@ body.neon .kbar{background:linear-gradient(90deg,#c026d3,#7c3aed) !important}
 
 /* ── HOF BRAND THEME (matches HOF hexagon logo: navy + steel blue) ── */
 body.hof{
-  --bg:#f0f4f8;--w:#ffffff;--s2:#e8eef5;
-  --b:#c5d5e8;--b2:#9ab5cf;
-  --ac:#1a3a6b;--al:#e8eef5;--a2:#2d5f9a;
-  --red:#dc2626;--rl:#fef2f2;
-  --amb:#d97706;--aml:#fffbeb;
-  --grn:#059669;--gl:#f0fdf4;
-  --tx:#0d2340;--t2:#1a3a6b;--mu:#5a7fa0;--m2:#8aabcc;
-  --sh:0 1px 3px rgba(26,58,107,.1);--shm:0 4px 14px rgba(26,58,107,.15);
-  --ink:#0d2340;--paper:#f0f4f8;--card:#fff;
-  --blue:#1a3a6b;--blue-l:#e8eef5;--blue-d:#0d2340;
-  --purple:#2d5f9a;--purple-l:#dce8f5;
-  --green:#059669;--green-l:#f0fdf4;
-  --amber:#d97706;--amber-l:#fffbeb;
-  --red-l:#fef2f2;--m3:#c5d5e8;--shm2:0 8px 24px rgba(26,58,107,.12);
+  --bg:#eef1f8;--w:#ffffff;--s2:#e9edf9;
+  --b:#dbe1f2;--b2:#cdd5ee;
+  --ac:#243a9e;--al:#e7ecfb;--a2:#6366f1;
+  --red:#e2585f;--rl:#fbeef0;
+  --amb:#c07d12;--aml:#faf3e4;
+  --grn:#16a35a;--gl:#e8f5ed;
+  --tx:#16205e;--t2:#2f3a6b;--mu:#5b658c;--m2:#9aa3c4;
+  --sh:0 1px 2px rgba(31,47,143,.08),0 6px 18px -8px rgba(31,47,143,.18);
+  --shm:0 6px 20px -6px rgba(31,47,143,.22);
+  --ink:#16205e;--paper:#eef1f8;--card:#ffffff;
+  --blue:#243a9e;--blue-l:#e7ecfb;--blue-d:#1a2b78;
+  --purple:#6366f1;--purple-l:#e8eafd;
+  --green:#16a35a;--green-l:#e8f5ed;
+  --amber:#c07d12;--amber-l:#faf3e4;
+  --red-l:#fbeef0;--m3:#cdd5ee;--shm2:0 10px 30px -10px rgba(31,47,143,.24);
 }
 body.hof .top{background:linear-gradient(135deg,#0d2340 0%,#1a3a6b 60%,#2d5f9a 100%)}
 body.hof .sidebar{background:linear-gradient(180deg,#0d2340 0%,#1a3a6b 60%,#1e4a80 100%);border-right-color:rgba(45,95,154,.3)}
@@ -339,9 +348,9 @@ body.hof table thead tr th{background:rgba(197,213,232,.8)}
 .theme-swatch{width:14px;height:14px;border-radius:50%;flex-shrink:0}
 *{margin:0;padding:0;box-sizing:border-box}
 html{font-size:14px;scroll-behavior:smooth}
-body{background:var(--bg);color:var(--tx);font-family:'Nunito',sans-serif;min-height:100vh}
-body:not(.dark):not(.midnight):not(.aurora):not(.evening){
-  background:linear-gradient(160deg,#f0f4ff 0%,#f5f7fa 40%,#eef2fc 100%);
+body{background:var(--bg);color:var(--tx);font-family:'Plus Jakarta Sans','Nunito',sans-serif;min-height:100vh}
+body:not(.dark):not(.hof){
+  background:var(--bg);
 }
 
 /* ── LOADER ── */
@@ -674,18 +683,9 @@ footer{
           Theme ▾
         </button>
         <div class="theme-drop">
-          <div class="theme-opt active" id="opt-light"    onclick="setTheme('light')"><span class="theme-swatch" style="background:#f5f7fa;border:1px solid #ccc"></span>☀️ Light</div>
-          <div class="theme-opt"        id="opt-dark"     onclick="setTheme('dark')"><span class="theme-swatch" style="background:#1a1d27"></span>🌙 Dark</div>
-          <div class="theme-opt"        id="opt-evening"  onclick="setTheme('evening')"><span class="theme-swatch" style="background:linear-gradient(135deg,#e8943a,#c4721a)"></span>🌅 Evening</div>
-          <div class="theme-opt"        id="opt-midnight" onclick="setTheme('midnight')"><span class="theme-swatch" style="background:#0a0e1a;border:1px solid #1e2d45"></span>🌌 Midnight</div>
-          <div class="theme-opt"        id="opt-spring"   onclick="setTheme('spring')"><span class="theme-swatch" style="background:#4caf50"></span>🌿 Spring</div>
-          <div class="theme-opt"        id="opt-ocean"    onclick="setTheme('ocean')"><span class="theme-swatch" style="background:#2196f3"></span>🌊 Ocean</div>
-          <div class="theme-opt"        id="opt-rose"     onclick="setTheme('rose')"><span class="theme-swatch" style="background:#e91e63"></span>🌸 Rose</div>
-          <div class="theme-opt"        id="opt-coffee"   onclick="setTheme('coffee')"><span class="theme-swatch" style="background:#6f4e37"></span>☕ Coffee</div>
-          <div class="theme-opt"        id="opt-slate"    onclick="setTheme('slate')"><span class="theme-swatch" style="background:#475569"></span>🪨 Slate</div>
-          <div class="theme-opt"        id="opt-aurora"   onclick="setTheme('aurora')"><span class="theme-swatch" style="background:linear-gradient(135deg,#06b6d4,#8b5cf6)"></span>🌌 Aurora</div>
-          <div class="theme-opt"        id="opt-neon"     onclick="setTheme('neon')"><span class="theme-swatch" style="background:linear-gradient(135deg,#c026d3,#7c3aed)"></span>⚡ Neon Cyber</div>
-          <div class="theme-opt"        id="opt-hof"      onclick="setTheme('hof')"><span class="theme-swatch" style="background:linear-gradient(135deg,#1a3a6b,#2d5f9a)"></span>🏢 HOF Brand</div>
+          <div class="theme-opt active" id="opt-light"    onclick="setTheme('light')"><span class="theme-swatch" style="background:#eef0f4;border:1px solid #ccc"></span>☀️ Light</div>
+          <div class="theme-opt"        id="opt-dark"     onclick="setTheme('dark')"><span class="theme-swatch" style="background:#181d2a"></span>🌙 Dark</div>
+          <div class="theme-opt"        id="opt-hof"      onclick="setTheme('hof')"><span class="theme-swatch" style="background:linear-gradient(135deg,#1f2f8f,#868e9b)"></span>🏢 HOF Brand</div>
         </div>
       </div>
       <span id="gbadge" class="hbadge hb-red">⬤ CRITICAL</span>

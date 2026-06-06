@@ -270,8 +270,8 @@ var cmCharts    = {};
 var cmStore     = { daily: null, weekly: null, monthly: null };
 
 // ── Theme System ─────────────────────────────────────────────────────────────
-var THEMES = ['light','dark','evening','midnight','spring','ocean','rose','coffee','slate','aurora','neon','hof'];
-var THEME_ICONS = {light:'☀️ Light',dark:'🌙 Dark',evening:'🌅 Evening',midnight:'🌌 Midnight',spring:'🌿 Spring',ocean:'🌊 Ocean',rose:'🌸 Rose',coffee:'☕ Coffee',slate:'🪨 Slate',aurora:'🌌 Aurora',neon:'⚡ Neon Cyber',hof:'🏢 HOF Brand'};
+var THEMES = ['light','dark','hof'];
+var THEME_ICONS = {light:'☀️ Light',dark:'🌙 Dark',hof:'🏢 HOF Brand'};
 
 function setTheme(theme) {
   // Remove all theme classes
@@ -290,12 +290,9 @@ function setTheme(theme) {
 
 function autoThemeByTime() {
   var saved = localStorage.getItem('hof-theme');
-  if (saved) { setTheme(saved); return; }
+  if (saved && THEMES.indexOf(saved) !== -1) { setTheme(saved); return; }
   var h = new Date().getHours();
-  if      (h >= 17 && h < 20) setTheme('evening');
-  else if (h >= 20 && h < 23) setTheme('midnight');
-  else if (h >= 23 || h < 6)  setTheme('dark');
-  else                          setTheme('light');
+  setTheme((h >= 19 || h < 6) ? 'dark' : 'light');
 }
 
 // Apply on load
