@@ -297,8 +297,7 @@ body.hof{
 }
 body.hof .top{background:linear-gradient(135deg,#0d2340 0%,#1a3a6b 60%,#2d5f9a 100%)}
 body.hof .sidebar{background:linear-gradient(180deg,#0d2340 0%,#1a3a6b 60%,#1e4a80 100%);border-right-color:rgba(45,95,154,.3)}
-body.hof .ntab.on{color:#60a5fa;border-left-color:#3b82f6;background:rgba(59,130,246,.12)}
-body.hof .ntab:hover{background:rgba(59,130,246,.08)}
+body.hof .ntab.on{background:var(--ac);color:#fff}
 body.hof .brand-name{background:linear-gradient(135deg,#fff,rgba(255,255,255,.85));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
 body.hof .chip.active{background:linear-gradient(135deg,#1a3a6b,#2d5f9a);border-color:#1a3a6b;color:#fff}
 body.hof table thead tr th{background:rgba(197,213,232,.8)}
@@ -387,15 +386,14 @@ body:not(.dark):not(.hof){
 .brand{display:flex;align-items:center;gap:14px}
 .brand-mark{
   width:36px;height:36px;border-radius:10px;
-  background:linear-gradient(135deg,#6366f1,#8b5cf6);
+  background:transparent;
   display:grid;place-items:center;font-size:16px;
-  box-shadow:0 0 20px rgba(99,102,241,.4),0 2px 8px rgba(0,0,0,.3);
   flex-shrink:0;
 }
 .brand-name{
-  font-size:20px;font-weight:800;letter-spacing:-.5px;color:#fff;
-  font-family:'Nunito',sans-serif;white-space:nowrap;
-  background:linear-gradient(135deg,#fff 0%,rgba(255,255,255,.8) 100%);
+  font-size:18px;font-weight:800;letter-spacing:-.4px;color:#fff;
+  font-family:'Plus Jakarta Sans',sans-serif;white-space:nowrap;
+  background:linear-gradient(135deg,#fff 0%,rgba(255,255,255,.82) 100%);
   -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
 }
 .brand-sub{font-size:9px;color:rgba(99,102,241,.7);font-family:'DM Mono',monospace;letter-spacing:.8px;text-transform:uppercase;margin-top:1px;white-space:nowrap}
@@ -424,23 +422,23 @@ body:not(.dark):not(.hof){
   border-bottom:1px solid rgba(99,102,241,.15);
   position:sticky;top:60px;z-index:99;
 }
-.nav-inner{max-width:1600px;margin:0 auto;padding:0 28px;display:flex;gap:0;overflow-x:auto;scrollbar-width:none}
+.nav-inner{max-width:1600px;margin:0 auto;padding:8px 28px;display:flex;gap:6px;overflow-x:auto;scrollbar-width:none}
 .nav-inner::-webkit-scrollbar{display:none}
 .ntab{
-  padding:0 24px;height:48px;font-size:12px;font-weight:700;cursor:pointer;
-  border:none;background:transparent;color:rgba(255,255,255,.35);
-  border-bottom:2px solid transparent;transition:all .2s;white-space:nowrap;
-  display:flex;align-items:center;gap:8px;letter-spacing:.5px;text-transform:uppercase;
-  font-family:'DM Mono',monospace;
+  padding:9px 18px;height:auto;font-size:13px;font-weight:600;cursor:pointer;
+  border:none;background:transparent;color:rgba(255,255,255,.45);
+  border-radius:22px;transition:all .18s;white-space:nowrap;
+  display:flex;align-items:center;gap:8px;letter-spacing:.1px;
+  font-family:'Plus Jakarta Sans',sans-serif;
 }
-.ntab:hover{color:rgba(255,255,255,.7)}
-.ntab.on{color:#818cf8;border-bottom-color:#6366f1;text-shadow:0 0 20px rgba(99,102,241,.5)}
+.ntab:hover{color:rgba(255,255,255,.85);background:rgba(255,255,255,.06)}
+.ntab.on{background:var(--ac);color:#fff;box-shadow:0 2px 8px -2px rgba(0,0,0,.45)}
 .ntab .nc{
   min-width:20px;height:20px;border-radius:10px;display:grid;place-items:center;
   font-size:10px;font-weight:700;font-family:'DM Mono',monospace;
-  background:rgba(255,255,255,.08);color:rgba(255,255,255,.4);transition:all .2s;
+  background:rgba(255,255,255,.1);color:rgba(255,255,255,.55);transition:all .2s;
 }
-.ntab.on .nc{background:rgba(99,102,241,.3);color:#a5b4fc}
+.ntab.on .nc{background:rgba(255,255,255,.25);color:#fff}
 
 /* ── PANEL ── */
 .panel{display:none;audits-width:1500px;margin:0 auto;padding:22px 28px 48px}
