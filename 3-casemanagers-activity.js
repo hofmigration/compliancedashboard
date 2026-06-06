@@ -316,8 +316,12 @@ function cmDashRender() {
     c.stageUpd  += r.stageUpd;
     c.onTime    += r.onTime;
     c.blank     += r.blank;
-    c.pctSum    += r.pct;
-    c.count     += 1;
+    // Off days ("DAY OFF" rows = 0% compliance) must NOT count toward the
+    // compliance average — neither per-CM nor team-wide. Only working days do.
+    if (r.pct > 0) {
+      c.pctSum  += r.pct;
+      c.count   += 1;
+    }
   });
   var cmList = Object.values(cmMap);
 
@@ -358,8 +362,7 @@ function cmDashRender() {
   rows.forEach(function(r) {
     if (!periodMap[r.label]) periodMap[r.label] = { label:r.label, date:r.date, pctSum:0, count:0, deals:0, emails:0, tasks:0 };
     var p = periodMap[r.label];
-    p.pctSum += r.pct;
-    p.count  += 1;
+    if (r.pct > 0) { p.pctSum += r.pct; p.count += 1; }  // off days excluded from trend avg
     p.deals  += r.deals;
     p.emails += r.emails;
     p.tasks  += r.tasks;
@@ -430,7 +433,7 @@ function cmDashRender() {
   var cmBarCanvas = document.getElementById('cmd-cm-bar');
   if (cmBarCanvas && cmList.length) {
     var cmBarLabels = cmList.map(function(c){return c.name.split(' ')[0];});
-    var cmBarData   = cmList.map(function(c){return +(c.pctSum/c.count).toFixed(1);});
+    var cmBarData   = cmList.map(function(c){return c.count ? +(c.pctSum/c.count).toFixed(1) : 0;});
     var cmBarColors = cmBarData.map(function(v){return v>=90?'rgba(16,185,129,.85)':v>=80?'rgba(99,102,241,.85)':v>=70?'rgba(245,158,11,.85)':'rgba(244,63,94,.85)';});
     cmDashCharts.cmBar = new Chart(cmBarCanvas, {
       type:'bar',
@@ -452,7 +455,7 @@ function cmDashRender() {
   var radarCanvas = document.getElementById('cmd-radar');
   if (radarCanvas && cmList.length) {
     var n = cmList.length||1;
-    var rAvg = function(f){return cmList.reduce(function(s,c){return s+c[f]/c.count;},0)/n;};
+    var rAvg = function(f){return cmList.reduce(function(s,c){return s+(c.count?c[f]/c.count:0);},0)/n;};
     var radarMax = Math.max(rAvg('calls'),rAvg('emails'),rAvg('tasks'),rAvg('deals'),rAvg('connected'),1);
     var rNorm = function(v){return Math.round((v/radarMax)*100);};
     cmDashCharts.radar = new Chart(radarCanvas, {
@@ -1288,5 +1291,3 @@ function scrollAIToBottom() {
   var msgs = document.getElementById('aiMessages');
   setTimeout(function(){ msgs.scrollTop = msgs.scrollHeight; }, 50);
 }
-
-
