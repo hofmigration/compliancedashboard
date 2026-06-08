@@ -407,7 +407,7 @@ function renderPipelineHealth(deals) {
 }
 
 // ── Charts ─────────────────────────────────────────────────────────
-var DEAL_COLORS = ['#6366f1','#2563eb','#059669','#d97706','#dc2626','#0891b2','#9333ea','#10b981','#f59e0b','#ef4444'];
+var DEAL_COLORS = window.CHART_PALETTE || ['#3b6fe0','#16a35a','#c07d12','#7c5cfc','#0ea5e9','#e2585f','#0891b2','#f59e0b','#10b981','#6366f1'];
 
 function destroyDealChart(id) {
   if (dealsCharts[id]) { dealsCharts[id].destroy(); delete dealsCharts[id]; }
@@ -433,8 +433,8 @@ function renderDealsCharts(deals) {
         indexAxis: 'y', responsive: true, maintainAspectRatio: false,
         plugins: { legend: { display: false } },
         scales: {
-          x: { grid:{color:'rgba(128,128,128,.1)'}, ticks:{color:'var(--mu)',font:{family:'Nunito',size:11}} },
-          y: { grid:{display:false}, ticks:{color:'var(--tx)',font:{family:'Nunito',size:11}} }
+          x: { grid:{color:CV('--b')}, border:{display:false}, ticks:{color:CV('--mu')} },
+          y: { grid:{display:false}, border:{display:false}, ticks:{color:CV('--tx'),font:{weight:700}} }
         }
       }
     });
@@ -453,7 +453,7 @@ function renderDealsCharts(deals) {
         labels: cNames,
         datasets: [{ data: cNames.map(function(n){ return consultantCounts[n]; }),
           backgroundColor: cNames.map(function(_,i){ return DEAL_COLORS[i%DEAL_COLORS.length]; }),
-          borderWidth: 2, borderColor: 'var(--w)' }]
+          borderWidth: 3, borderColor: CV('--w'), hoverOffset: 6 }]
       },
       options: {
         responsive: true, maintainAspectRatio: false, cutout: '60%',
@@ -463,7 +463,7 @@ function renderDealsCharts(deals) {
     // Custom legend
     var legEl = document.getElementById('deals-consultant-legend');
     if (legEl) legEl.innerHTML = cNames.map(function(n,i){
-      return '<span style="display:inline-flex;align-items:center;gap:4px;font-size:11px;color:var(--t2)">' +
+      return '<span style="display:inline-flex;align-items:center;gap:4px;font-size:11px;color:var(--mu)">' +
              '<span style="width:9px;height:9px;border-radius:2px;background:'+DEAL_COLORS[i%DEAL_COLORS.length]+';flex-shrink:0"></span>' +
              n.split(' ')[0] + ' ('+consultantCounts[n]+')' + '</span>';
     }).join('');
@@ -486,16 +486,16 @@ function renderDealsCharts(deals) {
       data: {
         labels: wlNames,
         datasets: [
-          { label: 'Won',  data: wlNames.map(function(n){ return wonMap[n]||0; }),  backgroundColor: '#05966999', borderRadius: 3 },
-          { label: 'Lost', data: wlNames.map(function(n){ return lostMap[n]||0; }), backgroundColor: '#dc262699', borderRadius: 3 }
+          { label: 'Won',  data: wlNames.map(function(n){ return wonMap[n]||0; }),  backgroundColor: CV('--grn'), borderRadius: 4, maxBarThickness: 26 },
+          { label: 'Lost', data: wlNames.map(function(n){ return lostMap[n]||0; }), backgroundColor: CV('--red'), borderRadius: 4, maxBarThickness: 26 }
         ]
       },
       options: {
         responsive: true, maintainAspectRatio: false,
-        plugins: { legend: { display: true, labels: { color: 'var(--tx)', font:{ family:'Nunito', size:11 } } } },
+        plugins: { legend: { display: true, labels: { color: CV('--tx') } } },
         scales: {
-          x: { grid:{display:false}, ticks:{color:'var(--tx)',font:{family:'Nunito',size:11},maxRotation:30} },
-          y: { grid:{color:'rgba(128,128,128,.1)'}, ticks:{color:'var(--mu)',font:{family:'Nunito',size:11}} }
+          x: { grid:{display:false}, border:{display:false}, ticks:{color:CV('--tx'),maxRotation:30} },
+          y: { grid:{color:CV('--b')}, border:{display:false}, ticks:{color:CV('--mu')} }
         }
       }
     });
