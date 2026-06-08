@@ -1177,35 +1177,32 @@ footer{
   <div style="display:grid;grid-template-columns:1fr 340px;gap:16px;margin-bottom:16px">
 
     <!-- Hero compliance banner -->
-    <div id="cmTotalComplianceBanner" style="background:linear-gradient(135deg,#0f172a 0%,#1e1b4b 50%,#0f172a 100%);border-radius:16px;padding:22px 26px;display:flex;align-items:center;gap:20px;flex-wrap:wrap;position:relative;overflow:hidden;border:1px solid rgba(99,102,241,.25);min-height:160px">
-      <div style="position:absolute;inset:0;background:repeating-linear-gradient(90deg,transparent,transparent 60px,rgba(99,102,241,.03) 60px,rgba(99,102,241,.03) 61px);pointer-events:none"></div>
-      <div style="position:absolute;right:-60px;top:-60px;width:240px;height:240px;border-radius:50%;background:radial-gradient(circle,rgba(99,102,241,.15) 0%,transparent 70%);pointer-events:none"></div>
-      <div style="position:absolute;left:-30px;bottom:-30px;width:160px;height:160px;border-radius:50%;background:radial-gradient(circle,rgba(16,185,129,.08) 0%,transparent 70%);pointer-events:none"></div>
+    <div id="cmTotalComplianceBanner" style="background:var(--w);border:1px solid var(--b);box-shadow:var(--shm);border-radius:16px;padding:22px 26px;display:flex;align-items:center;gap:20px;flex-wrap:wrap;position:relative;overflow:hidden;min-height:160px">
       <!-- Big compliance number -->
       <div style="text-align:center;min-width:130px;position:relative">
-        <div style="font-size:9px;font-weight:700;letter-spacing:2.5px;text-transform:uppercase;color:rgba(99,102,241,.7);font-family:'DM Mono',monospace;margin-bottom:6px">TEAM COMPLIANCE</div>
-        <div id="cmTeamCompBig" style="font-size:58px;font-weight:900;font-family:'Nunito',sans-serif;line-height:1;color:#6366f1;text-shadow:0 0 40px rgba(99,102,241,.5)">—%</div>
-        <div id="cmTeamCompStatus" style="font-size:11px;font-weight:700;margin-top:8px;padding:4px 12px;border-radius:20px;display:inline-block;background:rgba(99,102,241,.15);color:#a5b4fc">Calculating…</div>
+        <div style="font-size:9px;font-weight:700;letter-spacing:2.5px;text-transform:uppercase;color:var(--mu);font-family:'DM Mono',monospace;margin-bottom:6px">TEAM COMPLIANCE</div>
+        <div id="cmTeamCompBig" style="font-size:58px;font-weight:900;font-family:'Nunito',sans-serif;line-height:1;color:var(--ac)">—%</div>
+        <div id="cmTeamCompStatus" style="font-size:11px;font-weight:700;margin-top:8px;padding:4px 12px;border-radius:20px;display:inline-block;background:var(--al);color:var(--ac)">Calculating…</div>
       </div>
       <!-- Divider -->
-      <div style="width:1px;height:80px;background:rgba(99,102,241,.25);flex-shrink:0"></div>
+      <div style="width:1px;height:80px;background:var(--b);flex-shrink:0"></div>
       <!-- Per CM compliance mini bars -->
       <div style="flex:1;min-width:220px;position:relative" id="cmTeamBarsWrap">
-        <div style="font-size:9px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:rgba(255,255,255,.3);font-family:'DM Mono',monospace;margin-bottom:10px">INDIVIDUAL COMPLIANCE</div>
+        <div style="font-size:9px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--mu);font-family:'DM Mono',monospace;margin-bottom:10px">INDIVIDUAL COMPLIANCE</div>
         <div id="cmTeamBars" style="display:flex;flex-direction:column;gap:5px"></div>
       </div>
       <!-- Right stat cards -->
       <div style="display:flex;flex-direction:column;gap:10px;min-width:120px;position:relative">
-        <div style="background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.08);border-radius:10px;padding:10px 14px">
-          <div style="font-size:9px;color:rgba(255,255,255,.35);font-family:'DM Mono',monospace;letter-spacing:1px">ACTIVE CMs</div>
-          <div id="cmTeamCount" style="font-size:24px;font-weight:800;color:#e2e8f0;font-family:'Nunito',sans-serif">—</div>
+        <div style="background:var(--s2);border:1px solid var(--b);border-radius:10px;padding:10px 14px">
+          <div style="font-size:9px;color:var(--mu);font-family:'DM Mono',monospace;letter-spacing:1px">ACTIVE CMs</div>
+          <div id="cmTeamCount" style="font-size:24px;font-weight:800;color:var(--tx);font-family:'Nunito',sans-serif">—</div>
         </div>
-        <div style="background:rgba(255,255,255,.05);border:1px solid rgba(16,185,129,.2);border-radius:10px;padding:10px 14px">
-          <div style="font-size:9px;color:rgba(255,255,255,.35);font-family:'DM Mono',monospace;letter-spacing:1px">ABOVE TARGET</div>
-          <div id="cmTeamAbove" style="font-size:24px;font-weight:800;color:#10b981;font-family:'Nunito',sans-serif">—</div>
+        <div style="background:var(--s2);border:1px solid var(--gl);border-radius:10px;padding:10px 14px">
+          <div style="font-size:9px;color:var(--mu);font-family:'DM Mono',monospace;letter-spacing:1px">ABOVE TARGET</div>
+          <div id="cmTeamAbove" style="font-size:24px;font-weight:800;color:var(--grn);font-family:'Nunito',sans-serif">—</div>
         </div>
       </div>
-      <div style="position:absolute;bottom:8px;right:14px;font-size:9px;color:rgba(255,255,255,.12);font-family:'DM Mono',monospace">Σ(CM compliance) ÷ active CMs</div>
+      <div style="position:absolute;bottom:8px;right:14px;font-size:9px;color:var(--m2);font-family:'DM Mono',monospace">Σ(CM compliance) ÷ active CMs</div>
     </div>
 
     <!-- Compliance Bands Donut -->
