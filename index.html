@@ -648,7 +648,7 @@ footer{
 @media(audits-width:1100px){.kg{grid-template-columns:repeat(4,1fr)}.mg{grid-template-columns:1fr}.rc{flex-direction:row}.kstrip{grid-template-columns:repeat(3,1fr)}.cgrid{grid-template-columns:1fr}}
 @media(audits-width:700px){.kg{grid-template-columns:repeat(2,1fr)}.panel{padding:16px 14px 32px}.top-inner,.nav-inner{padding:0 14px}.kstrip{grid-template-columns:repeat(2,1fr)}.rc{flex-direction:column}}
 /* ===================== R1 — CLEAN SHELL FRAME (theme-var driven) ===================== */
-.app{max-width:1240px;margin:22px auto;display:flex;background:var(--w);border:1px solid var(--b);border-radius:26px;box-shadow:var(--shm);overflow:hidden;min-height:calc(100vh - 44px)}
+.app{max-width:none;margin:0;display:flex;background:var(--w);border:0;border-radius:0;overflow:hidden;min-height:100vh}
 .app .rail{width:62px;flex-shrink:0;background:var(--s2);border-right:1px solid var(--b);display:flex;flex-direction:column;align-items:center;padding:16px 0;gap:10px}
 .app .rail .rb{width:38px;height:38px;border-radius:11px;border:1px solid var(--b);background:var(--w);color:var(--mu);display:flex;align-items:center;justify-content:center;cursor:pointer;transition:.18s}
 .app .rail .rb:hover{color:var(--tx);border-color:var(--ac);background:var(--al)}
@@ -2341,6 +2341,31 @@ function aggregateFromRawSheet(sheet, startDate, endDate, errorLinks) {
 </div>
 
 <!-- ── DASHBOARD LOGIC — split into section files (load order matters) ── -->
+<script>
+/* ── R-graphs: clean Chart.js theme ──
+   CV() resolves a CSS theme variable into a real color value the <canvas>
+   can use (Chart.js cannot read CSS vars directly). Re-called at each chart
+   build so graphs follow the active theme. */
+window.CV = function(n,f){ try{ var v=getComputedStyle(document.body).getPropertyValue(n).trim(); return v||f||'#94a3b8'; }catch(e){ return f||'#94a3b8'; } };
+window.CHART_PALETTE = ['#3b6fe0','#16a35a','#c07d12','#7c5cfc','#0ea5e9','#e2585f','#0891b2','#f59e0b','#10b981','#6366f1'];
+if (window.Chart) {
+  Chart.defaults.font.family = "'Plus Jakarta Sans',-apple-system,'Segoe UI',sans-serif";
+  Chart.defaults.font.size = 11;
+  Chart.defaults.font.weight = 600;
+  Chart.defaults.color = CV('--mu','#727683');
+  Chart.defaults.borderColor = CV('--b','#e9ebf0');
+  Chart.defaults.plugins.legend.labels.usePointStyle = true;
+  Chart.defaults.plugins.legend.labels.boxWidth = 8;
+  Chart.defaults.plugins.legend.labels.boxHeight = 8;
+  Chart.defaults.plugins.legend.labels.padding = 14;
+  Chart.defaults.plugins.tooltip.backgroundColor = CV('--tx','#15181f');
+  Chart.defaults.plugins.tooltip.titleColor = '#fff';
+  Chart.defaults.plugins.tooltip.bodyColor = 'rgba(255,255,255,.88)';
+  Chart.defaults.plugins.tooltip.padding = 10;
+  Chart.defaults.plugins.tooltip.cornerRadius = 8;
+  Chart.defaults.plugins.tooltip.boxPadding = 4;
+}
+</script>
 <script src="1-core.js"></script>
 <script src="2-consultant.js"></script>
 <script src="3-casemanagers-activity.js"></script>
