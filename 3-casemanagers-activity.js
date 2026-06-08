@@ -616,8 +616,8 @@ function cmRenderTeamComplianceBanner(cmList, avgPct) {
       var p = c.count>0 ? c.pctSum/c.count : 0;
       var bc = p>=90?'#10b981':p>=80?'#f59e0b':'#ef4444';
       return '<div style="display:flex;align-items:center;gap:8px">'+
-        '<div style="width:80px;font-size:10px;font-weight:700;color:rgba(255,255,255,.7);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-family:\'DM Mono\',monospace">'+c.name.split(' ')[0]+'</div>'+
-        '<div style="flex:1;height:6px;background:rgba(255,255,255,.08);border-radius:3px;overflow:hidden">'+
+        '<div style="width:80px;font-size:10px;font-weight:700;color:var(--mu);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-family:\'DM Mono\',monospace">'+c.name.split(' ')[0]+'</div>'+
+        '<div style="flex:1;height:6px;background:var(--b);border-radius:3px;overflow:hidden">'+
           '<div style="width:'+Math.min(p,100).toFixed(0)+'%;height:100%;background:'+bc+';border-radius:3px;transition:width .6s ease"></div>'+
         '</div>'+
         '<div style="width:42px;text-align:right;font-size:10px;font-weight:700;color:'+bc+';font-family:\'DM Mono\',monospace">'+(p===0?'Off':p.toFixed(0)+'%')+'</div>'+
