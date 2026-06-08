@@ -274,7 +274,6 @@ body.neon:not(.dark):not(.midnight):not(.aurora):not(.evening){background:#0a061
 body.neon table thead tr th{background:rgba(45,27,105,.8)}
 body.neon .kcard{border-color:#2d1b69;background:#120d2a}
 body.neon .card{border-color:#2d1b69;background:#120d2a}
-body.neon .chip.active{background:linear-gradient(135deg,#c026d3,#7c3aed);border-color:#c026d3}
 body.neon .kbar{background:linear-gradient(90deg,#c026d3,#7c3aed) !important}
 
 /* ── HOF BRAND THEME (matches HOF hexagon logo: navy + steel blue) ── */
@@ -299,7 +298,6 @@ body.hof .top{background:linear-gradient(135deg,#0d2340 0%,#1a3a6b 60%,#2d5f9a 1
 body.hof .sidebar{background:linear-gradient(180deg,#0d2340 0%,#1a3a6b 60%,#1e4a80 100%);border-right-color:rgba(45,95,154,.3)}
 body.hof .ntab.on{background:var(--ac);color:#fff}
 body.hof .brand-name{background:linear-gradient(135deg,#fff,rgba(255,255,255,.85));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
-body.hof .chip.active{background:linear-gradient(135deg,#1a3a6b,#2d5f9a);border-color:#1a3a6b;color:#fff}
 body.hof table thead tr th{background:rgba(197,213,232,.8)}
 
 
@@ -472,7 +470,7 @@ body:not(.dark):not(.hof){
 .chips{display:flex;gap:5px;flex-wrap:wrap}
 .chip{padding:6px 13px;border-radius:7px;cursor:pointer;font-size:12px;font-weight:600;border:1px solid var(--b2);background:var(--w);color:var(--t2);transition:all .15s;white-space:nowrap;font-family:'Nunito',sans-serif}
 .chip:hover{border-color:var(--ac);color:var(--ac);background:var(--al)}
-.chip.active{background:var(--ac);color:#fff;border-color:var(--ac);box-shadow:0 2px 6px rgba(37,99,235,.25)}
+.chip.active{background:var(--ac);color:#fff;border-color:var(--ac);box-shadow:var(--shm)}
 .cbox{display:flex;gap:10px;align-items:flex-end;flex-wrap:wrap;background:var(--al);border:1px solid #bfdbfe;border-radius:9px;padding:12px 16px;margin-top:12px}
 .cbox.hidden{display:none}
 .abtn{padding:7px 16px;background:var(--ac);color:#fff;border:none;border-radius:7px;cursor:pointer;font-weight:600;font-size:13px;font-family:'Nunito',sans-serif;align-self:flex-end;transition:all .15s}
@@ -595,19 +593,17 @@ body.dark .kcard:hover{box-shadow:0 8px 24px rgba(99,102,241,.15)}
 .cm-subtab-bar{display:flex;background:var(--s2);border:1px solid var(--b);border-radius:12px;padding:4px;gap:4px;margin-bottom:20px}
 .cm-subtab{flex:1;padding:10px 16px;border:none;background:transparent;border-radius:9px;cursor:pointer;font-family:'Nunito',sans-serif;font-size:13px;font-weight:700;color:var(--mu);transition:all .2s;text-align:center}
 .cm-subtab:hover{color:var(--tx);background:var(--w)}
-.cm-subtab.active{background:linear-gradient(135deg,#6366f1,#8b5cf6);color:#fff;box-shadow:0 4px 16px rgba(99,102,241,.35)}
+.cm-subtab.active{background:var(--ac);color:#fff;box-shadow:var(--shm)}
 .cm-subpanel{display:none}
 .cm-subpanel.active{display:block;animation:fadeUp .35s ease}
 @keyframes fadeUp{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
 /* Error analysis styles */
 .cm-error-card{background:var(--s2);border:1px solid var(--b);border-radius:12px;padding:14px 16px;margin-bottom:12px;transition:border-color .2s}
 .cm-error-card:hover{border-color:var(--ac)}
-body.neon .cm-subtab.active{background:linear-gradient(135deg,#c026d3,#7c3aed)}
 body.neon .cm-error-card{background:rgba(18,13,42,.6);border-color:#2d1b69}
 /* CM tab compliance banner neon override */
 body.neon #cmTotalComplianceBanner{background:linear-gradient(135deg,#0a0618 0%,#1a0535 50%,#0a0618 100%);border-color:rgba(192,38,211,.3)}
 body.neon #cmTeamCompBig{color:#e879f9;text-shadow:0 0 40px rgba(192,38,211,.6)}
-body.neon .chip.active{background:linear-gradient(135deg,#6366f1,#8b5cf6);border-color:#6366f1;box-shadow:0 0 12px rgba(99,102,241,.35)}
 .cgrid{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:14px}
 .card-head{padding:14px 18px;border-bottom:1px solid var(--b);display:flex;align-items:center;justify-content:space-between}
 .card-title{font-size:13px;font-weight:700;letter-spacing:-.2px}
