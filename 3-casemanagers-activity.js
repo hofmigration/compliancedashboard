@@ -1083,7 +1083,7 @@ function toggleAIChat() {
   aiOpen = !aiOpen;
   var drawer  = document.getElementById('aiDrawer');
   var overlay = document.getElementById('aiOverlay');
-  drawer.style.right  = aiOpen ? '0' : '-480px';
+  drawer.style.right  = aiOpen ? '0' : '-560px';
   overlay.style.display = aiOpen ? 'block' : 'none';
   if (aiOpen) setTimeout(function(){ document.getElementById('aiInput').focus(); }, 300);
 }
