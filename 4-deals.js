@@ -12,6 +12,8 @@ var dlaCriteria   = [];         // [{id,label}]
 var dlaSeg        = 'global';   // 'global' | 'dxb'
 var dlaPreset     = 'today';    // today | last7 | last10 | month | custom
 var _dlaLoaded    = false;
+var dlaCharts     = {};         // Chart.js instances (destroyed before redraw)
+var dlaLastRows   = [];         // last filtered rows (for theme re-render)
 
 // ── Lazy-load when the Deals tab is first opened (preserve go() wrap) ──
 var _dlaOrigGo = window.go;
@@ -199,6 +201,7 @@ function dlaRender() {
   var range = dlaRangeYMD();
   var consultant = (document.getElementById('dla-consultant') || {}).value || 'all';
   var rows = dlaFilter(dlaSegRows(), range, consultant);
+  dlaLastRows = rows;
 
   // updated line
   var upd = document.getElementById('dla-updated');
@@ -222,7 +225,7 @@ function dlaRender() {
   dlaRenderPerformers(rows);
   dlaRenderMistakes(rows);
   dlaRenderStages(rows);
-  dlaRenderPerDay(rows);
+  dlaRenderCharts(rows);
   dlaRenderTable(rows);
 }
 function dlaSet(id, v) { var el = document.getElementById(id); if (el) el.textContent = v; }
@@ -275,19 +278,86 @@ function dlaRenderStages(rows) {
   }).join('');
 }
 
-function dlaRenderPerDay(rows) {
-  var box = document.getElementById('dla-perday'); if (!box) return;
-  var pd = dlaPerDay(rows);
-  if (!pd.length) { box.innerHTML = '<div class="dla-empty">No audits in this period</div>'; return; }
-  box.innerHTML = pd.map(function (d) {
-    var h = Math.max(4, Math.round((d.comp || 0)));
-    var lbl = d.date.slice(5); // mm-dd
-    return '<div class="dla-day" title="' + d.date + ' · ' + dlaPct(d.comp) + ' · ' + d.audits + ' audits">' +
-      '<div class="dla-day-val" style="color:' + dlaCompClr(d.comp) + '">' + dlaPct(d.comp) + '</div>' +
-      '<div class="dla-day-bar"><div class="dla-day-fill" style="height:' + h + '%;background:' + dlaCompClr(d.comp) + '"></div></div>' +
-      '<div class="dla-day-lbl">' + lbl + '</div></div>';
-  }).join('');
+// ── Charts (theme-aware; vars resolved to computed values at render) ──
+function dlaCV(name, fb) {
+  try { var v = getComputedStyle(document.body).getPropertyValue(name).trim(); return v || fb; }
+  catch (e) { return fb; }
 }
+function dlaHex(c, a) {
+  c = (c || '').trim();
+  var m = c.match(/^#?([0-9a-f]{6})$/i);
+  if (m) { var n = parseInt(m[1], 16); return 'rgba(' + ((n >> 16) & 255) + ',' + ((n >> 8) & 255) + ',' + (n & 255) + ',' + a + ')'; }
+  return c;
+}
+function dlaByPipeline(rows) {
+  var map = {};
+  rows.forEach(function (r) { var k = r.pipeline || '—'; map[k] = (map[k] || 0) + 1; });
+  return Object.keys(map).map(function (k) { return { pipeline: k, count: map[k] }; })
+    .sort(function (a, b) { return b.count - a.count; });
+}
+
+function dlaRenderCharts(rows) {
+  if (typeof Chart === 'undefined') return;
+  var tx = dlaCV('--t2', '#64748b'), grid = dlaCV('--b', 'rgba(0,0,0,.08)'), ac = dlaCV('--ac', '#243a9e');
+  var font = { family: "'Plus Jakarta Sans',sans-serif", size: 11 };
+
+  // Per-day team average — line
+  var pd = dlaPerDay(rows);
+  var pdc = document.getElementById('dla-chart-perday');
+  if (dlaCharts.perday) { dlaCharts.perday.destroy(); dlaCharts.perday = null; }
+  if (pdc) {
+    dlaCharts.perday = new Chart(pdc, {
+      type: 'line',
+      data: {
+        labels: pd.map(function (d) { return d.date.slice(5); }),
+        datasets: [{
+          label: 'Team avg %',
+          data: pd.map(function (d) { return d.comp === null ? null : Math.round(d.comp); }),
+          borderColor: ac, backgroundColor: dlaHex(ac, 0.10), borderWidth: 2, fill: true,
+          tension: 0.35, pointRadius: 3, pointBackgroundColor: ac, spanGaps: true
+        }]
+      },
+      options: {
+        responsive: true, maintainAspectRatio: false,
+        plugins: { legend: { display: false } },
+        scales: {
+          x: { ticks: { color: tx, font: font }, grid: { display: false } },
+          y: { min: 0, max: 100, ticks: { color: tx, font: font, callback: function (v) { return v + '%'; } }, grid: { color: grid } }
+        }
+      }
+    });
+  }
+
+  // Audits by pipeline — donut
+  var pl = dlaByPipeline(rows);
+  var plc = document.getElementById('dla-chart-pipe');
+  if (dlaCharts.pipe) { dlaCharts.pipe.destroy(); dlaCharts.pipe = null; }
+  if (plc) {
+    var palette = [ac, dlaCV('--grn', '#10b981'), dlaCV('--amb', '#f59e0b'), dlaCV('--red', '#ef4444'), '#06b6d4', '#a855f7', '#ec4899'];
+    dlaCharts.pipe = new Chart(plc, {
+      type: 'doughnut',
+      data: {
+        labels: pl.map(function (p) { return p.pipeline; }),
+        datasets: [{ data: pl.map(function (p) { return p.count; }), backgroundColor: pl.map(function (_, i) { return palette[i % palette.length]; }), borderWidth: 0 }]
+      },
+      options: {
+        responsive: true, maintainAspectRatio: false, cutout: '62%',
+        plugins: { legend: { position: 'bottom', labels: { color: tx, font: font, boxWidth: 12, padding: 10 } } }
+      }
+    });
+  }
+}
+
+// Re-render deals charts when the theme changes (setTheme calls hofUpdateCharts)
+(function () {
+  var orig = window.hofUpdateCharts;
+  window.hofUpdateCharts = function () {
+    if (orig) { try { orig.apply(this, arguments); } catch (e) {} }
+    if (dlaData && typeof activeTab !== 'undefined' && activeTab === 'deals') {
+      try { dlaRenderCharts(dlaLastRows || []); } catch (e) {}
+    }
+  };
+})();
 
 function dlaRenderTable(rows) {
   var tb = document.getElementById('dla-tbody'); if (!tb) return;
