@@ -1,4 +1,19 @@
 // ══════════════════════════════════════════════════════════════
+//  CHART PERFORMANCE — snap charts to size on tab switch
+//  (charts live in hidden panels; when a panel reappears Chart.js
+//   re-fires a resize. Make that instant instead of re-animating
+//   every chart on every tab switch. First-load animation is kept.)
+// ══════════════════════════════════════════════════════════════
+if (window.Chart && Chart.defaults) {
+  try {
+    Chart.defaults.transitions = Chart.defaults.transitions || {};
+    Chart.defaults.transitions.resize = Chart.defaults.transitions.resize || {};
+    Chart.defaults.transitions.resize.animation = Chart.defaults.transitions.resize.animation || {};
+    Chart.defaults.transitions.resize.animation.duration = 0;
+  } catch (e) { /* non-fatal */ }
+}
+
+// ══════════════════════════════════════════════════════════════
 //  API ENDPOINTS
 // ══════════════════════════════════════════════════════════════
 const APIS = {
@@ -405,4 +420,3 @@ function getBounds(range) {
   }
   return {s, e};
 }
-
