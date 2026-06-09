@@ -781,7 +781,7 @@ footer{
 @media(max-width:640px){.dla-grid2{grid-template-columns:1fr}}
 
 /* ── CONSULTANT ACTIVITY (HubSpot) DRAWER ── */
-#hsDrawer{position:fixed;top:0;right:-1040px;width:min(1000px,96vw);height:100vh;background:var(--bg);z-index:1000;display:flex;flex-direction:column;box-shadow:-8px 0 50px rgba(0,0,0,.35);transition:right .35s cubic-bezier(.4,0,.2,1)}
+#hsDrawer{position:fixed;top:0;left:-1040px;width:min(1000px,96vw);height:100vh;background:var(--bg);z-index:1000;display:flex;flex-direction:column;box-shadow:8px 0 50px rgba(0,0,0,.35);transition:left .35s cubic-bezier(.4,0,.2,1)}
 .hs-head{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:18px 22px;background:var(--w);border-bottom:1px solid var(--b)}
 .hs-title{font-family:'Plus Jakarta Sans',sans-serif;font-weight:800;font-size:18px;color:var(--tx)}
 .hs-sub{font-size:11.5px;color:var(--t2);margin-top:2px}
@@ -791,22 +791,33 @@ footer{
 .hs-chip.on{background:var(--ac);color:#fff}
 .hs-btn,.hs-x{width:34px;height:34px;border:1px solid var(--b);background:var(--w);color:var(--t2);border-radius:9px;cursor:pointer;font-size:15px}
 .hs-btn:hover,.hs-x:hover{background:var(--s2);border-color:var(--ac)}
-.hs-body{flex:1;overflow-y:auto;padding:18px 22px;display:grid;grid-template-columns:1fr 1fr;gap:16px;align-content:start}
-.hs-card{background:var(--w);border:1px solid var(--b);border-radius:16px;padding:16px 18px;box-shadow:var(--sh)}
-.hs-card-h{font-family:'Plus Jakarta Sans',sans-serif;font-weight:700;font-size:13.5px;color:var(--tx);margin-bottom:12px;display:flex;align-items:center;justify-content:space-between;gap:8px}
-.hs-card-win{font-size:10px;font-weight:700;color:var(--mu);background:var(--s2);border:1px solid var(--b);padding:2px 7px;border-radius:6px;letter-spacing:.3px;white-space:nowrap}
-.hs-bars{display:flex;flex-direction:column;gap:7px;max-height:360px;overflow-y:auto}
-.hs-row{display:grid;grid-template-columns:120px 1fr 38px;align-items:center;gap:8px}
-.hs-label{font-size:11.5px;color:var(--t2);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.hs-track{height:14px;background:var(--s2);border-radius:5px;overflow:hidden}
-.hs-fill{height:100%;background:var(--ac);border-radius:5px;min-width:2px;transition:width .4s}
-.hs-val{font-size:12px;font-weight:800;color:var(--tx);text-align:right}
-.hs-empty{color:var(--mu);font-size:12px;padding:14px;text-align:center}
-.hs-err{grid-column:1/-1;color:var(--red);background:var(--rl);border:1px solid var(--red);border-radius:12px;padding:14px 16px;font-size:13px;font-weight:600}
-.hs-loading{grid-column:1/-1;display:flex;flex-direction:column;align-items:center;gap:14px;padding:60px 20px;color:var(--t2);font-size:13px;text-align:center}
-.hs-mu{color:var(--mu);font-size:11.5px}
+.hs-custom{display:none;align-items:center;gap:8px;padding:10px 22px;background:var(--w);border-bottom:1px solid var(--b)}
+.hs-custom input{background:var(--bg);border:1px solid var(--b);color:var(--tx);border-radius:8px;padding:6px 10px;font-size:12px;font-family:'Plus Jakarta Sans',sans-serif}
+.hs-to{color:var(--mu);font-size:12px}
+.hs-btn-apply{background:var(--ac);color:#fff;border:none;border-radius:8px;padding:7px 14px;font-size:12px;font-weight:700;cursor:pointer;font-family:'Plus Jakarta Sans',sans-serif}
+.hs-body{flex:1;overflow-y:auto;padding:18px 22px}
+.hs-sec-h{font-family:'Plus Jakarta Sans',sans-serif;font-weight:800;font-size:14px;color:var(--tx);margin:6px 2px 10px}
+.hs-sec-h:not(:first-child){margin-top:26px}
+.hs-tablewrap{overflow-x:auto;border:1px solid var(--b);border-radius:14px;background:var(--w)}
+.hs-table{border-collapse:collapse;width:100%;font-size:12.5px;white-space:nowrap}
+.hs-table th{position:sticky;top:0;background:var(--w);color:var(--t2);font-weight:700;font-size:10.5px;text-transform:uppercase;letter-spacing:.4px;padding:10px 12px;text-align:right;border-bottom:1px solid var(--b);cursor:pointer;z-index:1}
+.hs-table th.hs-name-col{text-align:left}
+.hs-table td{padding:0;border-bottom:1px solid var(--b);color:var(--tx)}
+.hs-table tbody tr:last-child td{border-bottom:none}
+.hs-table tbody tr:hover td{background:var(--s2)}
+.hs-name-col{position:sticky;left:0;background:var(--w);text-align:left;font-weight:600;padding:10px 12px!important;z-index:2;border-right:1px solid var(--b)}
+.hs-table tbody tr:hover .hs-name-col{background:var(--s2)}
+.hs-num{position:relative;text-align:right}
+.hs-cellbar{position:absolute;right:0;top:3px;bottom:3px;background:var(--al);border-radius:4px}
+.hs-cellv{position:relative;display:block;padding:10px 12px;font-weight:700}
+.hs-total{color:var(--ac);font-weight:800}
+.hs-zero{color:var(--mu);font-weight:400}
+.hs-empty{color:var(--mu);font-size:12px;padding:18px;text-align:center}
+.hs-err{color:var(--red);background:var(--rl);border:1px solid var(--red);border-radius:12px;padding:14px 16px;font-size:13px;font-weight:600}
+.hs-loading{display:flex;flex-direction:column;align-items:center;gap:14px;padding:60px 20px;color:var(--t2);font-size:13px;text-align:center}
+.hs-mu{color:var(--mu);font-size:11.5px;font-weight:500}
 .hs-spin{width:34px;height:34px;border:3px solid var(--b);border-top-color:var(--ac);border-radius:50%;animation:ringSpinCW 1s linear infinite}
-@media(max-width:720px){.hs-body{grid-template-columns:1fr}.hs-row{grid-template-columns:90px 1fr 32px}}</style>
+@media(max-width:720px){.hs-name-col{max-width:120px;overflow:hidden;text-overflow:ellipsis}}</style>
 </head>
 <body>
 
@@ -901,13 +912,19 @@ footer{
     </div>
     <div class="hs-head-tools">
       <div class="hs-win" id="hs-win">
-        <button class="hs-chip on" data-d="7" onclick="hsSetDays(7)">7d</button>
-        <button class="hs-chip" data-d="14" onclick="hsSetDays(14)">14d</button>
-        <button class="hs-chip" data-d="30" onclick="hsSetDays(30)">30d</button>
+        <button class="hs-chip on" data-r="7" onclick="hsSetRange('7')">7d</button>
+        <button class="hs-chip" data-r="14" onclick="hsSetRange('14')">14d</button>
+        <button class="hs-chip" data-r="30" onclick="hsSetRange('30')">30d</button>
+        <button class="hs-chip" data-r="all" onclick="hsSetRange('all')">All</button>
+        <button class="hs-chip" data-r="custom" onclick="hsSetRange('custom')">Custom</button>
       </div>
       <button class="hs-btn" onclick="hsRefresh()" title="Force refresh">↻</button>
       <button class="hs-x" onclick="toggleHSReport()" title="Close">✕</button>
     </div>
+  </div>
+  <div class="hs-custom" id="hs-custom" style="display:none">
+    <input type="date" id="hs-cstart"><span class="hs-to">to</span><input type="date" id="hs-cend">
+    <button class="hs-btn-apply" onclick="hsApplyCustom()">Apply</button>
   </div>
   <div class="hs-body" id="hs-body"></div>
 </div>
