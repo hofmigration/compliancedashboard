@@ -697,6 +697,84 @@ footer{
 .app .theme-wrap:hover .theme-drop,.app .theme-drop:hover{display:block}
 @media(max-width:980px){.app{margin:0;border-radius:0;border:0;min-height:100vh}.app .rail{display:none}.app .appbody{padding:14px}.app .hnav .ntab{padding:7px 10px}}
 /* ===================== /R1 SHELL ===================== */
+
+/* ── DEALS AUDIT TAB ── */
+.dla-head{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;margin-bottom:14px;flex-wrap:wrap}
+.dla-title{font-family:'Plus Jakarta Sans',sans-serif;font-weight:800;font-size:20px;color:var(--tx)}
+.dla-sub{font-size:12px;color:var(--t2);margin-top:2px}
+.dla-tools{display:flex;gap:8px}
+.dla-btn{background:var(--w);border:1px solid var(--b);color:var(--tx);border-radius:10px;padding:7px 12px;font-size:12.5px;font-weight:600;cursor:pointer;transition:all .15s;font-family:'Plus Jakarta Sans',sans-serif}
+.dla-btn:hover{background:var(--s2);border-color:var(--ac)}
+.dla-seg{display:inline-flex;background:var(--s2);border:1px solid var(--b);border-radius:12px;padding:4px;gap:4px;margin-bottom:14px}
+.dla-seg-btn{border:none;background:transparent;color:var(--t2);font-weight:700;font-size:13px;padding:8px 22px;border-radius:9px;cursor:pointer;transition:all .15s;font-family:'Plus Jakarta Sans',sans-serif}
+.dla-seg-btn.on{background:var(--ac);color:#fff;box-shadow:var(--shm)}
+.dla-filters{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:16px}
+.dla-presets{display:flex;gap:6px;flex-wrap:wrap}
+.dla-chip{background:var(--w);border:1px solid var(--b);color:var(--t2);border-radius:999px;padding:6px 14px;font-size:12.5px;font-weight:600;cursor:pointer;transition:all .15s;font-family:'Plus Jakarta Sans',sans-serif}
+.dla-chip:hover{border-color:var(--ac);color:var(--tx)}
+.dla-chip.on{background:var(--ac);color:#fff;border-color:var(--ac)}
+.dla-custom{display:flex;align-items:center;gap:8px}
+.dla-custom input{background:var(--w);border:1px solid var(--b);color:var(--tx);border-radius:9px;padding:6px 10px;font-size:12.5px;font-family:'Plus Jakarta Sans',sans-serif}
+.dla-to{color:var(--mu);font-size:12px}
+.dla-select{margin-left:auto;background:var(--w);border:1px solid var(--b);color:var(--tx);border-radius:9px;padding:7px 12px;font-size:12.5px;font-weight:600;cursor:pointer;font-family:'Plus Jakarta Sans',sans-serif;min-width:180px}
+.dla-error{display:flex;align-items:center;gap:10px;background:var(--rl);border:1px solid var(--red);color:var(--red);border-radius:12px;padding:12px 16px;font-size:13px;font-weight:600;margin-bottom:14px}
+.dla-skeleton{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:14px}
+.dla-sk-card{height:96px;border-radius:16px;background:linear-gradient(100deg,var(--s2) 30%,var(--b) 50%,var(--s2) 70%);background-size:200% 100%;animation:dlaShimmer 1.4s linear infinite}
+@keyframes dlaShimmer{to{background-position:-200% 0}}
+.dla-kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:14px;margin-bottom:16px}
+.dla-kpi{background:var(--w);border:1px solid var(--b);border-radius:16px;padding:18px 20px;box-shadow:var(--sh)}
+.dla-kpi-v{font-family:'Plus Jakarta Sans',sans-serif;font-weight:800;font-size:30px;color:var(--tx);line-height:1}
+.dla-kpi-l{font-size:12px;color:var(--t2);margin-top:6px;font-weight:600}
+.dla-grid2{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:16px}
+.dla-card{background:var(--w);border:1px solid var(--b);border-radius:16px;padding:18px 20px;box-shadow:var(--sh);margin-bottom:16px}
+.dla-card-h{font-family:'Plus Jakarta Sans',sans-serif;font-weight:700;font-size:14px;color:var(--tx);margin-bottom:14px}
+.dla-hint{font-weight:500;font-size:12px;color:var(--mu)}
+.dla-perf .dla-perf-name{font-weight:700;font-size:16px;color:var(--tx)}
+.dla-perf-pct{font-family:'Plus Jakarta Sans',sans-serif;font-weight:800;font-size:34px;line-height:1.1;margin:4px 0}
+.dla-perf-sub{font-size:12px;color:var(--t2)}
+.dla-mistakes{display:flex;flex-direction:column;gap:12px}
+.dla-mistake-top{display:flex;justify-content:space-between;font-size:12.5px;color:var(--tx);font-weight:600;margin-bottom:5px}
+.dla-mistake-n{color:var(--t2)}
+.dla-mistake-n small{color:var(--mu);font-weight:500}
+.dla-bar{height:8px;background:var(--s2);border-radius:6px;overflow:hidden}
+.dla-bar-fill{height:100%;background:var(--ac);border-radius:6px}
+.dla-stages{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:10px}
+.dla-stage{text-align:left;background:var(--s2);border:1px solid var(--b);border-radius:14px;padding:14px;cursor:pointer;transition:all .15s;font-family:'Plus Jakarta Sans',sans-serif}
+.dla-stage:hover{border-color:var(--ac);transform:translateY(-2px);box-shadow:var(--shm)}
+.dla-stage-name{font-size:12.5px;font-weight:700;color:var(--tx);margin-bottom:6px}
+.dla-stage-n{font-size:26px;font-weight:800;color:var(--ac);line-height:1}
+.dla-stage-comp{font-size:11.5px;font-weight:600;margin-top:4px}
+.dla-perday{display:flex;gap:8px;overflow-x:auto;padding-bottom:6px;align-items:flex-end}
+.dla-day{flex:0 0 auto;width:40px;display:flex;flex-direction:column;align-items:center;gap:4px}
+.dla-day-val{font-size:10px;font-weight:700}
+.dla-day-bar{width:24px;height:90px;background:var(--s2);border-radius:6px;display:flex;align-items:flex-end;overflow:hidden}
+.dla-day-fill{width:100%;border-radius:6px 6px 0 0;transition:height .3s}
+.dla-day-lbl{font-size:10px;color:var(--mu)}
+.dla-tablewrap{overflow-x:auto}
+.dla-table{width:100%;border-collapse:collapse;font-size:13px}
+.dla-table th{text-align:left;font-weight:700;color:var(--t2);font-size:11px;text-transform:uppercase;letter-spacing:.4px;padding:8px 10px;border-bottom:1px solid var(--b)}
+.dla-table td{padding:10px;border-bottom:1px solid var(--b);color:var(--tx)}
+.dla-table tr:last-child td{border-bottom:none}
+.dla-empty{text-align:center;color:var(--mu);font-size:12.5px;padding:22px}
+.dla-modal{position:fixed;inset:0;z-index:650;background:rgba(0,0,0,.45);display:none;align-items:center;justify-content:center;padding:20px}
+.dla-modal.on{display:flex}
+.dla-modal-card{background:var(--w);border:1px solid var(--b);border-radius:18px;width:100%;max-width:560px;max-height:80vh;display:flex;flex-direction:column;box-shadow:var(--shm)}
+.dla-modal-head{display:flex;align-items:center;justify-content:space-between;padding:18px 20px;border-bottom:1px solid var(--b)}
+.dla-modal-title{font-family:'Plus Jakarta Sans',sans-serif;font-weight:800;font-size:16px;color:var(--tx)}
+.dla-modal-x{background:var(--s2);border:none;color:var(--t2);width:30px;height:30px;border-radius:8px;cursor:pointer;font-size:14px}
+.dla-modal-x:hover{background:var(--b)}
+.dla-modal-body{overflow-y:auto;padding:14px 20px}
+.dla-case{display:flex;justify-content:space-between;gap:12px;padding:12px;border:1px solid var(--b);border-radius:12px;margin-bottom:10px}
+.dla-case-name{font-weight:700;color:var(--tx);font-size:13px}
+.dla-case-meta{font-size:11.5px;color:var(--t2);margin-top:2px}
+.dla-case-cmt{font-size:11.5px;color:var(--mu);margin-top:5px;font-style:italic}
+.dla-case-r{text-align:right;white-space:nowrap}
+.dla-case-score{font-weight:800;font-size:18px}
+.dla-case-r a{font-size:11.5px;color:var(--ac);font-weight:600;text-decoration:none}
+.dla-case-r a:hover{text-decoration:underline}
+.dla-af{display:inline-block;background:var(--red);color:#fff;font-size:9px;font-weight:800;padding:2px 6px;border-radius:5px;vertical-align:middle;letter-spacing:.5px}
+.dla-mu{color:var(--mu);font-size:11.5px}
+@media(max-width:640px){.dla-grid2{grid-template-columns:1fr}}
 </style>
 </head>
 <body>
@@ -1892,201 +1970,97 @@ footer{
 
 <!-- ══════════════════════ DEAL'S OVERVIEW TAB ══════════════════════ -->
 <div class="panel" id="p-deals">
-  <!-- DEALS HEADER -->
-  <div style="display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:24px;flex-wrap:wrap;gap:12px;padding-top:4px">
+
+  <div class="dla-head">
     <div>
-      <div style="font-size:10px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:#6366f1;margin-bottom:4px;font-family:'DM Mono',monospace">LIVE · GOOGLE SHEETS CONNECTED</div>
-      <div style="font-size:20px;font-weight:800;letter-spacing:-.5px;font-family:'Nunito',sans-serif;color:var(--tx)">Deal's Overview</div>
-      <div style="font-size:11px;color:var(--mu);margin-top:2px;font-family:'DM Mono',monospace" id="deals-source-label">Loading from Google Sheets…</div>
+      <div class="dla-title">Deals Audit</div>
+      <div class="dla-sub" id="dla-updated">Loading…</div>
     </div>
-    <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center">
-      <div style="display:flex;align-items:center;gap:6px;font-size:11px;color:var(--mu);font-family:'DM Mono',monospace;padding:5px 10px;background:var(--s2);border-radius:6px;border:1px solid var(--b)">
-        <span style="width:7px;height:7px;border-radius:50%;background:#10b981;display:inline-block;animation:pulse 2s infinite"></span>
-        <span id="deals-last-updated">Connecting…</span>
-      </div>
-      <button class="btn bo" onclick="loadDealsData()">↻ Refresh</button>
-      <button class="btn bs" onclick="exportDealsCSV()">📊 Export</button>
+    <div class="dla-tools">
+      <button class="dla-btn" onclick="dlaRefresh()">↻ Refresh</button>
+      <button class="dla-btn" onclick="dlaExportCSV()">⤓ Export</button>
     </div>
   </div>
 
-  <!-- ERROR BANNER -->
-  <div id="deals-error" style="display:none;background:var(--rl);border:1px solid #fca5a5;border-radius:10px;padding:12px 16px;margin-bottom:16px;color:#991b1b;font-size:13px;display:none;align-items:center;gap:10px">
-    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
-    <span id="deals-error-msg">Could not load sheet data.</span>
-    <button class="btn bo" onclick="loadDealsData()" style="margin-left:auto;padding:4px 10px;font-size:11px">Retry</button>
+  <div class="dla-seg">
+    <button class="dla-seg-btn on" id="dla-seg-global" onclick="dlaSetSegment('global')">Global</button>
+    <button class="dla-seg-btn" id="dla-seg-dxb" onclick="dlaSetSegment('dxb')">DXB</button>
   </div>
 
-  <!-- FILTERS ROW -->
-  <div class="fp" style="margin-bottom:16px">
-    <div class="fr" style="flex-wrap:wrap;gap:12px">
-      <div class="fg">
-        <label>Date Range</label>
-        <div class="chips">
-          <button class="chip active" data-deals-range="all"      onclick="setDealsRange(this,'all')">All Time</button>
-          <button class="chip"        data-deals-range="thismonth" onclick="setDealsRange(this,'thismonth')">This Month</button>
-          <button class="chip"        data-deals-range="lastmonth" onclick="setDealsRange(this,'lastmonth')">Last Month</button>
-          <button class="chip"        data-deals-range="last7"    onclick="setDealsRange(this,'last7')">Last 7 Days</button>
-          <button class="chip"        data-deals-range="last28"   onclick="setDealsRange(this,'last28')">Last 4 Weeks</button>
-          <button class="chip"        data-deals-range="custom"   onclick="setDealsRange(this,'custom')">📅 Custom…</button>
-        </div>
-      </div>
-      <div class="fg">
-        <label>Consultant</label>
-        <select id="deals-consultant-filter" onchange="renderDealsTab()">
-          <option value="all">All Consultants</option>
-        </select>
-      </div>
-      <div class="fg">
-        <label>Stage</label>
-        <select id="deals-stage-filter" onchange="renderDealsTab()">
-          <option value="all">All Stages</option>
-        </select>
-      </div>
+  <div class="dla-filters">
+    <div class="dla-presets" id="dla-presets">
+      <button class="dla-chip on" data-preset="today" onclick="dlaSetPreset('today')">Today</button>
+      <button class="dla-chip" data-preset="last7" onclick="dlaSetPreset('last7')">Last 7 days</button>
+      <button class="dla-chip" data-preset="last10" onclick="dlaSetPreset('last10')">Last 10 days</button>
+      <button class="dla-chip" data-preset="month" onclick="dlaSetPreset('month')">This month</button>
+      <button class="dla-chip" data-preset="custom" onclick="dlaSetPreset('custom')">Custom</button>
     </div>
-    <div id="deals-custom-box" class="cbox hidden">
-      <div class="fg"><label>Start Date</label><input type="date" id="deals-ds" onchange="renderDealsTab()"></div>
-      <div class="fg"><label>End Date</label><input type="date" id="deals-de" onchange="renderDealsTab()"></div>
+    <div class="dla-custom" id="dla-custom" style="display:none">
+      <input type="date" id="dla-start" onchange="dlaRender()">
+      <span class="dla-to">to</span>
+      <input type="date" id="dla-end" onchange="dlaRender()">
     </div>
+    <select id="dla-consultant" class="dla-select" onchange="dlaRender()">
+      <option value="all">All Consultants</option>
+    </select>
   </div>
 
-  <!-- LOADING SKELETON -->
-  <div id="deals-skeleton" style="display:none">
-    <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:12px;margin-bottom:20px">
-      <div class="skeleton" style="height:80px;border-radius:12px"></div>
-      <div class="skeleton" style="height:80px;border-radius:12px"></div>
-      <div class="skeleton" style="height:80px;border-radius:12px"></div>
-      <div class="skeleton" style="height:80px;border-radius:12px"></div>
-      <div class="skeleton" style="height:80px;border-radius:12px"></div>
-      <div class="skeleton" style="height:80px;border-radius:12px"></div>
-    </div>
-    <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:16px;margin-bottom:16px">
-      <div class="skeleton skel-chart"></div>
-      <div class="skeleton skel-chart"></div>
-      <div class="skeleton skel-chart"></div>
-    </div>
+  <div class="dla-error" id="dla-error" style="display:none">
+    <span>⚠️</span><span id="dla-error-msg"></span>
   </div>
 
-  <!-- MAIN CONTENT (hidden until data loads) -->
-  <div id="deals-content" style="display:none">
-  <!-- DEBUG INFO — shown only when data loads, auto-hides after 10s -->
-  <div id="deals-debug-box" style="display:none;background:var(--s2);border:1px solid var(--b);border-radius:8px;padding:10px 14px;margin-bottom:14px;font-family:'DM Mono',monospace;font-size:11px;color:var(--mu)">
-    <strong style="color:var(--tx)">🔍 Data Debug</strong>
-    <span id="deals-debug-source" style="margin-left:8px"></span>
-    <span id="deals-debug-rows" style="margin-left:8px"></span>
-    <br><span style="color:var(--mu)">Detected columns: </span><span id="deals-debug-cols" style="color:var(--t2)"></span>
-    <button onclick="document.getElementById('deals-debug-box').style.display='none'" style="float:right;background:none;border:none;cursor:pointer;color:var(--mu);font-size:13px">✕</button>
+  <div class="dla-skeleton" id="dla-skeleton">
+    <div class="dla-sk-card"></div><div class="dla-sk-card"></div>
+    <div class="dla-sk-card"></div><div class="dla-sk-card"></div>
   </div>
 
-    <!-- KPI STRIP -->
-    <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(155px,1fr));gap:12px;margin-bottom:20px" id="deals-kpi-strip">
-      <div class="kcard"><div class="kbar" style="background:#2563eb"></div><div class="klabel">Total Deals</div><div class="kval" id="dk-total" style="color:#2563eb">—</div><div class="kdesc" id="dk-total-s">in period</div></div>
-      <div class="kcard"><div class="kbar" style="background:#7c3aed"></div><div class="klabel">Active Pipeline</div><div class="kval" id="dk-active" style="color:#7c3aed">—</div><div class="kdesc">open deals</div></div>
-      <div class="kcard"><div class="kbar" style="background:#059669"></div><div class="klabel">Closed Won</div><div class="kval" id="dk-won" style="color:#059669">—</div><div class="kdesc" id="dk-won-s">deals</div></div>
-      <div class="kcard"><div class="kbar" style="background:#dc2626"></div><div class="klabel">Closed Lost</div><div class="kval" id="dk-lost" style="color:#dc2626">—</div><div class="kdesc">deals</div></div>
-      <div class="kcard"><div class="kbar" style="background:#d97706"></div><div class="klabel">Win Rate</div><div class="kval" id="dk-winrate" style="color:#d97706">—</div><div class="kdesc">of closed deals</div></div>
-      <div class="kcard"><div class="kbar" style="background:#6366f1"></div><div class="klabel">Consultants</div><div class="kval" id="dk-consultants" style="color:#6366f1">—</div><div class="kdesc">active this period</div></div>
+  <div id="dla-content" style="display:none">
+
+    <div class="dla-kpis">
+      <div class="dla-kpi"><div class="dla-kpi-v" id="dla-k-audits">—</div><div class="dla-kpi-l">Audits this period</div></div>
+      <div class="dla-kpi"><div class="dla-kpi-v" id="dla-k-comp">—</div><div class="dla-kpi-l">Team compliance</div></div>
+      <div class="dla-kpi"><div class="dla-kpi-v" id="dla-k-cons">—</div><div class="dla-kpi-l">Consultants audited</div></div>
+      <div class="dla-kpi"><div class="dla-kpi-v" id="dla-k-af">—</div><div class="dla-kpi-l">Autofails</div></div>
     </div>
 
-    <!-- PIPELINE HEALTH BANNER (70% threshold) -->
-    <div id="pipeline-health-banner" style="background:linear-gradient(135deg,rgba(99,102,241,.08),rgba(139,92,246,.06));border:1.5px solid rgba(99,102,241,.25);border-radius:14px;padding:18px 22px;margin-bottom:20px">
-      <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:14px">
-        <div style="display:flex;align-items:center;gap:14px">
-          <div style="width:48px;height:48px;border-radius:12px;background:linear-gradient(135deg,#6366f1,#8b5cf6);display:flex;align-items:center;justify-content:center;flex-shrink:0">
-            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2"><polyline points="22,12 18,12 15,21 9,3 6,12 2,12"/></svg>
-          </div>
-          <div>
-            <div style="font-size:13px;font-weight:700;color:var(--tx);margin-bottom:2px">Correct Pipeline Stage Health</div>
-            <div style="font-size:11px;color:var(--mu);font-family:'DM Mono',monospace">Target: 70% of deals must be in the correct pipeline stage</div>
-          </div>
-        </div>
-        <div style="display:flex;align-items:center;gap:24px;flex-wrap:wrap">
-          <div style="text-align:center">
-            <div style="font-size:30px;font-weight:900;font-family:'Nunito',sans-serif;line-height:1" id="pipeline-correct-pct">—</div>
-            <div style="font-size:10px;color:var(--mu);font-family:'DM Mono',monospace;margin-top:2px">CORRECT %</div>
-          </div>
-          <div style="text-align:center">
-            <div style="font-size:30px;font-weight:900;font-family:'Nunito',sans-serif;line-height:1;color:#dc2626" id="pipeline-wrong-count">—</div>
-            <div style="font-size:10px;color:var(--mu);font-family:'DM Mono',monospace;margin-top:2px">WRONG STAGE</div>
-          </div>
-          <div>
-            <div style="display:flex;align-items:center;gap:8px;margin-bottom:6px">
-              <div style="font-size:11px;color:var(--mu);width:80px;font-family:'DM Mono',monospace">Correct</div>
-              <div style="flex:1;height:8px;background:var(--b);border-radius:4px;min-width:140px;overflow:hidden"><div id="pipeline-bar-correct" style="height:100%;background:#059669;border-radius:4px;transition:width .6s ease"></div></div>
-              <div style="font-size:11px;font-weight:700;color:#059669;width:38px;text-align:right;font-family:'DM Mono',monospace" id="pipeline-bar-correct-pct">—</div>
-            </div>
-            <div style="display:flex;align-items:center;gap:8px">
-              <div style="font-size:11px;color:var(--mu);width:80px;font-family:'DM Mono',monospace">Wrong</div>
-              <div style="flex:1;height:8px;background:var(--b);border-radius:4px;min-width:140px;overflow:hidden"><div id="pipeline-bar-wrong" style="height:100%;background:#dc2626;border-radius:4px;transition:width .6s ease"></div></div>
-              <div style="font-size:11px;font-weight:700;color:#dc2626;width:38px;text-align:right;font-family:'DM Mono',monospace" id="pipeline-bar-wrong-pct">—</div>
-            </div>
-          </div>
-          <div id="pipeline-status-badge" style="padding:8px 16px;border-radius:8px;font-size:12px;font-weight:700;font-family:'DM Mono',monospace">—</div>
-        </div>
-      </div>
+    <div class="dla-grid2">
+      <div class="dla-card dla-perf"><div class="dla-card-h">🏆 Top performer</div><div id="dla-top"></div></div>
+      <div class="dla-card dla-perf"><div class="dla-card-h">⚠️ Needs attention</div><div id="dla-bottom"></div></div>
     </div>
 
-    <!-- CHARTS ROW 1: Stage funnel + Consultant breakdown + Win/Loss trend -->
-    <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:16px;margin-bottom:16px">
-      <div class="card">
-        <div class="card-head"><div><div class="card-title">📊 Pipeline by Stage</div><div class="card-sub">Deal count per funnel stage</div></div></div>
-        <div class="card-body"><div style="position:relative;height:220px"><canvas id="deals-stage-chart"></canvas></div></div>
-      </div>
-      <div class="card">
-        <div class="card-head"><div><div class="card-title">🥧 Deals by Consultant</div><div class="card-sub">Share of deals per consultant</div></div></div>
-        <div class="card-body">
-          <div style="position:relative;height:180px"><canvas id="deals-consultant-chart"></canvas></div>
-          <div id="deals-consultant-legend" style="margin-top:8px;display:flex;flex-wrap:wrap;gap:6px;padding:0 4px"></div>
-        </div>
-      </div>
-      <div class="card">
-        <div class="card-head"><div><div class="card-title">✅ Won vs ❌ Lost</div><div class="card-sub">Closed deal outcomes by consultant</div></div></div>
-        <div class="card-body"><div style="position:relative;height:220px"><canvas id="deals-wonlost-chart"></canvas></div></div>
-      </div>
+    <div class="dla-card"><div class="dla-card-h">Most common mistakes</div><div id="dla-mistakes" class="dla-mistakes"></div></div>
+
+    <div class="dla-card">
+      <div class="dla-card-h">Audits by deal stage <span class="dla-hint">— tap a stage to see its cases</span></div>
+      <div class="dla-stages" id="dla-stages"></div>
     </div>
 
-    <!-- CHARTS ROW 2: Leaderboard + Pipeline correct/wrong per consultant -->
-    <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:16px">
-      <div class="card">
-        <div class="card-head"><div><div class="card-title">🏆 Consultant Leaderboard</div><div class="card-sub">Ranked by total deals this period</div></div></div>
-        <div class="card-body" id="deals-leaderboard" style="padding:12px 16px"></div>
-      </div>
-      <div class="card">
-        <div class="card-head"><div><div class="card-title">🎯 Correct Pipeline % by Consultant</div><div class="card-sub">Who's hitting the 70% target</div></div></div>
-        <div class="card-body" id="deals-pipeline-per-consultant" style="padding:12px 16px"></div>
-      </div>
+    <div class="dla-card">
+      <div class="dla-card-h">Per-day team average</div>
+      <div class="dla-perday" id="dla-perday"></div>
     </div>
 
-    <!-- FULL DEALS TABLE -->
-    <div class="card">
-      <div class="card-head">
-        <div><div class="card-title">📋 All Deals</div><div class="card-sub" id="deals-table-count">Loading…</div></div>
-        <div style="display:flex;gap:8px;align-items:center">
-          <input class="srch" type="text" placeholder="🔍 Search…" oninput="filterDealsTable(this.value)" style="width:160px">
-          <select class="sb" id="deals-sort-select" onchange="sortDealsTable(this.value)" style="width:auto;font-size:12px;padding:5px 9px">
-            <option value="name">Sort: Name</option>
-            <option value="stage">Sort: Stage</option>
-            <option value="date">Sort: Date</option>
-            <option value="pipeline_correct">Sort: Pipeline ✓</option>
-          </select>
-        </div>
-      </div>
-      <div class="tw" style="max-height:500px;overflow-y:auto">
-        <table class="cmp-table" id="deals-main-table">
-          <thead><tr>
-            <th onclick="sortDealsTable('name')">Consultant</th>
-            <th onclick="sortDealsTable('stage')">Stage</th>
-            <th onclick="sortDealsTable('date')">Date</th>
-            <th onclick="sortDealsTable('pipeline_correct')" style="text-align:center">Pipeline ✓</th>
-            <th onclick="sortDealsTable('value')">Value</th>
-            <th>Contact</th>
-            <th>Source</th>
-          </tr></thead>
-          <tbody id="deals-tbody"></tbody>
+    <div class="dla-card">
+      <div class="dla-card-h">Consultant audits &amp; compliance</div>
+      <div class="dla-tablewrap">
+        <table class="dla-table">
+          <thead><tr><th>Consultant</th><th style="text-align:center">Audits</th><th style="text-align:center">Autofails</th><th style="text-align:right">Compliance</th></tr></thead>
+          <tbody id="dla-tbody"></tbody>
         </table>
       </div>
     </div>
 
-  </div><!-- /deals-content -->
+  </div>
+
+  <div class="dla-modal" id="dla-modal">
+    <div class="dla-modal-card">
+      <div class="dla-modal-head">
+        <div class="dla-modal-title" id="dla-modal-title">Cases</div>
+        <button class="dla-modal-x" onclick="dlaCloseStage()">✕</button>
+      </div>
+      <div class="dla-modal-body" id="dla-modal-body"></div>
+    </div>
+  </div>
 
 </div><!-- /p-deals -->
 
