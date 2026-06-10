@@ -9,6 +9,7 @@ const HS_API = 'https://script.google.com/macros/s/AKfycbzn_ngRUlGOV9S9iDkY67QWB
 var hsLoaded = false;
 var hsData   = null;
 var hsRange  = { days: '7' };
+var hsConsultant = 'all';
 var hsCharts = {};
 
 // ── HOF Consultants sub-tab toggle ───────────────────────────────
@@ -101,12 +102,26 @@ function hsLoad(force) {
 }
 
 // ── Data helpers ──────────────────────────────────────────────────
+function hsActiveIds() {
+  if (hsConsultant && hsConsultant !== 'all') { var o = {}; o[hsConsultant] = 1; return o; }
+  var m = {}; (hsData.owners || []).forEach(function (x) { m[x.id] = 1; }); return m;
+}
+function hsSelectConsultant(v) { hsConsultant = v; hsRenderAll(); }
+function hsPopulateConsultants() {
+  var sel = document.getElementById('hs-consultant'); if (!sel) return;
+  if (sel.options.length > 1) { sel.value = hsConsultant; return; } // already populated
+  var names = (hsData.owners || []).slice().sort(function (a, b) { return a.name.localeCompare(b.name); });
+  sel.innerHTML = '<option value="all">All Consultants</option>' +
+    names.map(function (o) { return '<option value="' + o.id + '">' + hsEsc(o.name) + '</option>'; }).join('');
+  sel.value = hsConsultant;
+}
 function hsLookup(key) { var m = {}; ((hsData.widgets || {})[key] || []).forEach(function (r) { m[r.id] = r.count; }); return m; }
-function hsSum(key) { return ((hsData.widgets || {})[key] || []).reduce(function (s, r) { return s + (r.count || 0); }, 0); }
-function hsSingle(key) { return (((hsData.widgets || {})[key]) || []).slice().sort(function (a, b) { return b.count - a.count; }); }
+function hsSum(key) { var act = hsActiveIds(); return ((hsData.widgets || {})[key] || []).reduce(function (s, r) { return s + (act[r.id] ? (r.count || 0) : 0); }, 0); }
+function hsSingle(key) { var act = hsActiveIds(); return (((hsData.widgets || {})[key]) || []).filter(function (r) { return act[r.id]; }).slice().sort(function (a, b) { return b.count - a.count; }); }
 function hsMerge(keyA, keyB) {
-  var a = hsLookup(keyA), b = hsLookup(keyB);
-  return (hsData.owners || []).map(function (o) { return { name: o.name, a: a[o.id] || 0, b: b[o.id] || 0 }; })
+  var a = hsLookup(keyA), b = hsLookup(keyB), act = hsActiveIds();
+  return (hsData.owners || []).filter(function (o) { return act[o.id]; })
+    .map(function (o) { return { name: o.name, a: a[o.id] || 0, b: b[o.id] || 0 }; })
     .sort(function (x, y) { return (y.a + y.b) - (x.a + x.b); });
 }
 function hsCV(n, fb) { try { var v = getComputedStyle(document.body).getPropertyValue(n).trim(); return v || fb; } catch (e) { return fb; } }
@@ -120,13 +135,14 @@ function chartCard(title, id, h) { return '<div class="hs-chart-card"><div class
 function hsRenderAll() {
   if (!hsData) return;
   hsDestroy();
+  hsPopulateConsultants();
   var body = document.getElementById('hs-body'); if (!body) return;
   var sub = document.getElementById('hs-sub');
   if (sub) { var when = ''; try { when = new Date(hsData.generatedAt).toLocaleString(); } catch (e) {}
     sub.textContent = (hsData.owners ? hsData.owners.length : 0) + ' consultants · ' + (hsData.rangeLabel || '') + ' · updated ' + when; }
 
   var ac = hsCV('--ac', '#243a9e'), grn = hsCV('--grn', '#10b981'), red = hsCV('--red', '#ef4444'), amb = hsCV('--amb', '#f59e0b');
-  var n = (hsData.owners || []).length;
+  var n = Object.keys(hsActiveIds()).length;
   var outreach = hsMerge('calls', 'emails'), created = hsMerge('dealsCreated', 'tasksCreated');
   var won = hsSingle('dealsWon'), tasks = hsMerge('tasksCompleted', 'overdueTasks'), contacts = hsSingle('totalContacts');
 
@@ -154,7 +170,13 @@ function hsRenderAll() {
   hsGrouped('hsc-created', created.map(nm), [{ label: 'Deals created', data: created.map(va), color: grn }, { label: 'Tasks created', data: created.map(vb), color: ac }], ax);
   hsBar('hsc-won', won.map(function (x) { return x.name; }), won.map(function (x) { return x.count; }), grn, ax);
   hsGrouped('hsc-tasks', tasks.map(nm), [{ label: 'Done', data: tasks.map(va), color: grn }, { label: 'Overdue', data: tasks.map(vb), color: red }], ax);
-  var st = (hsData.leadStageMatrix && hsData.leadStageMatrix.stageTotals) || {};
+  var st;
+  if (hsConsultant !== 'all') {
+    var lr = ((hsData.leadStageMatrix && hsData.leadStageMatrix.rows) || []).filter(function (r) { return r.id === hsConsultant; })[0];
+    st = (lr && lr.counts) || {};
+  } else {
+    st = (hsData.leadStageMatrix && hsData.leadStageMatrix.stageTotals) || {};
+  }
   var keys = Object.keys(st).sort(function (a, b) { return st[b] - st[a]; });
   hsDonut('hsc-lead', keys, keys.map(function (k) { return st[k]; }), ac, ax);
   hsBar('hsc-contacts', contacts.map(function (x) { return x.name; }), contacts.map(function (x) { return x.count; }), ac, ax);
@@ -191,9 +213,11 @@ function hsLeadTable() {
   if (!m.stages.length) return '<div class="hs-empty">No lead-stage data in this period</div>';
   var colMax = {};
   m.stages.forEach(function (st) { colMax[st] = m.rows.reduce(function (mx, r) { return Math.max(mx, r.counts[st] || 0); }, 0) || 1; });
+  var viewRows = (hsConsultant !== 'all') ? m.rows.filter(function (r) { return r.id === hsConsultant; }) : m.rows;
+  if (!viewRows.length) return '<div class="hs-empty">No lead-stage data for this consultant</div>';
   var head = '<th class="hs-name-col">Consultant</th><th class="hs-th-num">Total</th>' +
     m.stages.map(function (st) { return '<th class="hs-th-num">' + hsEsc(st) + '</th>'; }).join('');
-  var rows = m.rows.map(function (r) {
+  var rows = viewRows.map(function (r) {
     return '<tr><td class="hs-name-col">' + hsEsc(r.name) + '</td>' +
       '<td class="hs-num"><span class="hs-cellv hs-total">' + r.total + '</span></td>' +
       m.stages.map(function (st) {
