@@ -141,7 +141,7 @@ function applyFilters() {
                 activeRange==='thismonth' ? 'This Month' :
                 activeRange==='lastmonth' ? 'Last Month' :
                 activeRange==='last7'     ? 'Last 7 Days' :
-                activeRange==='last28'    ? 'Last 4 Weeks' :
+                activeRange==='last3'     ? 'Last 3 Days' :
                 (fmtDate(getBounds(activeRange).s)||'?') + ' → ' + (fmtDate(getBounds(activeRange).e)||'?');
     ctx.innerHTML = '<div class="ctx-dot"></div> Showing: <strong>' + label + '</strong> &nbsp;|&nbsp; Sheet data range: ' + HOF_dateRange.min + ' → ' + HOF_dateRange.audits;
   }
@@ -1756,4 +1756,3 @@ function hofRestoreUrl() {
   if (p.has('consultant')) document.getElementById('cf').value = p.get('consultant');
   if (p.has('sort'))       document.getElementById('sf').value = p.get('sort');
 }
-
