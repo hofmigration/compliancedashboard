@@ -400,7 +400,7 @@ function setGBadge(avg) {
 //  HOF TAB — exact logic from dashboard v5
 // ══════════════════════════════════════════════════════════════
 let HOF_ALL = [], HOF_filtered = [], HOF_totalAudits = 0, HOF_dateRange = {min:'',audits:''};
-let hofTSK = 'total', hofTSD = -1, activeRange = 'thismonth';
+let hofTSK = 'total', hofTSD = -1, activeRange = 'last3';
 let hofBarC, hofDonutC, hofRadarC;
 
 function fmtDate(d) { return d ? d.toISOString().slice(0,10) : ''; }
@@ -412,7 +412,7 @@ function getBounds(range) {
   else if (range==='thismonth')  { s=new Date(y,m,1);      e=new Date(y,m+1,0,23,59,59); }
   else if (range==='lastmonth') { s=new Date(y,m-1,1); e=new Date(y,m,0,23,59,59); }
   else if (range==='last7')  { s=new Date(); s.setDate(now.getDate()-7);  s.setHours(0,0,0,0); }
-  else if (range==='last28') { s=new Date(); s.setDate(now.getDate()-28); s.setHours(0,0,0,0); }
+  else if (range==='last3')  { s=new Date(); s.setDate(now.getDate()-3);  s.setHours(0,0,0,0); }
   else if (range==='custom') {
     const sv=document.getElementById('ds').value, ev=document.getElementById('de').value;
     if (sv) { s=new Date(sv); s.setHours(0,0,0,0); }
