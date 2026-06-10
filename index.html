@@ -817,6 +817,19 @@ footer{
 .hs-loading{display:flex;flex-direction:column;align-items:center;gap:14px;padding:60px 20px;color:var(--t2);font-size:13px;text-align:center}
 .hs-mu{color:var(--mu);font-size:11.5px;font-weight:500}
 .hs-spin{width:34px;height:34px;border:3px solid var(--b);border-top-color:var(--ac);border-radius:50%;animation:ringSpinCW 1s linear infinite}
+.hs-subtab-bar{display:flex;gap:4px;padding:12px 22px 0;background:var(--bg)}
+.hs-subtab{flex:1;border:1px solid var(--b);background:var(--w);color:var(--mu);font-weight:700;font-size:13px;padding:11px 16px;border-radius:11px;cursor:pointer;transition:all .2s;font-family:'Plus Jakarta Sans',sans-serif}
+.hs-subtab:hover{color:var(--tx);border-color:var(--ac)}
+.hs-subtab.on{background:var(--ac);color:#fff;border-color:var(--ac);box-shadow:var(--shm)}
+.hs-kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:12px;margin-bottom:18px}
+.hs-kpi{background:var(--w);border:1px solid var(--b);border-radius:14px;padding:14px 16px;box-shadow:var(--sh)}
+.hs-kpi-v{font-family:'Plus Jakarta Sans',sans-serif;font-weight:800;font-size:26px;color:var(--tx);line-height:1}
+.hs-kpi-l{font-size:11.5px;color:var(--t2);margin-top:5px;font-weight:600}
+.hs-chart-card{background:var(--w);border:1px solid var(--b);border-radius:16px;padding:16px 18px;box-shadow:var(--sh);margin-bottom:16px}
+.hs-chart-h{font-family:'Plus Jakarta Sans',sans-serif;font-weight:700;font-size:13.5px;color:var(--tx);margin-bottom:12px}
+.hs-cbox{position:relative;width:100%}
+.hs-grid2{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+@media(max-width:720px){.hs-grid2{grid-template-columns:1fr}.hs-kpi-v{font-size:22px}}
 @media(max-width:720px){.hs-name-col{max-width:120px;overflow:hidden;text-overflow:ellipsis}}</style>
 </head>
 <body>
@@ -907,7 +920,7 @@ footer{
 <div id="hsDrawer">
   <div class="hs-head">
     <div>
-      <div class="hs-title">Consultant Activity</div>
+      <div class="hs-title">Consultants Activity</div>
       <div class="hs-sub" id="hs-sub">Live from HubSpot</div>
     </div>
     <div class="hs-head-tools">
@@ -925,6 +938,10 @@ footer{
   <div class="hs-custom" id="hs-custom" style="display:none">
     <input type="date" id="hs-cstart"><span class="hs-to">to</span><input type="date" id="hs-cend">
     <button class="hs-btn-apply" onclick="hsApplyCustom()">Apply</button>
+  </div>
+  <div class="hs-subtab-bar">
+    <button class="hs-subtab on" id="hs-st-perf" onclick="hsSetTab('perf')">Performance Compliance</button>
+    <button class="hs-subtab" id="hs-st-act" onclick="hsSetTab('activity')">Activity Compliance</button>
   </div>
   <div class="hs-body" id="hs-body"></div>
 </div>
