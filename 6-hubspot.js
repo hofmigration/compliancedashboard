@@ -8,7 +8,7 @@ const HS_API = 'https://script.google.com/macros/s/AKfycbzn_ngRUlGOV9S9iDkY67QWB
 
 var hsLoaded = false;
 var hsData   = null;
-var hsRange  = { days: '7' };
+var hsRange  = (function () { var d = new Date(), mo = d.getMonth() + 1, da = d.getDate(); var ymd = d.getFullYear() + '-' + (mo < 10 ? '0' + mo : mo) + '-' + (da < 10 ? '0' + da : da); return { custom: { start: ymd, end: ymd } }; })();
 var hsConsultant = 'all';
 var hsCharts = {};
 
