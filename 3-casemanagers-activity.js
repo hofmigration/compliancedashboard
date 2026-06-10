@@ -1112,7 +1112,7 @@ function aiAsk(question) {
 }
 
 function buildDashboardContext(question) {
-  if (!HOF_ALL || !HOF_ALL.length) return 'No dashboard data loaded yet.';
+  if (!HOF_ALL || !HOF_ALL.length) { return buildOtherContext(question) || 'No dashboard data loaded yet. Open the tabs (HOF Consultants, Deal\'s Compliance, CM\'s Compliance) so their data loads.'; }
 
   var q = (question || '').toLowerCase();
   var catNames = {outcome:'Outcome',call:'Call',leadStage:'Lead Stage',deal:'Deal',email:'Email',whatsapp:'WhatsApp',task:'Task'};
@@ -1158,6 +1158,63 @@ function buildDashboardContext(question) {
     }
   }
 
+  return [lines.join('\n'), buildOtherContext(question)].filter(Boolean).join('\n\n');
+}
+
+// Context from the other dashboard areas (Case Managers, Deals, HubSpot activity).
+function buildOtherContext(question) {
+  var s = [];
+  if (typeof cmDashAllRows !== 'undefined' && cmDashAllRows && cmDashAllRows.length) s.push(hofAI_cm());
+  if (typeof dlaData !== 'undefined' && dlaData && dlaData.segments) s.push(hofAI_deals());
+  if (typeof hsData !== 'undefined' && hsData && hsData.widgets) s.push(hofAI_hs());
+  return s.join('\n\n');
+}
+
+function hofAI_cm() {
+  var map = {};
+  cmDashAllRows.forEach(function (r) {
+    var m = map[r.name] || (map[r.name] = { name: r.name, calls: 0, emails: 0, deals: 0, tasks: 0 });
+    m.calls += r.calls || 0; m.emails += r.emails || 0; m.deals += r.deals || 0; m.tasks += r.tasks || 0;
+  });
+  var list = Object.keys(map).map(function (k) { return map[k]; });
+  var tot = list.reduce(function (a, x) { return { c: a.c + x.calls, e: a.e + x.emails, d: a.d + x.deals, t: a.t + x.tasks }; }, { c: 0, e: 0, d: 0, t: 0 });
+  list.sort(function (a, b) { return (b.calls + b.emails + b.deals + b.tasks) - (a.calls + a.emails + a.deals + a.tasks); });
+  var lines = ['CASE MANAGERS (activity totals, loaded periods) | CMs:' + list.length + ' | Calls:' + tot.c + ' Emails:' + tot.e + ' Deals:' + tot.d + ' Tasks:' + tot.t];
+  list.forEach(function (x) { lines.push(x.name + '|calls:' + x.calls + '|emails:' + x.emails + '|deals:' + x.deals + '|tasks:' + x.tasks); });
+  return lines.join('\n');
+}
+
+function hofAI_deals() {
+  var out = ['DEALS COMPLIANCE (audit scores, all loaded rows):'];
+  ['global', 'dxb'].forEach(function (seg) {
+    var rows = (dlaData.segments[seg] && dlaData.segments[seg].rows) || [];
+    if (!rows.length) return;
+    var scored = rows.filter(function (r) { return typeof r.score === 'number'; });
+    var avg = scored.length ? Math.round(scored.reduce(function (s, r) { return s + r.score; }, 0) / scored.length) : null;
+    var cm = {};
+    rows.forEach(function (r) { var k = r.consultant || '-'; var x = cm[k] || (cm[k] = { n: k, sum: 0, c: 0, a: 0 }); if (typeof r.score === 'number') { x.sum += r.score; x.c++; } x.a++; });
+    var arr = Object.keys(cm).map(function (k) { var x = cm[k]; return { name: x.n, audits: x.a, avg: x.c ? Math.round(x.sum / x.c) : null }; }).filter(function (x) { return x.avg !== null; }).sort(function (a, b) { return b.avg - a.avg; });
+    var top = arr[0], bot = arr[arr.length - 1];
+    var crit = dlaData.criteria || [];
+    var fails = crit.map(function (c, i) { var f = 0; rows.forEach(function (r) { var v = (r.checks || [])[i]; if (v === 0 || v === -1) f++; }); return { label: c.label, fails: f }; }).filter(function (m) { return m.fails > 0; }).sort(function (a, b) { return b.fails - a.fails; });
+    out.push(seg.toUpperCase() + ' | audits:' + rows.length + ' | avgCompliance:' + (avg != null ? avg + '%' : 'n/a') + (top ? ' | top:' + top.name + '(' + top.avg + '%)' : '') + (bot ? ' | lowest:' + bot.name + '(' + bot.avg + '%)' : ''));
+    if (fails.length) out.push('  ' + seg.toUpperCase() + ' top mistakes: ' + fails.slice(0, 4).map(function (m) { return m.label + ':' + m.fails; }).join(', '));
+  });
+  return out.join('\n');
+}
+
+function hofAI_hs() {
+  function sum(key) { return (hsData.widgets[key] || []).reduce(function (s, r) { return s + (r.count || 0); }, 0); }
+  function top(key, n) { return (hsData.widgets[key] || []).slice().sort(function (a, b) { return b.count - a.count; }).slice(0, n || 3).map(function (r) { return r.name + ':' + r.count; }).join(', '); }
+  var lines = ['CONSULTANTS ACTIVITY (HubSpot, ' + (hsData.rangeLabel || '') + '):'];
+  lines.push('Totals | Calls:' + sum('calls') + ' Emails:' + sum('emails') + ' DealsCreated:' + sum('dealsCreated') + ' TasksCreated:' + sum('tasksCreated') + ' TasksDone:' + sum('tasksCompleted') + ' Overdue:' + sum('overdueTasks') + ' DealsWon:' + sum('dealsWon') + ' Contacts:' + sum('totalContacts'));
+  lines.push('Top callers: ' + top('calls'));
+  lines.push('Top emailers: ' + top('emails'));
+  lines.push('Top deals won: ' + top('dealsWon'));
+  lines.push('Most overdue: ' + top('overdueTasks'));
+  var st = (hsData.leadStageMatrix && hsData.leadStageMatrix.stageTotals) || {};
+  var sk = Object.keys(st).sort(function (a, b) { return st[b] - st[a]; }).slice(0, 6);
+  if (sk.length) lines.push('Lead stages: ' + sk.map(function (k) { return k + ':' + st[k]; }).join(', '));
   return lines.join('\n');
 }
 
@@ -1197,7 +1254,7 @@ async function sendAIMessage() {
 
   try {
     var ctx = buildDashboardContext(msg);
-    var systemPrompt = 'You are HOF Compliance AI Assistant. Answer using the dashboard data provided. Be concise, professional, and helpful. Focus on UAE compliance, immigration, visa requirements, and team performance analysis.\n\nDASHBOARD DATA:\n' + ctx;
+    var systemPrompt = 'You are HOF Compliance AI Assistant. Answer using the dashboard data provided. Be concise, professional, and helpful. The data spans the whole dashboard: HOF Consultants audit compliance, Case Managers activity, Deals compliance (audit scores), and Consultants Activity from HubSpot (calls, emails, deals, tasks, lead stages). Use whichever section the question is about; if a section is missing it has not been loaded yet.\n\nDASHBOARD DATA:\n' + ctx;
 
     // Keep last 3 messages for context
     var messages = aiHistory.slice(-3);
