@@ -501,12 +501,13 @@ body:not(.dark):not(.hof){
 
 /* KPI strip */
 .kg{display:grid;grid-template-columns:repeat(7,1fr);gap:12px;margin-bottom:18px}
-.kc{background:var(--w);border:1px solid var(--b);border-radius:11px;padding:16px 16px 12px;box-shadow:var(--sh);position:relative;overflow:hidden;transition:transform .15s,box-shadow .15s}
+.kc{background:var(--w);border:1px solid var(--b);border-radius:14px;padding:16px 18px;box-shadow:var(--sh);position:relative;overflow:hidden;transition:transform .15s,box-shadow .15s;display:flex;flex-direction:column}
+.kc:hover{box-shadow:var(--shm)}
 .kc:hover{transform:translateY(-2px);box-shadow:var(--shm)}
-.ka{position:absolute;top:0;left:0;right:0;height:3px;border-radius:11px 11px 0 0}
-.kl{font-size:10px;font-weight:700;color:var(--mu);text-transform:uppercase;letter-spacing:.5px;margin-bottom:5px;font-family:'DM Mono',monospace}
-.kv{font-size:17px;font-weight:800;color:var(--ac);font-family:'Nunito',sans-serif;line-height:1.1;margin:4px 0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:100%}
-.ks{font-size:10px;color:var(--m2);margin-top:4px}
+.ka{display:none}
+.kl{order:2;font-size:12px;font-weight:600;color:var(--t2);text-transform:none;letter-spacing:0;margin:5px 0 0;font-family:'Plus Jakarta Sans',sans-serif}
+.kv{order:1;font-size:28px;font-weight:800;color:var(--tx);font-family:'Plus Jakarta Sans','Nunito',sans-serif;line-height:1.05;margin:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:100%}
+.ks{order:3;font-size:10.5px;color:var(--mu);margin-top:2px}
 
 /* chart layout */
 .mg{display:grid;grid-template-columns:1fr 348px;gap:16px;margin-bottom:16px}
@@ -1173,7 +1174,7 @@ footer{
   <div id="execSummary" style="background:var(--w);border:1px solid var(--b);border-radius:16px;padding:20px 24px;margin-bottom:16px;box-shadow:var(--shm)">
     <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px">
       <div>
-        <div style="font-size:11px;font-weight:700;letter-spacing:1px;color:var(--mu);font-family:'DM Mono',monospace;margin-bottom:4px">TEAM PERFORMANCE SUMMARY</div>
+        <div style="font-size:11px;font-weight:700;letter-spacing:1px;color:var(--mu);font-family:'Plus Jakarta Sans',sans-serif;margin-bottom:4px">TEAM PERFORMANCE SUMMARY</div>
         <div id="execHeadline" style="font-size:18px;font-weight:800;color:var(--tx);font-family:'Nunito',sans-serif;line-height:1.3">Loading…</div>
         <div id="execSub" style="font-size:13px;color:var(--mu);margin-top:4px">—</div>
       </div>
@@ -1181,25 +1182,25 @@ footer{
     </div>
     <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:var(--b);border-radius:12px;overflow:hidden;margin-top:16px">
       <div style="background:var(--w);padding:14px 16px;text-align:center">
-        <div style="font-size:11px;color:var(--mu);font-family:'DM Mono',monospace;margin-bottom:4px">AUDITS</div>
+        <div style="font-size:11px;color:var(--mu);font-family:'Plus Jakarta Sans',sans-serif;margin-bottom:4px">AUDITS</div>
         <div id="es-aud" style="font-size:22px;font-weight:800;color:#2563eb;font-family:'Nunito',sans-serif">—</div>
         <div style="font-size:10px;color:var(--mu)">In period</div>
       </div>
       <div style="background:var(--w);padding:14px 16px;text-align:center">
-        <div style="font-size:11px;color:var(--mu);font-family:'DM Mono',monospace;margin-bottom:4px">AVG COMPLIANCE</div>
+        <div style="font-size:11px;color:var(--mu);font-family:'Plus Jakarta Sans',sans-serif;margin-bottom:4px">AVG COMPLIANCE</div>
         <div style="display:flex;align-items:baseline;justify-content:center;gap:6px">
           <div id="es-pct" style="font-size:22px;font-weight:800;font-family:'Nunito',sans-serif">—</div>
-          <div id="es-pct-trend" style="font-size:12px;font-weight:700;font-family:'DM Mono',monospace"></div>
+          <div id="es-pct-trend" style="font-size:12px;font-weight:700;font-family:'Plus Jakarta Sans',sans-serif"></div>
         </div>
         <div id="es-pct-sub" style="font-size:10px;color:var(--mu)">Formula score</div>
       </div>
       <div style="background:var(--w);padding:14px 16px;text-align:center">
-        <div style="font-size:11px;color:var(--mu);font-family:'DM Mono',monospace;margin-bottom:4px">ERROR RATE</div>
+        <div style="font-size:11px;color:var(--mu);font-family:'Plus Jakarta Sans',sans-serif;margin-bottom:4px">ERROR RATE</div>
         <div id="es-err" style="font-size:22px;font-weight:800;font-family:'Nunito',sans-serif">—</div>
         <div style="font-size:10px;color:var(--mu)">Errors per audit</div>
       </div>
       <div style="background:var(--w);padding:14px 16px;text-align:center">
-        <div style="font-size:11px;color:var(--mu);font-family:'DM Mono',monospace;margin-bottom:4px">ERROR RATE</div>
+        <div style="font-size:11px;color:var(--mu);font-family:'Plus Jakarta Sans',sans-serif;margin-bottom:4px">ERROR RATE</div>
         <div id="es-pts" style="font-size:22px;font-weight:800;font-family:'Nunito',sans-serif">—</div>
         <div id="es-pts-sub" style="font-size:10px;color:var(--mu)">% of audits possible</div>
       </div>
@@ -1208,8 +1209,8 @@ footer{
 
   <!-- KPI ROW — single clean row -->
   <div class="kg" style="grid-template-columns:repeat(8,1fr)">
-    <div class="kc" style="border:2px solid #dc2626;border-radius:12px"><div class="ka" id="k-pct-a" style="background:#dc2626"></div><div class="kl" style="font-weight:700">Overall %</div><div class="kv" id="k-pct" style="color:#dc2626">—</div><div class="ks">Avg compliance score</div></div>
-    <div class="kc" style="border:2px solid #dc2626;border-radius:12px"><div class="ka" style="background:#dc2626"></div><div class="kl">⛔ Critical</div><div class="kv" id="k-crit" style="color:#dc2626;font-size:18px">—</div><div class="ks">Critical violation rows</div></div>
+    <div class="kc"><div class="ka" id="k-pct-a" style="background:#dc2626"></div><div class="kl" style="font-weight:700">Overall %</div><div class="kv" id="k-pct" style="color:#dc2626">—</div><div class="ks">Avg compliance score</div></div>
+    <div class="kc"><div class="ka" style="background:#dc2626"></div><div class="kl">⛔ Critical</div><div class="kv" id="k-crit" style="color:#dc2626">—</div><div class="ks">Critical violation rows</div></div>
     <div class="kc"><div class="ka" id="k-ws-a" style="background:#7c3aed"></div><div class="kl">Cat Errors</div><div class="kv" id="k-ws" style="color:#7c3aed;font-size:13px;font-weight:700;padding-top:4px">—</div><div class="ks" id="k-ws-sub">total this period</div></div>
     <div class="kc"><div class="ka" id="k-acc-a" style="background:#e8943a"></div><div class="kl">Err / Audit</div><div class="kv" id="k-acc" style="color:#e8943a">—</div><div class="ks" id="k-acc-sub">category errors per audit</div></div>
     <div class="kc"><div class="ka" id="k-rep-a" style="background:#dc2626"></div><div class="kl">At Risk</div><div class="kv" id="k-rep" style="color:#dc2626">—</div><div class="ks">Below 80%</div></div>
