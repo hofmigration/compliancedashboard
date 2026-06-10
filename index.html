@@ -835,6 +835,8 @@ footer{
 .hofsub{flex:1;padding:10px 16px;border:none;background:transparent;border-radius:9px;cursor:pointer;font-family:'Nunito',sans-serif;font-size:13px;font-weight:700;color:var(--mu);transition:all .2s;text-align:center}
 .hofsub:hover{color:var(--tx);background:var(--w)}
 .hofsub.on{background:var(--ac);color:#fff;box-shadow:var(--shm)}
+.hs-select{background:var(--w);border:1px solid var(--b);color:var(--tx);border-radius:9px;padding:0 10px;height:34px;font-size:12.5px;font-weight:600;cursor:pointer;font-family:'Plus Jakarta Sans',sans-serif;max-width:200px}
+.hs-select:hover{border-color:var(--ac)}
 </style>
 </head>
 <body>
@@ -1411,6 +1413,7 @@ footer{
           <button class="hs-chip" data-r="all" onclick="hsSetRange('all')">All</button>
           <button class="hs-chip" data-r="custom" onclick="hsSetRange('custom')">Custom</button>
         </div>
+        <select id="hs-consultant" class="hs-select" onchange="hsSelectConsultant(this.value)"><option value="all">All Consultants</option></select>
         <button class="hs-btn" onclick="hsRefresh()" title="Force refresh">↻</button>
       </div>
     </div>
