@@ -460,7 +460,7 @@ body:not(.dark):not(.hof){
 .ntab.on .nc{background:rgba(255,255,255,.25);color:#fff}
 
 /* ── PANEL ── */
-.panel{display:none;audits-width:1500px;margin:0 auto;padding:22px 28px 48px}
+.panel{display:none;audits-width:1500px;margin:0 auto;padding:22px 14px 48px}
 .panel.on{display:block}
 
 /* ══════════════════════════════════════════
@@ -685,7 +685,7 @@ footer{
 .app .tools .tc svg{width:16px;height:16px}
 .app .tools .av{width:34px;height:34px;border-radius:50%;background:var(--ac);color:#fff;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:13px;flex-shrink:0}
 .app .tools #hdr-clock{font-family:'DM Mono',monospace;font-size:11px;color:var(--mu);letter-spacing:.5px;padding:4px 10px;background:var(--s2);border:1px solid var(--b);border-radius:8px}
-.app .appbody{flex:1;padding:22px;background:var(--bg);overflow:auto}
+.app .appbody{flex:1;padding:20px 14px;background:var(--bg);overflow:auto}
 .app .phead{display:flex;align-items:center;gap:14px;margin-bottom:18px}
 .app .phead .ph-tt h1{margin:0;font-size:21px;font-weight:900;color:var(--tx);letter-spacing:-.3px;line-height:1.1}
 .app .phead .ph-tt .psub{font-size:12px;color:var(--mu);margin-top:3px}
@@ -795,7 +795,7 @@ footer{
 .hs-custom input{background:var(--bg);border:1px solid var(--b);color:var(--tx);border-radius:8px;padding:6px 10px;font-size:12px;font-family:'Plus Jakarta Sans',sans-serif}
 .hs-to{color:var(--mu);font-size:12px}
 .hs-btn-apply{background:var(--ac);color:#fff;border:none;border-radius:8px;padding:7px 14px;font-size:12px;font-weight:700;cursor:pointer;font-family:'Plus Jakarta Sans',sans-serif}
-.hs-body{flex:1;overflow-y:auto;padding:18px 22px}
+.hs-body{padding-top:2px}
 .hs-sec-h{font-family:'Plus Jakarta Sans',sans-serif;font-weight:800;font-size:14px;color:var(--tx);margin:6px 2px 10px}
 .hs-sec-h:not(:first-child){margin-top:26px}
 .hs-tablewrap{overflow-x:auto;border:1px solid var(--b);border-radius:14px;background:var(--w)}
@@ -830,7 +830,12 @@ footer{
 .hs-cbox{position:relative;width:100%}
 .hs-grid2{display:grid;grid-template-columns:1fr 1fr;gap:16px}
 @media(max-width:720px){.hs-grid2{grid-template-columns:1fr}.hs-kpi-v{font-size:22px}}
-@media(max-width:720px){.hs-name-col{max-width:120px;overflow:hidden;text-overflow:ellipsis}}</style>
+@media(max-width:720px){.hs-name-col{max-width:120px;overflow:hidden;text-overflow:ellipsis}}
+.hofsub-bar{display:flex;background:var(--s2);border:1px solid var(--b);border-radius:12px;padding:4px;gap:4px;margin-bottom:20px}
+.hofsub{flex:1;padding:10px 16px;border:none;background:transparent;border-radius:9px;cursor:pointer;font-family:'Nunito',sans-serif;font-size:13px;font-weight:700;color:var(--mu);transition:all .2s;text-align:center}
+.hofsub:hover{color:var(--tx);background:var(--w)}
+.hofsub.on{background:var(--ac);color:#fff;box-shadow:var(--shm)}
+</style>
 </head>
 <body>
 
@@ -915,44 +920,10 @@ footer{
 <!-- ══════════════════ R1 CLEAN SHELL ══════════════════ -->
 <div class="app">
 
-<!-- ══════════════════ CONSULTANT ACTIVITY (HubSpot) DRAWER ══════════════════ -->
-<div id="hsOverlay" onclick="toggleHSReport()" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.4);z-index:999;backdrop-filter:blur(2px)"></div>
-<div id="hsDrawer">
-  <div class="hs-head">
-    <div>
-      <div class="hs-title">Consultants Activity</div>
-      <div class="hs-sub" id="hs-sub">Live from HubSpot</div>
-    </div>
-    <div class="hs-head-tools">
-      <div class="hs-win" id="hs-win">
-        <button class="hs-chip on" data-r="7" onclick="hsSetRange('7')">7d</button>
-        <button class="hs-chip" data-r="14" onclick="hsSetRange('14')">14d</button>
-        <button class="hs-chip" data-r="30" onclick="hsSetRange('30')">30d</button>
-        <button class="hs-chip" data-r="all" onclick="hsSetRange('all')">All</button>
-        <button class="hs-chip" data-r="custom" onclick="hsSetRange('custom')">Custom</button>
-      </div>
-      <button class="hs-btn" onclick="hsRefresh()" title="Force refresh">↻</button>
-      <button class="hs-x" onclick="toggleHSReport()" title="Close">✕</button>
-    </div>
-  </div>
-  <div class="hs-custom" id="hs-custom" style="display:none">
-    <input type="date" id="hs-cstart"><span class="hs-to">to</span><input type="date" id="hs-cend">
-    <button class="hs-btn-apply" onclick="hsApplyCustom()">Apply</button>
-  </div>
-  <div class="hs-subtab-bar">
-    <button class="hs-subtab on" id="hs-st-perf" onclick="hsSetTab('perf')">Performance Compliance</button>
-    <button class="hs-subtab" id="hs-st-act" onclick="hsSetTab('activity')">Activity Compliance</button>
-  </div>
-  <div class="hs-body" id="hs-body"></div>
-</div>
-
   <!-- left quick-action rail -->
   <div class="rail">
     <div class="rb" title="AI Assistant" onclick="toggleAIChat()">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l1.8 4.6L18.4 9.4 13.8 11.2 12 15.8 10.2 11.2 5.6 9.4 10.2 7.6z"/><path d="M18.5 14.5l.7 1.8 1.8.7-1.8.7-.7 1.8-.7-1.8-1.8-.7 1.8-.7z"/></svg>
-    </div>
-    <div class="rb" title="Consultant Activity (HubSpot)" onclick="toggleHSReport()">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="4" y1="20" x2="4" y2="10"/><line x1="10" y1="20" x2="10" y2="4"/><line x1="16" y1="20" x2="16" y2="13"/><line x1="20" y1="20" x2="20" y2="8"/></svg>
     </div>
     <div class="rb" title="Refresh data" onclick="refreshActive()">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M23 4v6h-6"/><path d="M1 20v-6h6"/><path d="M3.51 9a9 9 0 0114.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0020.49 15"/></svg>
@@ -972,8 +943,8 @@ footer{
       <!-- pill nav: reuses the ORIGINAL .ntab buttons (ids + go() handlers + counts) -->
       <div class="hnav">
         <button class="ntab on" id="nt-hof"   onclick="go('hof')">HOF Consultants <span class="nc" id="nc-hof">—</span></button>
+        <button class="ntab"    id="nt-deals" onclick="go('deals')">Deal's Compliance <span class="nc" id="nc-deals">—</span></button>
         <button class="ntab"    id="nt-daily" onclick="go('daily')">CM's Compliance <span class="nc" id="nc-daily">—</span></button>
-        <button class="ntab"    id="nt-deals" onclick="go('deals')">Deal's Overview <span class="nc" id="nc-deals">—</span></button>
       </div>
 
       <div class="tools">
@@ -1028,6 +999,11 @@ footer{
     </div>
   </div>
 
+  <div class="hofsub-bar">
+    <button class="hofsub on" id="hofsub-perf" onclick="hofShowSub('perf')">Performance Compliance</button>
+    <button class="hofsub" id="hofsub-act" onclick="hofShowSub('activity')">Consultants Activity</button>
+  </div>
+  <div id="hofPerfPane">
   <!-- header row for HOF tab -->
   <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:18px;flex-wrap:wrap;gap:10px;padding-top:4px">
     <div>
@@ -1416,6 +1392,33 @@ footer{
       <div><div class="ct">📅 Period-over-Period Comparison</div><div class="cs">Current vs previous period — key metrics</div></div>
     </div>
     <div id="popGrid" style="display:grid;grid-template-columns:repeat(5,1fr);gap:1px;background:var(--b);border-radius:12px;overflow:hidden;margin:16px"></div>
+  </div>
+
+  </div><!-- /hofPerfPane -->
+
+  <div id="hofActPane" style="display:none">
+    <div style="display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:16px;flex-wrap:wrap">
+      <div>
+        <div class="hs-title">Consultants Activity</div>
+        <div class="hs-sub" id="hs-sub">Live from HubSpot</div>
+      </div>
+      <div class="hs-head-tools">
+        <div class="hs-win" id="hs-win">
+          <button class="hs-chip" data-r="today" onclick="hsSetRange('today')">Today</button>
+          <button class="hs-chip on" data-r="7" onclick="hsSetRange('7')">7d</button>
+          <button class="hs-chip" data-r="14" onclick="hsSetRange('14')">14d</button>
+          <button class="hs-chip" data-r="30" onclick="hsSetRange('30')">30d</button>
+          <button class="hs-chip" data-r="all" onclick="hsSetRange('all')">All</button>
+          <button class="hs-chip" data-r="custom" onclick="hsSetRange('custom')">Custom</button>
+        </div>
+        <button class="hs-btn" onclick="hsRefresh()" title="Force refresh">↻</button>
+      </div>
+    </div>
+    <div class="hs-custom" id="hs-custom" style="display:none">
+      <input type="date" id="hs-cstart"><span class="hs-to">to</span><input type="date" id="hs-cend">
+      <button class="hs-btn-apply" onclick="hsApplyCustom()">Apply</button>
+    </div>
+    <div class="hs-body" id="hs-body"></div>
   </div>
 
 </div><!-- /p-hof -->
@@ -2062,7 +2065,7 @@ footer{
 
   <div class="dla-head">
     <div>
-      <div class="dla-title">Deals Audit</div>
+      <div class="dla-title">Deals Compliance</div>
       <div class="dla-sub" id="dla-updated">Loading…</div>
     </div>
     <div class="dla-tools">
