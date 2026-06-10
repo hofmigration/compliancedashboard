@@ -1,33 +1,35 @@
 // ══════════════════════════════════════════════════════════════════
-//  CONSULTANTS ACTIVITY (HubSpot) — left-rail drawer
-//  Two sub-tabs (like the Case Manager tab):
-//    1) Performance Compliance   2) Activity Compliance
-//  Graph-driven (Chart.js), theme-aware, with a day/custom/all filter.
+//  CONSULTANTS ACTIVITY (HubSpot)
+//  Lives as the "Consultants Activity" sub-tab inside the HOF
+//  Consultants tab (alongside "Performance Compliance").
+//  Graph-driven (Chart.js), theme-aware, day/custom/all date filter.
 // ══════════════════════════════════════════════════════════════════
 const HS_API = 'https://script.google.com/macros/s/AKfycbzn_ngRUlGOV9S9iDkY67QWBcB2DuNSdKD2qjoTJShpyU3GtL_CQ9JYd2Mr4SPJ4-N_BA/exec';
 
-var hsOpen   = false;
 var hsLoaded = false;
 var hsData   = null;
 var hsRange  = { days: '7' };
-var hsTab    = 'perf';            // 'perf' | 'activity'
 var hsCharts = {};
 
-function toggleHSReport() {
-  hsOpen = !hsOpen;
-  var d = document.getElementById('hsDrawer'), o = document.getElementById('hsOverlay');
-  if (d) d.style.left = hsOpen ? '0' : '-1040px';
-  if (o) o.style.display = hsOpen ? 'block' : 'none';
-  if (hsOpen && !hsLoaded) { hsLoaded = true; hsLoad(); }
+// ── HOF Consultants sub-tab toggle ───────────────────────────────
+function hofShowSub(which) {
+  var isAct = (which === 'activity');
+  var perf = document.getElementById('hofPerfPane'), act = document.getElementById('hofActPane');
+  if (perf) perf.style.display = isAct ? 'none' : 'block';
+  if (act)  act.style.display  = isAct ? 'block' : 'none';
+  var bp = document.getElementById('hofsub-perf'), ba = document.getElementById('hofsub-act');
+  if (bp) bp.classList.toggle('on', !isAct);
+  if (ba) ba.classList.toggle('on', isAct);
+  if (isAct) {
+    if (!hsLoaded) { hsLoaded = true; hsLoad(); }
+    else if (hsData) { hsRenderAll(); }
+  } else {
+    hsDestroy();
+  }
 }
-
-// ── Sub-tabs ──────────────────────────────────────────────────────
-function hsSetTab(tab) {
-  hsTab = tab;
-  var p = document.getElementById('hs-st-perf'), a = document.getElementById('hs-st-act');
-  if (p) p.classList.toggle('on', tab === 'perf');
-  if (a) a.classList.toggle('on', tab === 'activity');
-  hsRenderTab();
+function hsActiveVisible() {
+  var act = document.getElementById('hofActPane');
+  return act && act.style.display !== 'none';
 }
 
 // ── Date filter ───────────────────────────────────────────────────
@@ -35,6 +37,15 @@ function hsSetRange(kind) {
   if (kind === 'custom') {
     var box = document.getElementById('hs-custom');
     if (box) box.style.display = (box.style.display === 'flex') ? 'none' : 'flex';
+    return;
+  }
+  if (kind === 'today') {
+    var d = new Date(), mo = d.getMonth() + 1, da = d.getDate();
+    var ymd = d.getFullYear() + '-' + (mo < 10 ? '0' + mo : mo) + '-' + (da < 10 ? '0' + da : da);
+    hsRange = { custom: { start: ymd, end: ymd } };
+    hsMarkChip('today');
+    var cb = document.getElementById('hs-custom'); if (cb) cb.style.display = 'none';
+    hsLoad();
     return;
   }
   hsRange = { days: kind };
@@ -80,12 +91,7 @@ function hsLoad(force) {
       var j = JSON.parse(t);
       if (!j.ok) throw new Error(j.error || 'Script error');
       hsData = j;
-      var sb = document.getElementById('hs-sub');
-      if (sb) {
-        var when = ''; try { when = new Date(j.generatedAt).toLocaleString(); } catch (e) {}
-        sb.textContent = (j.owners ? j.owners.length : 0) + ' consultants · ' + (j.rangeLabel || '') + ' · updated ' + when;
-      }
-      hsRenderTab();
+      hsRenderAll();
     })
     .catch(function (e) {
       hsDestroy();
@@ -103,141 +109,83 @@ function hsMerge(keyA, keyB) {
   return (hsData.owners || []).map(function (o) { return { name: o.name, a: a[o.id] || 0, b: b[o.id] || 0 }; })
     .sort(function (x, y) { return (y.a + y.b) - (x.a + x.b); });
 }
-
-// theme colors at render time
 function hsCV(n, fb) { try { var v = getComputedStyle(document.body).getPropertyValue(n).trim(); return v || fb; } catch (e) { return fb; } }
-function hsHex(c, al) { c = (c || '').trim(); var m = c.match(/^#?([0-9a-f]{6})$/i); if (m) { var n = parseInt(m[1], 16); return 'rgba(' + ((n >> 16) & 255) + ',' + ((n >> 8) & 255) + ',' + (n & 255) + ',' + al + ')'; } return c; }
-function hsAxis() {
-  return { tx: hsCV('--t2', '#64748b'), grid: hsCV('--b', 'rgba(0,0,0,.08)'),
-           font: { family: "'Plus Jakarta Sans',sans-serif", size: 11 } };
-}
+function hsAxis() { return { tx: hsCV('--t2', '#64748b'), grid: hsCV('--b', 'rgba(0,0,0,.08)'), font: { family: "'Plus Jakarta Sans',sans-serif", size: 11 } }; }
 function hsDestroy() { Object.keys(hsCharts).forEach(function (k) { if (hsCharts[k]) { hsCharts[k].destroy(); hsCharts[k] = null; } }); hsCharts = {}; }
 function hsBoxH(n, per, base) { return Math.max(200, n * (per || 24) + (base || 50)); }
+function hsKpi(v, l, color) { return '<div class="hs-kpi"><div class="hs-kpi-v"' + (color ? ' style="color:' + color + '"' : '') + '>' + v + '</div><div class="hs-kpi-l">' + l + '</div></div>'; }
+function chartCard(title, id, h) { return '<div class="hs-chart-card"><div class="hs-chart-h">' + hsEsc(title) + '</div><div class="hs-cbox" style="height:' + h + 'px"><canvas id="' + id + '"></canvas></div></div>'; }
 
-// ── Render the active tab ─────────────────────────────────────────
-function hsRenderTab() {
+// ── Render everything into the Activity pane ──────────────────────
+function hsRenderAll() {
   if (!hsData) return;
   hsDestroy();
-  if (hsTab === 'perf') hsRenderPerf(); else hsRenderActivity();
-}
-
-function hsKpi(v, l, color) {
-  return '<div class="hs-kpi"><div class="hs-kpi-v"' + (color ? ' style="color:' + color + '"' : '') + '>' + v + '</div><div class="hs-kpi-l">' + l + '</div></div>';
-}
-
-// PERFORMANCE COMPLIANCE
-function hsRenderPerf() {
   var body = document.getElementById('hs-body'); if (!body) return;
-  var won = hsSingle('dealsWon'), tasks = hsMerge('tasksCompleted', 'overdueTasks');
-  var ac = hsCV('--ac', '#243a9e'), grn = hsCV('--grn', '#10b981'), red = hsCV('--red', '#ef4444');
+  var sub = document.getElementById('hs-sub');
+  if (sub) { var when = ''; try { when = new Date(hsData.generatedAt).toLocaleString(); } catch (e) {}
+    sub.textContent = (hsData.owners ? hsData.owners.length : 0) + ' consultants · ' + (hsData.rangeLabel || '') + ' · updated ' + when; }
+
+  var ac = hsCV('--ac', '#243a9e'), grn = hsCV('--grn', '#10b981'), red = hsCV('--red', '#ef4444'), amb = hsCV('--amb', '#f59e0b');
+  var n = (hsData.owners || []).length;
+  var outreach = hsMerge('calls', 'emails'), created = hsMerge('dealsCreated', 'tasksCreated');
+  var won = hsSingle('dealsWon'), tasks = hsMerge('tasksCompleted', 'overdueTasks'), contacts = hsSingle('totalContacts');
 
   body.innerHTML =
     '<div class="hs-kpis">' +
-      hsKpi(hsSum('dealsWon'), 'Deals won', grn) +
-      hsKpi(hsSum('totalContacts'), 'Total contacts') +
-      hsKpi(hsSum('tasksCompleted'), 'Tasks completed') +
-      hsKpi(hsSum('overdueTasks'), 'Overdue tasks', red) +
+      hsKpi(hsSum('calls'), 'Calls') + hsKpi(hsSum('emails'), 'Emails sent') +
+      hsKpi(hsSum('dealsCreated'), 'Deals created') + hsKpi(hsSum('tasksCreated'), 'Tasks created') +
+      hsKpi(hsSum('dealsWon'), 'Deals won', grn) + hsKpi(hsSum('overdueTasks'), 'Overdue', red) +
     '</div>' +
-    chartCard('Deals won by consultant', 'hsc-won', hsBoxH(won.filter(function (x) { return x.count; }).length || won.length)) +
-    chartCard('Tasks — done vs overdue by consultant', 'hsc-tasks', hsBoxH(tasks.length, 30, 60)) +
+    '<div class="hs-sec-h">Activity</div>' +
+    chartCard('Outreach by consultant — Calls vs Emails', 'hsc-outreach', hsBoxH(n, 30, 60)) +
+    chartCard('Created by consultant — Deals vs Tasks', 'hsc-created', hsBoxH(n, 30, 60)) +
+    '<div class="hs-sec-h">Outcomes</div>' +
+    chartCard('Deals won by consultant', 'hsc-won', hsBoxH(n)) +
+    chartCard('Tasks — done vs overdue by consultant', 'hsc-tasks', hsBoxH(n, 30, 60)) +
     '<div class="hs-grid2">' +
-      chartCard('Lead-stage mix (all consultants)', 'hsc-lead', 320, true) +
-      chartCard('Contacts by consultant', 'hsc-contacts', 320, true) +
+      chartCard('Lead-stage mix (all consultants)', 'hsc-lead', 320) +
+      chartCard('Contacts by consultant', 'hsc-contacts', 320) +
     '</div>' +
     '<div class="hs-sec-h">Lead stage by consultant</div>' +
     '<div class="hs-tablewrap">' + hsLeadTable() + '</div>';
 
   var ax = hsAxis();
-  // Deals won
+  hsGrouped('hsc-outreach', outreach.map(nm), [{ label: 'Calls', data: outreach.map(va), color: ac }, { label: 'Emails', data: outreach.map(vb), color: amb }], ax);
+  hsGrouped('hsc-created', created.map(nm), [{ label: 'Deals created', data: created.map(va), color: grn }, { label: 'Tasks created', data: created.map(vb), color: ac }], ax);
   hsBar('hsc-won', won.map(function (x) { return x.name; }), won.map(function (x) { return x.count; }), grn, ax);
-  // Tasks done vs overdue (grouped)
-  hsGrouped('hsc-tasks', tasks.map(function (x) { return x.name; }),
-    [{ label: 'Done', data: tasks.map(function (x) { return x.a; }), color: grn },
-     { label: 'Overdue', data: tasks.map(function (x) { return x.b; }), color: red }], ax);
-  // Lead-stage donut
+  hsGrouped('hsc-tasks', tasks.map(nm), [{ label: 'Done', data: tasks.map(va), color: grn }, { label: 'Overdue', data: tasks.map(vb), color: red }], ax);
   var st = (hsData.leadStageMatrix && hsData.leadStageMatrix.stageTotals) || {};
   var keys = Object.keys(st).sort(function (a, b) { return st[b] - st[a]; });
   hsDonut('hsc-lead', keys, keys.map(function (k) { return st[k]; }), ac, ax);
-  // Contacts bar
-  var contacts = hsSingle('totalContacts');
   hsBar('hsc-contacts', contacts.map(function (x) { return x.name; }), contacts.map(function (x) { return x.count; }), ac, ax);
 }
-
-// ACTIVITY COMPLIANCE
-function hsRenderActivity() {
-  var body = document.getElementById('hs-body'); if (!body) return;
-  var outreach = hsMerge('calls', 'emails'), created = hsMerge('dealsCreated', 'tasksCreated');
-  var ac = hsCV('--ac', '#243a9e'), amb = hsCV('--amb', '#f59e0b'), grn = hsCV('--grn', '#10b981');
-
-  body.innerHTML =
-    '<div class="hs-kpis">' +
-      hsKpi(hsSum('calls'), 'Calls') +
-      hsKpi(hsSum('emails'), 'Emails sent') +
-      hsKpi(hsSum('dealsCreated'), 'Deals created') +
-      hsKpi(hsSum('tasksCreated'), 'Tasks created') +
-    '</div>' +
-    chartCard('Outreach by consultant — Calls vs Emails', 'hsc-outreach', hsBoxH(outreach.length, 30, 60)) +
-    chartCard('Created by consultant — Deals vs Tasks', 'hsc-created', hsBoxH(created.length, 30, 60));
-
-  var ax = hsAxis();
-  hsGrouped('hsc-outreach', outreach.map(function (x) { return x.name; }),
-    [{ label: 'Calls', data: outreach.map(function (x) { return x.a; }), color: ac },
-     { label: 'Emails', data: outreach.map(function (x) { return x.b; }), color: amb }], ax);
-  hsGrouped('hsc-created', created.map(function (x) { return x.name; }),
-    [{ label: 'Deals created', data: created.map(function (x) { return x.a; }), color: grn },
-     { label: 'Tasks created', data: created.map(function (x) { return x.b; }), color: ac }], ax);
-}
-
-function chartCard(title, canvasId, h, inGrid) {
-  return '<div class="hs-chart-card' + (inGrid ? ' hs-incol' : '') + '">' +
-    '<div class="hs-chart-h">' + hsEsc(title) + '</div>' +
-    '<div class="hs-cbox" style="height:' + h + 'px"><canvas id="' + canvasId + '"></canvas></div></div>';
-}
+function nm(x) { return x.name; } function va(x) { return x.a; } function vb(x) { return x.b; }
 
 // ── Chart builders ────────────────────────────────────────────────
 function hsBar(id, labels, data, color, ax) {
   var c = document.getElementById(id); if (!c || typeof Chart === 'undefined') return;
-  hsCharts[id] = new Chart(c, {
-    type: 'bar',
+  hsCharts[id] = new Chart(c, { type: 'bar',
     data: { labels: labels, datasets: [{ data: data, backgroundColor: color, borderRadius: 5, barThickness: 13, maxBarThickness: 16 }] },
-    options: {
-      indexAxis: 'y', responsive: true, maintainAspectRatio: false,
-      plugins: { legend: { display: false } },
-      scales: {
-        x: { beginAtZero: true, ticks: { color: ax.tx, font: ax.font, precision: 0 }, grid: { color: ax.grid } },
-        y: { ticks: { color: ax.tx, font: ax.font }, grid: { display: false } }
-      }
-    }
-  });
+    options: { indexAxis: 'y', responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } },
+      scales: { x: { beginAtZero: true, ticks: { color: ax.tx, font: ax.font, precision: 0 }, grid: { color: ax.grid } }, y: { ticks: { color: ax.tx, font: ax.font }, grid: { display: false } } } } });
 }
 function hsGrouped(id, labels, series, ax) {
   var c = document.getElementById(id); if (!c || typeof Chart === 'undefined') return;
-  hsCharts[id] = new Chart(c, {
-    type: 'bar',
+  hsCharts[id] = new Chart(c, { type: 'bar',
     data: { labels: labels, datasets: series.map(function (s) { return { label: s.label, data: s.data, backgroundColor: s.color, borderRadius: 4, barThickness: 9, maxBarThickness: 11 }; }) },
-    options: {
-      indexAxis: 'y', responsive: true, maintainAspectRatio: false,
+    options: { indexAxis: 'y', responsive: true, maintainAspectRatio: false,
       plugins: { legend: { position: 'top', labels: { color: ax.tx, font: ax.font, boxWidth: 12, padding: 12 } } },
-      scales: {
-        x: { beginAtZero: true, ticks: { color: ax.tx, font: ax.font, precision: 0 }, grid: { color: ax.grid } },
-        y: { ticks: { color: ax.tx, font: ax.font }, grid: { display: false } }
-      }
-    }
-  });
+      scales: { x: { beginAtZero: true, ticks: { color: ax.tx, font: ax.font, precision: 0 }, grid: { color: ax.grid } }, y: { ticks: { color: ax.tx, font: ax.font }, grid: { display: false } } } } });
 }
 function hsDonut(id, labels, data, ac, ax) {
   var c = document.getElementById(id); if (!c || typeof Chart === 'undefined') return;
-  var palette = [ac, hsCV('--grn', '#10b981'), hsCV('--amb', '#f59e0b'), hsCV('--red', '#ef4444'),
-    '#06b6d4', '#a855f7', '#ec4899', '#14b8a6', '#f97316', '#6366f1', '#84cc16', '#e11d48'];
-  hsCharts[id] = new Chart(c, {
-    type: 'doughnut',
+  var palette = [ac, hsCV('--grn', '#10b981'), hsCV('--amb', '#f59e0b'), hsCV('--red', '#ef4444'), '#06b6d4', '#a855f7', '#ec4899', '#14b8a6', '#f97316', '#6366f1', '#84cc16', '#e11d48'];
+  hsCharts[id] = new Chart(c, { type: 'doughnut',
     data: { labels: labels, datasets: [{ data: data, backgroundColor: labels.map(function (_, i) { return palette[i % palette.length]; }), borderWidth: 0 }] },
-    options: { responsive: true, maintainAspectRatio: false, cutout: '60%',
-      plugins: { legend: { position: 'right', labels: { color: ax.tx, font: ax.font, boxWidth: 11, padding: 8 } } } }
-  });
+    options: { responsive: true, maintainAspectRatio: false, cutout: '60%', plugins: { legend: { position: 'right', labels: { color: ax.tx, font: ax.font, boxWidth: 11, padding: 8 } } } } });
 }
 
-// ── Lead-stage matrix table (Performance tab) ─────────────────────
+// ── Lead-stage matrix table ───────────────────────────────────────
 function hsLeadTable() {
   var m = (hsData && hsData.leadStageMatrix) || { stages: [], rows: [] };
   if (!m.stages.length) return '<div class="hs-empty">No lead-stage data in this period</div>';
@@ -256,17 +204,13 @@ function hsLeadTable() {
   return '<table class="hs-table hs-lead"><thead><tr>' + head + '</tr></thead><tbody>' + rows + '</tbody></table>';
 }
 
-function hsEsc(s) {
-  return String(s == null ? '' : s).replace(/[&<>"]/g, function (c) {
-    return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c];
-  });
-}
+function hsEsc(s) { return String(s == null ? '' : s).replace(/[&<>"]/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]; }); }
 
-// Re-render the active tab's charts when the theme changes.
+// Re-render charts on theme change when the Activity pane is visible.
 (function () {
   var orig = window.hofUpdateCharts;
   window.hofUpdateCharts = function () {
     if (orig) { try { orig.apply(this, arguments); } catch (e) {} }
-    if (hsOpen && hsData) { try { hsRenderTab(); } catch (e) {} }
+    if (hsData && hsActiveVisible()) { try { hsRenderAll(); } catch (e) {} }
   };
 })();
