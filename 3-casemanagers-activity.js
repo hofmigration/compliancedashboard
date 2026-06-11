@@ -375,122 +375,131 @@ function cmDashRender() {
   var trendLabels = periods.map(function(p){ return p.label; });
   var pctVals     = periods.map(function(p){ return p.count>0 ? p.pctSum/p.count : 0; });
 
-  // ── Neon-styled chart helpers ──
-  var isDark = document.body.classList.contains('dark')||document.body.classList.contains('midnight')||document.body.classList.contains('aurora')||document.body.classList.contains('neon')||document.body.classList.contains('evening');
-  var gridClr = isDark ? 'rgba(255,255,255,.05)' : 'rgba(0,0,0,.05)';
-  var tickClr  = isDark ? '#6b7280' : '#94a3b8';
-  var ttBase   = {backgroundColor:'rgba(15,23,42,.95)',borderColor:'rgba(99,102,241,.4)',borderWidth:1,titleColor:'#e2e8f0',bodyColor:'#94a3b8',padding:10,cornerRadius:8};
+  // ── Clean theme-aware chart helpers (matches Consultants Activity design) ──
+  function cmCV(n, fb) { try { var v = getComputedStyle(document.body).getPropertyValue(n).trim(); return v || fb; } catch (e) { return fb; } }
+  function cmRGBA(hex, al) { var m = (hex || '').trim().match(/^#?([0-9a-f]{6})$/i); if (!m) return hex; var n = parseInt(m[1], 16); return 'rgba(' + ((n >> 16) & 255) + ',' + ((n >> 8) & 255) + ',' + (n & 255) + ',' + al + ')'; }
+  var AC = cmCV('--ac', '#243a9e'), GRN = cmCV('--grn', '#10b981'), AMB = cmCV('--amb', '#f59e0b'), RED = cmCV('--red', '#ef4444');
+  var CYN = '#06b6d4', VIO = '#a855f7';
+  var tickClr = cmCV('--t2', '#64748b');
+  var gridClr = cmRGBA(cmCV('--tx', '#0f172a'), 0.07);
+  var fnt  = { family: "'Plus Jakarta Sans',sans-serif", size: 11 };
+  var fntS = { family: "'Plus Jakarta Sans',sans-serif", size: 10 };
+  var fntB = { family: "'Plus Jakarta Sans',sans-serif", size: 11, weight: '600' };
+  var ttBase = { backgroundColor: cmCV('--w', '#ffffff'), borderColor: cmCV('--b', 'rgba(0,0,0,.12)'), borderWidth: 1, titleColor: cmCV('--tx', '#0f172a'), bodyColor: tickClr, padding: 10, cornerRadius: 10, titleFont: fnt, bodyFont: fntS, displayColors: false };
+  function bandClr(v) { return v >= 90 ? GRN : v >= 80 ? AC : v >= 70 ? AMB : RED; }
 
-  // Trend chart — glowing area line
+  // Trend — clean accent line with soft fill, points colored by band
   if (cmDashCharts.trend) cmDashCharts.trend.destroy();
   cmDashCharts.trend = new Chart(document.getElementById('cmd-trend'), {
-    type:'line',
-    data:{labels:trendLabels, datasets:[{
-      label:'Compliance %', data:pctVals,
-      borderColor:'#6366f1',
-      backgroundColor:function(ctx){
-        var ch=ctx.chart; var area=ch.chartArea;
-        if(!area) return 'rgba(99,102,241,.1)';
-        var g=ch.ctx.createLinearGradient(0,area.top,0,area.bottom);
-        g.addColorStop(0,'rgba(99,102,241,.4)');
-        g.addColorStop(0.5,'rgba(99,102,241,.12)');
-        g.addColorStop(1,'rgba(99,102,241,.01)');
+    type: 'line',
+    data: { labels: trendLabels, datasets: [{
+      label: 'Compliance %', data: pctVals,
+      borderColor: AC, borderWidth: 2,
+      backgroundColor: function (ctx) {
+        var ch = ctx.chart, area = ch.chartArea;
+        if (!area) return cmRGBA(AC, 0.08);
+        var g = ch.ctx.createLinearGradient(0, area.top, 0, area.bottom);
+        g.addColorStop(0, cmRGBA(AC, 0.16)); g.addColorStop(1, cmRGBA(AC, 0.01));
         return g;
       },
-      borderWidth:2.5, fill:true, tension:.45, pointRadius:5,
-      pointBackgroundColor:pctVals.map(function(v){return v>=90?'#10b981':v>=80?'#f59e0b':'#f43f5e';}),
-      pointBorderColor:'rgba(15,23,42,.8)', pointBorderWidth:2, pointHoverRadius:7
+      fill: true, tension: .35, pointRadius: 3.5,
+      pointBackgroundColor: pctVals.map(bandClr),
+      pointBorderColor: cmCV('--w', '#fff'), pointBorderWidth: 1.5, pointHoverRadius: 6
     }]},
-    options:{responsive:true, maintainAspectRatio:false,
-      plugins:{legend:{display:false},tooltip:{...ttBase,callbacks:{label:function(ctx){return ' '+ctx.parsed.y.toFixed(1)+'%';}}}},
-      scales:{
-        x:{ticks:{color:tickClr,font:{family:'DM Mono',size:9},maxRotation:45},grid:{color:gridClr},border:{display:false}},
-        y:{min:0,max:100,ticks:{color:tickClr,font:{family:'DM Mono',size:9},callback:function(v){return v+'%';}},grid:{color:gridClr},border:{display:false}}
+    options: { responsive: true, maintainAspectRatio: false,
+      plugins: { legend: { display: false }, tooltip: {...ttBase, callbacks: { label: function (c) { return ' ' + c.parsed.y.toFixed(1) + '%'; } }} },
+      scales: {
+        x: { ticks: { color: tickClr, font: fntS, maxRotation: 45 }, grid: { display: false }, border: { display: false } },
+        y: { min: 0, max: 100, ticks: { color: tickClr, font: fntS, callback: function (v) { return v + '%'; } }, grid: { color: gridClr }, border: { display: false } }
       }
     }
   });
 
-  // Activity volumes — glowing grouped bars
+  // Activity volumes — slim rounded grouped bars
   if (cmDashCharts.vol) cmDashCharts.vol.destroy();
   cmDashCharts.vol = new Chart(document.getElementById('cmd-vol'), {
-    type:'bar',
-    data:{labels:trendLabels, datasets:[
-      {label:'Deals',  data:periods.map(function(p){return p.deals;}),  backgroundColor:'rgba(99,102,241,.8)', borderRadius:4,borderSkipped:false,hoverBackgroundColor:'#6366f1'},
-      {label:'Emails', data:periods.map(function(p){return p.emails;}), backgroundColor:'rgba(192,38,211,.7)', borderRadius:4,borderSkipped:false,hoverBackgroundColor:'#c026d3'},
-      {label:'Tasks',  data:periods.map(function(p){return p.tasks;}),  backgroundColor:'rgba(16,185,129,.7)', borderRadius:4,borderSkipped:false,hoverBackgroundColor:'#10b981'}
+    type: 'bar',
+    data: { labels: trendLabels, datasets: [
+      { label: 'Deals',  data: periods.map(function (p) { return p.deals; }),  backgroundColor: AC,  borderRadius: 5, borderSkipped: false, maxBarThickness: 16 },
+      { label: 'Emails', data: periods.map(function (p) { return p.emails; }), backgroundColor: CYN, borderRadius: 5, borderSkipped: false, maxBarThickness: 16 },
+      { label: 'Tasks',  data: periods.map(function (p) { return p.tasks; }),  backgroundColor: GRN, borderRadius: 5, borderSkipped: false, maxBarThickness: 16 }
     ]},
-    options:{responsive:true, maintainAspectRatio:false,
-      plugins:{legend:{labels:{color:tickClr,font:{family:'DM Mono',size:10},boxWidth:10,padding:10}},tooltip:{...ttBase}},
-      scales:{
-        x:{ticks:{color:tickClr,font:{family:'DM Mono',size:9},maxRotation:45},grid:{color:gridClr},border:{display:false}},
-        y:{ticks:{color:tickClr,font:{family:'DM Mono',size:9}},grid:{color:gridClr},border:{display:false}}
+    options: { responsive: true, maintainAspectRatio: false,
+      plugins: { legend: { labels: { color: tickClr, font: fntS, boxWidth: 10, boxHeight: 10, padding: 12, usePointStyle: true, pointStyle: 'circle' } }, tooltip: {...ttBase, displayColors: true, boxWidth: 8, boxHeight: 8, usePointStyle: true} },
+      scales: {
+        x: { ticks: { color: tickClr, font: fntS, maxRotation: 45 }, grid: { display: false }, border: { display: false } },
+        y: { beginAtZero: true, ticks: { color: tickClr, font: fntS, precision: 0 }, grid: { color: gridClr }, border: { display: false } }
       }
     }
   });
 
-  // ── CM Compliance horizontal bar chart (neon/cyber style) ──
+  // ── CM Compliance snapshot — rounded horizontal bars, band-colored ──
   if (cmDashCharts.cmBar) cmDashCharts.cmBar.destroy();
   var cmBarCanvas = document.getElementById('cmd-cm-bar');
   if (cmBarCanvas && cmList.length) {
-    var cmBarLabels = cmList.map(function(c){return c.name.split(' ')[0];});
-    var cmBarData   = cmList.map(function(c){return c.count ? +(c.pctSum/c.count).toFixed(1) : 0;});
-    var cmBarColors = cmBarData.map(function(v){return v>=90?'rgba(16,185,129,.85)':v>=80?'rgba(99,102,241,.85)':v>=70?'rgba(245,158,11,.85)':'rgba(244,63,94,.85)';});
+    var cmBarLabels = cmList.map(function (c) { return c.name.split(' ')[0]; });
+    var cmBarData   = cmList.map(function (c) { return c.count ? +(c.pctSum / c.count).toFixed(1) : 0; });
     cmDashCharts.cmBar = new Chart(cmBarCanvas, {
-      type:'bar',
-      data:{labels:cmBarLabels,datasets:[{label:'Compliance %',data:cmBarData,backgroundColor:cmBarColors,
-        hoverBackgroundColor:cmBarData.map(function(v){return v>=90?'#10b981':v>=80?'#6366f1':v>=70?'#f59e0b':'#f43f5e';}),
-        borderRadius:6,borderSkipped:false,borderWidth:0}]},
-      options:{responsive:true,maintainAspectRatio:false,indexAxis:'y',
-        plugins:{legend:{display:false},tooltip:{...ttBase,callbacks:{label:function(ctx){return ' '+ctx.parsed.x.toFixed(1)+'%';}}}},
-        scales:{
-          x:{min:0,max:100,ticks:{color:tickClr,font:{family:'DM Mono',size:9},callback:function(v){return v+'%';}},grid:{color:gridClr},border:{display:false}},
-          y:{ticks:{color:tickClr,font:{family:'Nunito',size:11,weight:'600'}},grid:{display:false},border:{display:false}}
+      type: 'bar',
+      data: { labels: cmBarLabels, datasets: [{ label: 'Compliance %', data: cmBarData,
+        backgroundColor: cmBarData.map(function (v) { return cmRGBA(bandClr(v), 0.88); }),
+        hoverBackgroundColor: cmBarData.map(bandClr),
+        borderRadius: 5, borderSkipped: false, maxBarThickness: 14 }]},
+      options: { responsive: true, maintainAspectRatio: false, indexAxis: 'y',
+        plugins: { legend: { display: false }, tooltip: {...ttBase, callbacks: { label: function (c) { return ' ' + c.parsed.x.toFixed(1) + '%'; } }} },
+        scales: {
+          x: { min: 0, max: 100, ticks: { color: tickClr, font: fntS, callback: function (v) { return v + '%'; } }, grid: { color: gridClr }, border: { display: false } },
+          y: { ticks: { color: cmCV('--tx', '#0f172a'), font: fntB }, grid: { display: false }, border: { display: false } }
         }
       }
     });
   }
 
-  // ── Radar chart — activity profile ──
+  // ── Activity profile — clean horizontal bars (replaces the old radar) ──
   if (cmDashCharts.radar) cmDashCharts.radar.destroy();
   var radarCanvas = document.getElementById('cmd-radar');
   if (radarCanvas && cmList.length) {
-    var n = cmList.length||1;
-    var rAvg = function(f){return cmList.reduce(function(s,c){return s+(c.count?c[f]/c.count:0);},0)/n;};
-    var radarMax = Math.max(rAvg('calls'),rAvg('emails'),rAvg('tasks'),rAvg('deals'),rAvg('connected'),1);
-    var rNorm = function(v){return Math.round((v/radarMax)*100);};
+    var nCM = cmList.length || 1;
+    var rAvg = function (f) { return cmList.reduce(function (s, c) { return s + (c.count ? c[f] / c.count : 0); }, 0) / nCM; };
+    var profL = ['Calls', 'Emails', 'Tasks', 'Deals', 'Connected'];
+    var profV = [rAvg('calls'), rAvg('emails'), rAvg('tasks'), rAvg('deals'), rAvg('connected')].map(function (v) { return +v.toFixed(1); });
     cmDashCharts.radar = new Chart(radarCanvas, {
-      type:'radar',
-      data:{labels:['Calls','Emails','Tasks','Deals','Connected'],
-        datasets:[{label:'Team Avg',data:[rNorm(rAvg('calls')),rNorm(rAvg('emails')),rNorm(rAvg('tasks')),rNorm(rAvg('deals')),rNorm(rAvg('connected'))],
-          backgroundColor:'rgba(99,102,241,.12)',borderColor:'#6366f1',borderWidth:2.5,
-          pointBackgroundColor:'#6366f1',pointBorderColor:'rgba(15,23,42,.8)',pointRadius:5,pointHoverRadius:7}]},
-      options:{responsive:true,maintainAspectRatio:false,
-        plugins:{legend:{display:false},tooltip:{...ttBase,callbacks:{label:function(ctx){return ' '+ctx.raw;}} }},
-        scales:{r:{min:0,max:100,ticks:{color:tickClr,font:{size:9},backdropColor:'transparent',stepSize:25},
-          grid:{color:gridClr},angleLines:{color:gridClr},
-          pointLabels:{color:isDark?'#94a3b8':'#64748b',font:{size:10,family:'DM Mono'}}}}}
+      type: 'bar',
+      data: { labels: profL, datasets: [{ data: profV, backgroundColor: [AC, CYN, GRN, VIO, AMB], borderRadius: 6, borderSkipped: false, maxBarThickness: 22 }]},
+      options: { responsive: true, maintainAspectRatio: false, indexAxis: 'y',
+        plugins: { legend: { display: false }, tooltip: {...ttBase, callbacks: { label: function (c) { return ' ' + c.parsed.x + ' avg per CM / period'; } }} },
+        scales: {
+          x: { beginAtZero: true, ticks: { color: tickClr, font: fntS }, grid: { color: gridClr }, border: { display: false } },
+          y: { ticks: { color: cmCV('--tx', '#0f172a'), font: fntB }, grid: { display: false }, border: { display: false } }
+        }
+      }
     });
   }
 
-  // ── Donut — compliance bands ──
+  // ── Donut — compliance bands, theme-colored ──
   if (cmDashCharts.polar) cmDashCharts.polar.destroy();
   var polarCanvas = document.getElementById('cmd-polar');
   if (polarCanvas) {
-    var bands={ex:0,good:0,watch:0,crit:0};
-    cmList.forEach(function(c){var p=c.count>0?c.pctSum/c.count:0;if(p===0)return;if(p>=90)bands.ex++;else if(p>=80)bands.good++;else if(p>=70)bands.watch++;else bands.crit++;});
-    var bColors=['#10b981','#6366f1','#f59e0b','#f43f5e'];
-    var bLabels=['Excellent 90+','Good 80–89','Watch 70–79','Critical <70'];
-    var bData=[bands.ex,bands.good,bands.watch,bands.crit];
+    var bands = { ex: 0, good: 0, watch: 0, crit: 0 };
+    cmList.forEach(function (c) { var p = c.count > 0 ? c.pctSum / c.count : 0; if (p === 0) return; if (p >= 90) bands.ex++; else if (p >= 80) bands.good++; else if (p >= 70) bands.watch++; else bands.crit++; });
+    var bColors = [GRN, AC, AMB, RED];
+    var bLabels = ['Excellent 90+', 'Good 80–89', 'Watch 70–79', 'Critical <70'];
+    var bData   = [bands.ex, bands.good, bands.watch, bands.crit];
     cmDashCharts.polar = new Chart(polarCanvas, {
-      type:'doughnut',
-      data:{labels:bLabels,datasets:[{data:bData,
-        backgroundColor:bColors.map(function(c){return c+'bb';}),hoverBackgroundColor:bColors,
-        borderColor:isDark?'#0f172a':'#fff',borderWidth:3,hoverOffset:8}]},
-      options:{responsive:true,maintainAspectRatio:true,cutout:'62%',
-        plugins:{legend:{display:false},tooltip:{...ttBase,callbacks:{label:function(ctx){return ' '+ctx.label+': '+ctx.raw;}} }}}
+      type: 'doughnut',
+      data: { labels: bLabels, datasets: [{ data: bData,
+        backgroundColor: bColors, hoverBackgroundColor: bColors,
+        borderColor: cmCV('--w', '#fff'), borderWidth: 2, hoverOffset: 6 }]},
+      options: { responsive: true, maintainAspectRatio: true, cutout: '64%',
+        plugins: { legend: { display: false }, tooltip: {...ttBase, callbacks: { label: function (c) { return ' ' + c.label + ': ' + c.raw; } }} } }
     });
-    var leg=document.getElementById('cmd-polar-legend');
-    if(leg) leg.innerHTML=bLabels.map(function(l,i){return '<div style="display:flex;align-items:center;gap:6px;margin-bottom:4px"><div style="width:9px;height:9px;border-radius:50%;background:'+bColors[i]+';flex-shrink:0"></div><span style="font-family:DM Mono,monospace;font-size:10px;color:var(--t2)">'+l+'</span><span style="font-weight:800;margin-left:auto;color:'+bColors[i]+';font-size:12px">'+bData[i]+'</span></div>';}).join('');
+    var leg = document.getElementById('cmd-polar-legend');
+    if (leg) leg.innerHTML = bLabels.map(function (l, i) {
+      return '<div style="display:flex;align-items:center;gap:7px;margin-bottom:5px">' +
+        '<div style="width:8px;height:8px;border-radius:50%;background:' + bColors[i] + ';flex-shrink:0"></div>' +
+        '<span style="font-family:\'Plus Jakarta Sans\',sans-serif;font-size:11px;font-weight:600;color:var(--t2)">' + l + '</span>' +
+        '<span style="font-family:\'Plus Jakarta Sans\',sans-serif;font-weight:800;margin-left:auto;color:' + bColors[i] + ';font-size:12.5px">' + bData[i] + '</span></div>';
+    }).join('');
   }
 
   // ── Stacked bar — activity mix per CM ──
@@ -498,18 +507,18 @@ function cmDashRender() {
   var stackCanvas = document.getElementById('cmd-stack');
   if (stackCanvas && cmList.length) {
     cmDashCharts.stack = new Chart(stackCanvas, {
-      type:'bar',
-      data:{labels:cmList.map(function(c){return c.name.split(' ')[0];}),datasets:[
-        {label:'Deals', data:cmList.map(function(c){return Math.round(c.deals/c.count);}),backgroundColor:'rgba(99,102,241,.85)',borderSkipped:false,borderRadius:{topLeft:4,topRight:4,bottomLeft:0,bottomRight:0}},
-        {label:'Calls', data:cmList.map(function(c){return Math.round(c.calls/c.count);}), backgroundColor:'rgba(192,38,211,.75)',borderSkipped:false},
-        {label:'Emails',data:cmList.map(function(c){return Math.round(c.emails/c.count);}),backgroundColor:'rgba(245,158,11,.75)',borderSkipped:false},
-        {label:'Tasks', data:cmList.map(function(c){return Math.round(c.tasks/c.count);}), backgroundColor:'rgba(16,185,129,.80)',borderSkipped:false}
+      type: 'bar',
+      data: { labels: cmList.map(function (c) { return c.name.split(' ')[0]; }), datasets: [
+        { label: 'Deals',  data: cmList.map(function (c) { return Math.round(c.deals / c.count); }),  backgroundColor: AC,  borderSkipped: false, maxBarThickness: 24 },
+        { label: 'Calls',  data: cmList.map(function (c) { return Math.round(c.calls / c.count); }),  backgroundColor: VIO, borderSkipped: false, maxBarThickness: 24 },
+        { label: 'Emails', data: cmList.map(function (c) { return Math.round(c.emails / c.count); }), backgroundColor: CYN, borderSkipped: false, maxBarThickness: 24 },
+        { label: 'Tasks',  data: cmList.map(function (c) { return Math.round(c.tasks / c.count); }),  backgroundColor: GRN, borderSkipped: false, borderRadius: { topLeft: 5, topRight: 5, bottomLeft: 0, bottomRight: 0 }, maxBarThickness: 24 }
       ]},
-      options:{responsive:true,maintainAspectRatio:false,
-        plugins:{legend:{labels:{color:tickClr,font:{family:'DM Mono',size:10},boxWidth:10,padding:10}},tooltip:{...ttBase}},
-        scales:{
-          x:{stacked:true,ticks:{color:tickClr,font:{family:'Nunito',size:10,weight:'600'}},grid:{display:false},border:{display:false}},
-          y:{stacked:true,ticks:{color:tickClr,font:{family:'DM Mono',size:9}},grid:{color:gridClr},border:{display:false}}
+      options: { responsive: true, maintainAspectRatio: false,
+        plugins: { legend: { labels: { color: tickClr, font: fntS, boxWidth: 10, boxHeight: 10, padding: 12, usePointStyle: true, pointStyle: 'circle' } }, tooltip: {...ttBase, displayColors: true, boxWidth: 8, boxHeight: 8, usePointStyle: true} },
+        scales: {
+          x: { stacked: true, ticks: { color: cmCV('--tx', '#0f172a'), font: { family: "'Plus Jakarta Sans',sans-serif", size: 10, weight: '600' } }, grid: { display: false }, border: { display: false } },
+          y: { stacked: true, beginAtZero: true, ticks: { color: tickClr, font: fntS, precision: 0 }, grid: { color: gridClr }, border: { display: false } }
         }
       }
     });
@@ -681,48 +690,44 @@ function cmRenderLeaderCards(cmList) {
 function cmRenderHeatStrip(cmList) {
   var el = document.getElementById('cmd-heat');
   if (!el || !cmList.length) return;
-  el.innerHTML = ''; // FIX: clear before re-render to prevent duplicates
-  var COLORS = ['#6366f1','#8b5cf6','#06b6d4','#10b981','#f59e0b','#ef4444','#ec4899','#3b82f6','#14b8a6','#f97316','#a855f7'];
-  var maxAct = Math.max(1, Math.max.apply(null, cmList.map(function(c){return c.deals+c.calls+c.emails+c.tasks;})));
-  var html = '';
-  cmList.forEach(function(c, i) {
+  el.innerHTML = '';
+  function hcv(n, fb) { try { var v = getComputedStyle(document.body).getPropertyValue(n).trim(); return v || fb; } catch (e) { return fb; } }
+  var GRN = hcv('--grn', '#10b981'), AMB = hcv('--amb', '#f59e0b'), RED = hcv('--red', '#ef4444');
+  var maxAct = Math.max(1, Math.max.apply(null, cmList.map(function (c) { return c.deals + c.calls + c.emails + c.tasks; })));
+  cmList.forEach(function (c, i) {
     var total = c.deals + c.calls + c.emails + c.tasks;
     var intensity = total / maxAct;
-    var col = COLORS[i % COLORS.length];
     var pct = c.count > 0 ? c.pctSum / c.count : 0;
-    var pctCol = pct >= 90 ? '#10b981' : pct >= 80 ? '#f59e0b' : '#ef4444';
-    var sz = 84 + Math.round(intensity * 56);
+    var pctCol = pct >= 90 ? GRN : pct >= 80 ? AMB : RED;
+    var sz = 86 + Math.round(intensity * 50);
     var delay = (0.1 + i * 0.05).toFixed(2);
+
     var tile = document.createElement('div');
     tile.style.cssText = 'display:flex;flex-direction:column;align-items:center;gap:5px;animation:fadeUp ' + delay + 's ease';
-    // Inner bubble
-    var bubble = document.createElement('div');
-    bubble.style.cssText = 'width:' + sz + 'px;height:' + sz + 'px;border-radius:18px;background:' + col + '18;border:2px solid ' + col + '44;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;cursor:default;transition:all .25s';
-    bubble.title = c.name + ' — ' + total + ' activities';
-    bubble.addEventListener('mouseenter', function() {
-      this.style.boxShadow = '0 0 18px ' + col + '60';
-      this.style.borderColor = col;
-    });
-    bubble.addEventListener('mouseleave', function() {
-      this.style.boxShadow = '';
-      this.style.borderColor = col + '44';
-    });
-    bubble.innerHTML =
-      '<div style="font-size:' + (10 + Math.round(intensity * 7)) + 'px;font-weight:900;color:' + col + ';font-family:Nunito,sans-serif;line-height:1">' + total + '</div>' +
-      '<div style="font-size:9px;color:rgba(100,116,139,.6);font-family:DM Mono,monospace">acts</div>' +
-      (pct === 0 ? '<div style="font-size:10px;font-weight:700;color:#94a3b8;font-family:DM Mono,monospace">Day Off</div>' : '<div style="font-size:11px;font-weight:700;color:' + pctCol + ';font-family:DM Mono,monospace">' + pct.toFixed(0) + '%</div>');
-    tile.appendChild(bubble);
-    // Name label
+
+    var card = document.createElement('div');
+    card.style.cssText = 'width:' + sz + 'px;height:' + sz + 'px;border-radius:14px;background:var(--s2);border:1px solid var(--b);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;cursor:default;transition:border-color .2s,box-shadow .2s';
+    card.title = c.name + ' — ' + total + ' activities';
+    card.addEventListener('mouseenter', function () { this.style.borderColor = 'var(--ac)'; this.style.boxShadow = 'var(--shm)'; });
+    card.addEventListener('mouseleave', function () { this.style.borderColor = 'var(--b)'; this.style.boxShadow = ''; });
+    card.innerHTML =
+      '<div style="font-size:' + (15 + Math.round(intensity * 6)) + 'px;font-weight:800;color:var(--tx);font-family:\'Plus Jakarta Sans\',sans-serif;line-height:1">' + total + '</div>' +
+      '<div style="font-size:9.5px;color:var(--mu);font-family:\'Plus Jakarta Sans\',sans-serif">activities</div>' +
+      (pct === 0
+        ? '<div style="font-size:10px;font-weight:700;color:var(--mu);font-family:\'Plus Jakarta Sans\',sans-serif">Day off</div>'
+        : '<div style="font-size:11.5px;font-weight:800;color:' + pctCol + ';font-family:\'Plus Jakarta Sans\',sans-serif">' + pct.toFixed(0) + '%</div>');
+    tile.appendChild(card);
+
     var nameEl = document.createElement('div');
-    nameEl.style.cssText = 'font-size:10px;font-weight:700;color:var(--tx);text-align:center;white-space:nowrap;max-width:' + sz + 'px;overflow:hidden;text-overflow:ellipsis';
+    nameEl.style.cssText = 'font-size:10.5px;font-weight:700;color:var(--tx);text-align:center;white-space:nowrap;max-width:' + sz + 'px;overflow:hidden;text-overflow:ellipsis;font-family:\'Plus Jakarta Sans\',sans-serif';
     nameEl.textContent = c.name.split(' ')[0];
     tile.appendChild(nameEl);
-    // Stats row
+
     var stats = document.createElement('div');
-    stats.style.cssText = 'display:flex;gap:3px';
+    stats.style.cssText = 'display:flex;gap:4px';
     stats.innerHTML =
-      '<span style="font-size:9px;background:rgba(37,99,235,.12);color:#2563eb;padding:1px 5px;border-radius:4px;font-family:DM Mono,monospace" title="Deals">D:' + c.deals + '</span>' +
-      '<span style="font-size:9px;background:rgba(124,58,237,.12);color:#7c3aed;padding:1px 5px;border-radius:4px;font-family:DM Mono,monospace" title="Calls">C:' + c.calls + '</span>';
+      '<span style="font-size:9px;background:var(--al);color:var(--ac);padding:1.5px 6px;border-radius:5px;font-weight:700;font-family:\'Plus Jakarta Sans\',sans-serif" title="Deals">D ' + c.deals + '</span>' +
+      '<span style="font-size:9px;background:var(--gl);color:var(--grn);padding:1.5px 6px;border-radius:5px;font-weight:700;font-family:\'Plus Jakarta Sans\',sans-serif" title="Calls">C ' + c.calls + '</span>';
     tile.appendChild(stats);
     el.appendChild(tile);
   });
@@ -1348,3 +1353,12 @@ function scrollAIToBottom() {
   var msgs = document.getElementById('aiMessages');
   setTimeout(function(){ msgs.scrollTop = msgs.scrollHeight; }, 50);
 }
+
+// Re-render the CM Activity charts when the theme changes so colors follow the theme.
+(function () {
+  var orig = window.hofUpdateCharts;
+  window.hofUpdateCharts = function () {
+    if (orig) { try { orig.apply(this, arguments); } catch (e) {} }
+    try { if (typeof cmDashAllRows !== 'undefined' && cmDashAllRows && cmDashAllRows.length) cmDashRender(); } catch (e) {}
+  };
+})();
