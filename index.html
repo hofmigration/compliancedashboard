@@ -274,9 +274,6 @@ body.neon .ntab.on{color:#e879f9;border-left-color:#c026d3;background:rgba(192,3
 body.neon .ntab:hover{background:rgba(192,38,211,.08)}
 body.neon:not(.dark):not(.midnight):not(.aurora):not(.evening){background:#0a0618}
 body.neon table thead tr th{background:rgba(45,27,105,.8)}
-body.neon .kcard{border-color:#2d1b69;background:#120d2a}
-body.neon .card{border-color:#2d1b69;background:#120d2a}
-body.neon .kbar{background:linear-gradient(90deg,#c026d3,#7c3aed) !important}
 
 /* ── HOF BRAND THEME (matches HOF hexagon logo: navy + steel blue) ── */
 body.hof{
@@ -514,9 +511,6 @@ body:not(.dark):not(.hof){
 .rc{display:flex;flex-direction:column;gap:14px}
 .card{background:var(--w);border:1px solid var(--b);border-radius:13px;box-shadow:var(--sh);overflow:hidden;transition:border-color .2s,box-shadow .2s}
 .card:hover{box-shadow:0 4px 20px rgba(99,102,241,.1),var(--sh)}
-body.neon .card{background:rgba(18,13,42,.8);border-color:#2d1b69}
-body.neon .card:hover{border-color:#4c2d9c;box-shadow:0 0 20px rgba(99,102,241,.15)}
-body.neon .card-head{background:linear-gradient(135deg,rgba(45,27,105,.4),transparent)}
 body.neon .ch{border-bottom-color:#2d1b69}
 body.neon .cmp-table thead th{background:rgba(45,27,105,.6)}
 body.neon .cmp-table tbody tr:hover{background:rgba(99,102,241,.06)}
@@ -596,20 +590,19 @@ td{padding:9px 12px;font-size:13px;white-space:nowrap}
 .period-sel label{font-size:10px;font-weight:700;color:var(--mu);text-transform:uppercase;letter-spacing:.5px;font-family:'DM Mono',monospace;white-space:nowrap}
 .period-sel select{background:transparent;border:none;color:var(--tx);font-size:13px;font-weight:600;font-family:'Nunito',sans-serif;cursor:pointer;outline:none;min-width:180px}
 .kstrip{display:grid;grid-template-columns:repeat(6,1fr);gap:10px;margin-bottom:20px}
-.kcard{background:var(--w);border:1px solid var(--b);border-radius:10px;padding:16px 14px 13px;position:relative;overflow:hidden;transition:transform .15s,box-shadow .15s}
+.kcard{background:var(--w);border:1px solid var(--b);border-radius:14px;padding:16px 18px;position:relative;overflow:hidden;box-shadow:var(--sh);transition:box-shadow .15s;display:flex;flex-direction:column}
+.kcard:hover{box-shadow:var(--shm)}
 .kcard:hover{transform:translateY(-2px);box-shadow:0 8px 24px rgba(99,102,241,.18),var(--shm)}
 /* Neon glow on kcard numbers in dark/neon theme */
-body.neon .kcard{background:rgba(18,13,42,.8);border-color:#2d1b69;box-shadow:0 0 0 1px rgba(99,102,241,.1)}
-body.neon .kcard:hover{box-shadow:0 0 24px rgba(192,38,211,.2),0 8px 24px rgba(0,0,0,.5)}
 body.dark .kcard:hover{box-shadow:0 8px 24px rgba(99,102,241,.15)}
 /* Animated gradient on kbar */
-.kbar{position:absolute;top:0;left:0;right:0;height:3px;background-size:200% auto;animation:kbarShimmer 3s linear infinite}
+.kbar{display:none}
 @keyframes kbarShimmer{0%{background-position:200% center}100%{background-position:-200% center}}
-.kbar{position:absolute;top:0;left:0;right:0;height:2px}
-.klabel{font-size:9px;font-weight:700;color:var(--mu);text-transform:uppercase;letter-spacing:.7px;font-family:'DM Mono',monospace;margin-bottom:6px}
-.kval{font-size:22px;font-weight:800;letter-spacing:-1px;line-height:1}
-.kdesc{font-size:10px;color:var(--m2);margin-top:4px;font-family:'DM Mono',monospace}
-.slabel{font-size:10px;font-weight:700;color:var(--mu);text-transform:uppercase;letter-spacing:.8px;font-family:'DM Mono',monospace;margin-bottom:10px;margin-top:20px;display:flex;align-items:center;gap:8px}
+.kbar{display:none}
+.klabel{order:2;font-size:12px;font-weight:600;color:var(--t2);text-transform:none;letter-spacing:0;font-family:'Plus Jakarta Sans',sans-serif;margin:5px 0 0}
+.kval{order:1;font-size:27px;font-weight:800;letter-spacing:-.5px;line-height:1.05;color:var(--tx);font-family:'Plus Jakarta Sans','Nunito',sans-serif}
+.kdesc{order:3;font-size:10.5px;color:var(--mu);margin-top:2px;font-family:'Plus Jakarta Sans',sans-serif}
+.slabel{font-size:13.5px;font-weight:700;color:var(--tx);text-transform:none;letter-spacing:-.2px;font-family:'Plus Jakarta Sans',sans-serif;margin-bottom:10px;margin-top:20px;display:flex;align-items:center;gap:8px}
 .slabel::after{content:'';flex:1;height:1px;background:linear-gradient(90deg,var(--b),transparent)}
 /* CM Sub-tabs */
 .cm-subtab-bar{display:flex;background:var(--s2);border:1px solid var(--b);border-radius:12px;padding:4px;gap:4px;margin-bottom:20px}
@@ -629,7 +622,7 @@ body.neon #cmTeamCompBig{color:#e879f9;text-shadow:0 0 40px rgba(192,38,211,.6)}
 .cgrid{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:14px}
 .card-head{padding:14px 18px;border-bottom:1px solid var(--b);display:flex;align-items:center;justify-content:space-between}
 .card-title{font-size:13px;font-weight:700;letter-spacing:-.2px}
-.card-sub{font-size:10px;color:var(--mu);font-family:'DM Mono',monospace;margin-top:2px}
+.card-sub{font-size:11px;color:var(--mu);font-family:'Plus Jakarta Sans',sans-serif;margin-top:2px}
 .card-body{padding:16px 18px}
 .cmp-table{width:100%;border-collapse:collapse}
 .cmp-table thead th{padding:8px 12px;text-align:left;font-family:'DM Mono',monospace;font-size:9px;font-weight:600;color:var(--mu);letter-spacing:.6px;text-transform:uppercase;background:var(--s2);border-bottom:1px solid var(--b);white-space:nowrap;cursor:pointer;user-select:none}
@@ -1438,7 +1431,7 @@ footer{
     <div>
       <div style="font-size:10px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--ac);margin-bottom:4px">Live · Google Sheets</div>
       <div style="font-size:20px;font-weight:800;letter-spacing:-.5px;font-family:'Nunito',sans-serif;color:var(--tx)">CM's Compliance</div>
-      <div style="font-size:11px;color:var(--mu);margin-top:2px;font-family:'DM Mono',monospace" id="cm-dash-sub">Loading data…</div>
+      <div style="font-size:11px;color:var(--mu);margin-top:2px;font-family:'Plus Jakarta Sans',sans-serif" id="cm-dash-sub">Loading data…</div>
     </div>
     <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center">
       <button class="btn bo" onclick="cmDashRefresh()">↻ Refresh</button>
@@ -1449,10 +1442,10 @@ footer{
   <!-- ══ SUB-NAVIGATION ══ -->
   <div class="cm-subtab-bar">
     <button class="cm-subtab active" id="cmtab-activity" onclick="switchCMTab('activity')">
-      📊 Activity Compliance
+      Activity Compliance
     </button>
     <button class="cm-subtab" id="cmtab-performance" onclick="switchCMTab('performance')">
-      🎯 Performance Compliance
+      Performance Compliance
     </button>
   </div>
 
@@ -1482,7 +1475,7 @@ footer{
         <option value="all">All Case Managers</option>
       </select>
     </div>
-    <input class="srch" type="text" placeholder="🔍 Search CM…" id="cmDashSearch" oninput="cmDashRender()" style="margin-left:auto">
+    <input class="srch" type="text" placeholder="Search CM…" id="cmDashSearch" oninput="cmDashRender()" style="margin-left:auto">
   </div>
 
   <!-- ══ ROW 1: Hero Compliance Banner + Donut Ring ══ -->
@@ -1492,7 +1485,7 @@ footer{
     <div id="cmTotalComplianceBanner" style="background:var(--w);border:1px solid var(--b);box-shadow:var(--shm);border-radius:16px;padding:22px 26px;display:flex;align-items:center;gap:20px;flex-wrap:wrap;position:relative;overflow:hidden;min-height:160px">
       <!-- Big compliance number -->
       <div style="text-align:center;min-width:130px;position:relative">
-        <div style="font-size:9px;font-weight:700;letter-spacing:2.5px;text-transform:uppercase;color:var(--mu);font-family:'DM Mono',monospace;margin-bottom:6px">TEAM COMPLIANCE</div>
+        <div style="font-size:9px;font-weight:700;letter-spacing:2.5px;text-transform:uppercase;color:var(--mu);font-family:'Plus Jakarta Sans',sans-serif;margin-bottom:6px">TEAM COMPLIANCE</div>
         <div id="cmTeamCompBig" style="font-size:58px;font-weight:900;font-family:'Nunito',sans-serif;line-height:1;color:var(--ac)">—%</div>
         <div id="cmTeamCompStatus" style="font-size:11px;font-weight:700;margin-top:8px;padding:4px 12px;border-radius:20px;display:inline-block;background:var(--al);color:var(--ac)">Calculating…</div>
       </div>
@@ -1500,27 +1493,27 @@ footer{
       <div style="width:1px;height:80px;background:var(--b);flex-shrink:0"></div>
       <!-- Per CM compliance mini bars -->
       <div style="flex:1;min-width:220px;position:relative" id="cmTeamBarsWrap">
-        <div style="font-size:9px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--mu);font-family:'DM Mono',monospace;margin-bottom:10px">INDIVIDUAL COMPLIANCE</div>
+        <div style="font-size:9px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--mu);font-family:'Plus Jakarta Sans',sans-serif;margin-bottom:10px">INDIVIDUAL COMPLIANCE</div>
         <div id="cmTeamBars" style="display:flex;flex-direction:column;gap:5px"></div>
       </div>
       <!-- Right stat cards -->
       <div style="display:flex;flex-direction:column;gap:10px;min-width:120px;position:relative">
         <div style="background:var(--s2);border:1px solid var(--b);border-radius:10px;padding:10px 14px">
-          <div style="font-size:9px;color:var(--mu);font-family:'DM Mono',monospace;letter-spacing:1px">ACTIVE CMs</div>
+          <div style="font-size:9px;color:var(--mu);font-family:'Plus Jakarta Sans',sans-serif;letter-spacing:1px">ACTIVE CMs</div>
           <div id="cmTeamCount" style="font-size:24px;font-weight:800;color:var(--tx);font-family:'Nunito',sans-serif">—</div>
         </div>
         <div style="background:var(--s2);border:1px solid var(--gl);border-radius:10px;padding:10px 14px">
-          <div style="font-size:9px;color:var(--mu);font-family:'DM Mono',monospace;letter-spacing:1px">ABOVE TARGET</div>
+          <div style="font-size:9px;color:var(--mu);font-family:'Plus Jakarta Sans',sans-serif;letter-spacing:1px">ABOVE TARGET</div>
           <div id="cmTeamAbove" style="font-size:24px;font-weight:800;color:var(--grn);font-family:'Nunito',sans-serif">—</div>
         </div>
       </div>
-      <div style="position:absolute;bottom:8px;right:14px;font-size:9px;color:var(--m2);font-family:'DM Mono',monospace">Σ(CM compliance) ÷ active CMs</div>
+      <div style="position:absolute;bottom:8px;right:14px;font-size:9px;color:var(--m2);font-family:'Plus Jakarta Sans',sans-serif">Σ(CM compliance) ÷ active CMs</div>
     </div>
 
     <!-- Compliance Bands Donut -->
     <div class="card" style="padding:0;overflow:hidden">
-      <div class="card-head" style="background:linear-gradient(135deg,rgba(99,102,241,.08),transparent)">
-        <div><div class="card-title">🎯 Compliance Bands</div><div class="card-sub">CM distribution by performance band</div></div>
+      <div class="card-head">
+        <div><div class="card-title">Compliance Bands</div><div class="card-sub">CM distribution by performance band</div></div>
       </div>
       <div style="display:flex;align-items:center;padding:12px 14px;gap:12px">
         <div style="position:relative;width:130px;height:130px;flex-shrink:0">
@@ -1534,40 +1527,40 @@ footer{
   <!-- ══ ROW 2: KPI Cards with glow ══ -->
   <div style="display:grid;grid-template-columns:repeat(6,1fr);gap:10px;margin-bottom:16px">
     <!-- Each KPI card gets a glowing accent color top bar + big number -->
-    <div class="kcard" style="background:linear-gradient(160deg,var(--w) 70%,rgba(37,99,235,.06));border-color:rgba(37,99,235,.2)">
+    <div class="kcard">
       <div class="kbar" style="background:linear-gradient(90deg,#2563eb,#6366f1)"></div>
       <div class="klabel">Total Deals</div>
-      <div class="kval" id="cmd-deals" style="color:#2563eb">—</div>
+      <div class="kval" id="cmd-deals">—</div>
       <div class="kdesc" id="cmd-deals-d">—</div>
     </div>
-    <div class="kcard" style="background:linear-gradient(160deg,var(--w) 70%,rgba(124,58,237,.06));border-color:rgba(124,58,237,.2)">
+    <div class="kcard">
       <div class="kbar" style="background:linear-gradient(90deg,#7c3aed,#c026d3)"></div>
       <div class="klabel">Total Calls</div>
-      <div class="kval" id="cmd-calls" style="color:#7c3aed">—</div>
+      <div class="kval" id="cmd-calls">—</div>
       <div class="kdesc" id="cmd-calls-d">—</div>
     </div>
-    <div class="kcard" style="background:linear-gradient(160deg,var(--w) 70%,rgba(29,78,216,.06));border-color:rgba(29,78,216,.2)">
+    <div class="kcard">
       <div class="kbar" style="background:linear-gradient(90deg,#1d4ed8,#2563eb)"></div>
       <div class="klabel">Emails Sent</div>
-      <div class="kval" id="cmd-emails" style="color:#1d4ed8">—</div>
+      <div class="kval" id="cmd-emails">—</div>
       <div class="kdesc" id="cmd-emails-d">—</div>
     </div>
-    <div class="kcard" style="background:linear-gradient(160deg,var(--w) 70%,rgba(5,150,105,.06));border-color:rgba(5,150,105,.2)">
+    <div class="kcard">
       <div class="kbar" style="background:linear-gradient(90deg,#059669,#10b981)"></div>
       <div class="klabel">Tasks Done</div>
-      <div class="kval" id="cmd-tasks" style="color:#059669">—</div>
+      <div class="kval" id="cmd-tasks" style="color:var(--grn)">—</div>
       <div class="kdesc" id="cmd-tasks-d">—</div>
     </div>
-    <div class="kcard" style="background:linear-gradient(160deg,var(--w) 70%,rgba(220,38,38,.06));border-color:rgba(220,38,38,.2)">
+    <div class="kcard">
       <div class="kbar" id="cmd-pca" style="background:linear-gradient(90deg,#dc2626,#f43f5e)"></div>
       <div class="klabel">Compliance</div>
-      <div class="kval" id="cmd-pct" style="color:#dc2626">—</div>
+      <div class="kval" id="cmd-pct">—</div>
       <div class="kdesc" id="cmd-pct-d">Active CMs</div>
     </div>
-    <div class="kcard" style="background:linear-gradient(160deg,var(--w) 70%,rgba(217,119,6,.06));border-color:rgba(217,119,6,.2)">
+    <div class="kcard">
       <div class="kbar" style="background:linear-gradient(90deg,#d97706,#f59e0b)"></div>
       <div class="klabel">Blank Calls</div>
-      <div class="kval" id="cmd-blank" style="color:#d97706">—</div>
+      <div class="kval" id="cmd-blank" style="color:var(--amb)">—</div>
       <div class="kdesc" id="cmd-blank-d">—</div>
     </div>
   </div>
@@ -1576,15 +1569,15 @@ footer{
   <div style="display:grid;grid-template-columns:3fr 2fr;gap:16px;margin-bottom:16px">
     <!-- Trend chart — wider, more visual impact -->
     <div class="card" style="overflow:hidden">
-      <div class="card-head" style="background:linear-gradient(135deg,rgba(99,102,241,.06),transparent)">
-        <div><div class="card-title">📈 Compliance % Trend</div><div class="card-sub">Team avg compliance — area chart per period</div></div>
+      <div class="card-head">
+        <div><div class="card-title">Compliance % Trend</div><div class="card-sub">Team average compliance per period</div></div>
       </div>
       <div class="card-body" style="padding-top:8px"><div style="height:220px;position:relative"><canvas id="cmd-trend"></canvas></div></div>
     </div>
     <!-- Activity volumes — bar chart -->
     <div class="card" style="overflow:hidden">
-      <div class="card-head" style="background:linear-gradient(135deg,rgba(16,185,129,.06),transparent)">
-        <div><div class="card-title">📊 Activity Mix</div><div class="card-sub">Deals · Calls · Emails · Tasks</div></div>
+      <div class="card-head">
+        <div><div class="card-title">Activity Mix</div><div class="card-sub">Deals · Calls · Emails · Tasks</div></div>
       </div>
       <div class="card-body" style="padding-top:8px"><div style="height:220px;position:relative"><canvas id="cmd-vol"></canvas></div></div>
     </div>
@@ -1594,15 +1587,15 @@ footer{
   <div style="display:grid;grid-template-columns:5fr 3fr;gap:16px;margin-bottom:16px">
     <!-- CM compliance horizontal bar chart — wide, color-coded -->
     <div class="card" style="overflow:hidden">
-      <div class="card-head" style="background:linear-gradient(135deg,rgba(37,99,235,.06),transparent)">
-        <div><div class="card-title">👥 All Case Managers — Compliance Snapshot</div><div class="card-sub">Each CM's compliance % · target at 80%</div></div>
+      <div class="card-head">
+        <div><div class="card-title">All Case Managers — Compliance Snapshot</div><div class="card-sub">Each CM's compliance % · target at 80%</div></div>
       </div>
       <div class="card-body" style="padding-top:8px"><div style="height:280px;position:relative"><canvas id="cmd-cm-bar"></canvas></div></div>
     </div>
     <!-- Radar chart -->
     <div class="card" style="overflow:hidden">
-      <div class="card-head" style="background:linear-gradient(135deg,rgba(124,58,237,.06),transparent)">
-        <div><div class="card-title">🕸️ Activity Profile</div><div class="card-sub">Calls · Emails · Tasks · Deals</div></div>
+      <div class="card-head">
+        <div><div class="card-title">Activity Profile</div><div class="card-sub">Team average per CM per period</div></div>
       </div>
       <div class="card-body" style="padding-top:8px"><div style="height:280px;position:relative"><canvas id="cmd-radar"></canvas></div></div>
     </div>
@@ -1611,14 +1604,14 @@ footer{
   <!-- ══ ROW 5: Stacked activity + Heat map ══ -->
   <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:16px">
     <div class="card" style="overflow:hidden">
-      <div class="card-head" style="background:linear-gradient(135deg,rgba(192,38,211,.06),transparent)">
-        <div><div class="card-title">📦 Activity Mix per CM</div><div class="card-sub">Stacked: Deals · Calls · Emails · Tasks</div></div>
+      <div class="card-head">
+        <div><div class="card-title">Activity Mix per CM</div><div class="card-sub">Stacked: Deals · Calls · Emails · Tasks</div></div>
       </div>
       <div class="card-body" style="padding-top:8px;padding-bottom:0"><div style="height:240px;position:relative"><canvas id="cmd-stack"></canvas></div></div>
     </div>
     <div class="card" style="overflow:hidden">
-      <div class="card-head" style="background:linear-gradient(135deg,rgba(245,158,11,.06),transparent)">
-        <div><div class="card-title">🔥 Activity Intensity Map</div><div class="card-sub">Combined activity score per CM</div></div>
+      <div class="card-head">
+        <div><div class="card-title">Activity Intensity Map</div><div class="card-sub">Combined activity score per CM</div></div>
       </div>
       <div id="cmd-heat" style="padding:16px;display:flex;flex-wrap:wrap;gap:10px;align-content:flex-start;min-height:180px"></div>
     </div>
@@ -1627,21 +1620,21 @@ footer{
   <!-- ══ ROW 6: Top / Bottom / Blank insight cards ══ -->
   <div class="slabel" style="margin-top:4px">Performance Insights</div>
   <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:16px;margin-bottom:16px">
-    <div class="card" style="border-top:3px solid #10b981;overflow:hidden">
-      <div class="card-head" style="background:linear-gradient(135deg,rgba(16,185,129,.06),transparent)">
-        <div><div class="card-title">🏆 Top Performer</div><div class="card-sub">Highest compliance this period</div></div>
+    <div class="card" style="overflow:hidden">
+      <div class="card-head">
+        <div><div class="card-title">Top Performer</div><div class="card-sub">Highest compliance this period</div></div>
       </div>
       <div id="cmd-top-cm" style="padding:12px 16px 16px"></div>
     </div>
-    <div class="card" style="border-top:3px solid #f43f5e;overflow:hidden">
-      <div class="card-head" style="background:linear-gradient(135deg,rgba(244,63,94,.06),transparent)">
-        <div><div class="card-title">⚠️ Needs Attention</div><div class="card-sub">Lowest compliance — focus coaching here</div></div>
+    <div class="card" style="overflow:hidden">
+      <div class="card-head">
+        <div><div class="card-title">Needs Attention</div><div class="card-sub">Lowest compliance — focus coaching here</div></div>
       </div>
       <div id="cmd-bot-cm" style="padding:12px 16px 16px"></div>
     </div>
-    <div class="card" style="border-top:3px solid #f59e0b;overflow:hidden">
-      <div class="card-head" style="background:linear-gradient(135deg,rgba(245,158,11,.06),transparent)">
-        <div><div class="card-title">📵 Blank Calls Alert</div><div class="card-sub">CMs with most unanswered calls</div></div>
+    <div class="card" style="overflow:hidden">
+      <div class="card-head">
+        <div><div class="card-title">Blank Calls Alert</div><div class="card-sub">CMs with most unanswered calls</div></div>
       </div>
       <div id="cmd-blank-cm" style="padding:12px 16px 16px"></div>
     </div>
@@ -1677,13 +1670,13 @@ footer{
   </div>
 
   <!-- ══ ROW 8: Error Analysis — CM Dropdown + What They're Doing Well / Poorly ══ -->
-  <div class="slabel" style="margin-top:8px">📋 Case Manager Error Analysis</div>
+  <div class="slabel" style="margin-top:8px">Case Manager Error Analysis</div>
 
   <!-- Team-wide error summary -->
   <div class="card" style="margin-bottom:16px;overflow:hidden">
-    <div class="card-head" style="background:linear-gradient(135deg,rgba(239,68,68,.06),transparent)">
+    <div class="card-head">
       <div>
-        <div class="card-title">🔍 Team Activity Summary — What Needs Coaching</div>
+        <div class="card-title">Team Activity Summary — What Needs Coaching</div>
         <div class="card-sub">Aggregate activity counts · click any CM card below to drill in</div>
       </div>
     </div>
@@ -1694,9 +1687,9 @@ footer{
 
   <!-- Individual CM error detail -->
   <div class="card" style="margin-bottom:16px;overflow:hidden">
-    <div class="card-head" style="background:linear-gradient(135deg,rgba(99,102,241,.08),transparent)">
+    <div class="card-head">
       <div style="flex:1">
-        <div class="card-title">👤 Individual CM — Activity Detail</div>
+        <div class="card-title">Individual CM — Activity Detail</div>
         <div class="card-sub">Select a case manager to see their full breakdown vs team average</div>
       </div>
       <select id="cm-error-select" onchange="cmShowCMErrors(this.value)"
