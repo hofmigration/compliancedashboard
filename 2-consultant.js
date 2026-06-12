@@ -338,35 +338,149 @@ function hofRenderSparks() {
   }).join('');
 }
 
+// ── Shared theme helpers for Performance Compliance charts ──
+function hofCV(n, fb) { try { var v = getComputedStyle(document.body).getPropertyValue(n).trim(); return v || fb; } catch (e) { return fb; } }
+function hofRGBA(hex, al) { var m = (hex || '').trim().match(/^#?([0-9a-f]{6})$/i); if (!m) return hex; var n = parseInt(m[1], 16); return 'rgba(' + ((n >> 16) & 255) + ',' + ((n >> 8) & 255) + ',' + (n & 255) + ',' + al + ')'; }
+function hofChartTheme() {
+  const AC = hofCV('--ac', '#243a9e'), GRN = hofCV('--grn', '#10b981'), AMB = hofCV('--amb', '#f59e0b'), RED = hofCV('--red', '#ef4444');
+  const tick = hofCV('--t2', '#64748b');
+  const fnt  = { family: "'Plus Jakarta Sans',sans-serif", size: 11 };
+  const fntS = { family: "'Plus Jakarta Sans',sans-serif", size: 10 };
+  return {
+    AC, GRN, AMB, RED, CYN: '#06b6d4', VIO: '#a855f7',
+    tick,
+    grid: hofRGBA(hofCV('--tx', '#0f172a'), 0.07),
+    fnt, fntS,
+    fntB: { family: "'Plus Jakarta Sans',sans-serif", size: 11, weight: '600' },
+    tt: { backgroundColor: hofCV('--w', '#ffffff'), borderColor: hofCV('--b', 'rgba(0,0,0,.12)'), borderWidth: 1, titleColor: hofCV('--tx', '#0f172a'), bodyColor: tick, padding: 10, cornerRadius: 10, titleFont: fnt, bodyFont: fntS, displayColors: false },
+    band: function (v) { return v >= 90 ? GRN : v >= 80 ? AC : v >= 70 ? AMB : RED; }
+  };
+}
+
 function hofUpdateCharts() {
+  const T = hofChartTheme();
   const names = HOF_filtered.map(d => d.name.split(' ').slice(0,2).join(' '));
   const tots  = HOF_filtered.map(d => d.total);
   const pcts  = HOF_filtered.map(d => d.pct);
-  const cbg   = HOF_filtered.map(d => d.total>15?'rgba(220,38,38,.75)':d.total>5?'rgba(217,119,6,.75)':'rgba(5,150,105,.75)');
-  const cbd   = HOF_filtered.map(d => d.total>15?'#dc2626':d.total>5?'#d97706':'#059669');
+  const errClr = HOF_filtered.map(d => d.total > 15 ? T.RED : d.total > 5 ? T.AMB : T.GRN);
 
-  if (hofBarC)   hofBarC.destroy();
-  hofBarC = new Chart(document.getElementById('bc'), {type:'bar', data:{labels:names, datasets:[
-    {label:'Total Errors', data:tots, backgroundColor:cbg, borderColor:cbd, borderWidth:1, borderRadius:4, yAxisID:'y'},
-    {label:'Compliance %', data:pcts, type:'line', borderColor:'#7c3aed', backgroundColor:'rgba(124,58,237,.07)', borderWidth:2, fill:true, tension:.4, pointRadius:3, pointBackgroundColor:'#7c3aed', yAxisID:'y2'}
-  ]}, options:{responsive:true, maintainAspectRatio:false,
-    plugins:{legend:{labels:{color:'#475569',font:{family:'DM Mono',size:11}}}},
+  // Errors + compliance combo — slim rounded bars, clean accent line
+  if (hofBarC) hofBarC.destroy();
+  hofBarC = new Chart(document.getElementById('bc'), { type:'bar', data:{ labels:names, datasets:[
+    { label:'Total Errors', data:tots, backgroundColor:errClr.map(c => hofRGBA(c, .85)), hoverBackgroundColor:errClr,
+      borderRadius:5, borderSkipped:false, maxBarThickness:18, yAxisID:'y' },
+    { label:'Compliance %', data:pcts, type:'line', borderColor:T.AC, borderWidth:2,
+      backgroundColor:function(ctx){ var ch=ctx.chart, area=ch.chartArea; if(!area) return hofRGBA(T.AC,.06);
+        var g=ch.ctx.createLinearGradient(0,area.top,0,area.bottom);
+        g.addColorStop(0,hofRGBA(T.AC,.14)); g.addColorStop(1,hofRGBA(T.AC,.01)); return g; },
+      fill:true, tension:.35, pointRadius:3, pointBackgroundColor:T.AC,
+      pointBorderColor:hofCV('--w','#fff'), pointBorderWidth:1.5, pointHoverRadius:6, yAxisID:'y2' }
+  ]}, options:{ responsive:true, maintainAspectRatio:false,
+    plugins:{ legend:{ labels:{ color:T.tick, font:T.fntS, boxWidth:10, boxHeight:10, padding:12, usePointStyle:true, pointStyle:'circle' } },
+      tooltip:{...T.tt, displayColors:true, boxWidth:8, boxHeight:8, usePointStyle:true} },
     scales:{
-      x:{ticks:{color:'#64748b',font:{family:'DM Mono',size:10},auditsRotation:40},grid:{color:'rgba(0,0,0,.04)'}},
-      y:{ticks:{color:'#64748b',font:{family:'DM Mono',size:10}},grid:{color:'rgba(0,0,0,.04)'},title:{display:true,text:'Errors',color:'#94a3b8',font:{family:'DM Mono',size:10}}},
-      y2:{position:'right',min:0,audits:100,ticks:{color:'#7c3aed',font:{family:'DM Mono',size:10},callback:v=>v+'%'},grid:{display:false},title:{display:true,text:'Compliance %',color:'#7c3aed',font:{family:'DM Mono',size:10}}}
+      x:{ ticks:{ color:T.tick, font:T.fntS, maxRotation:40 }, grid:{ display:false }, border:{ display:false } },
+      y:{ beginAtZero:true, ticks:{ color:T.tick, font:T.fntS, precision:0 }, grid:{ color:T.grid }, border:{ display:false },
+        title:{ display:true, text:'Errors', color:T.tick, font:T.fntS } },
+      y2:{ position:'right', min:0, max:100, ticks:{ color:T.AC, font:T.fntS, callback:v=>v+'%' }, grid:{ display:false }, border:{ display:false },
+        title:{ display:true, text:'Compliance %', color:T.AC, font:T.fntS } }
     }
   }});
 
+  // Compliance gauge donut — band-colored on theme-aware track
   const avg = HOF_filtered.length ? HOF_filtered.reduce((s,d)=>s+d.pct,0)/HOF_filtered.length : 0;
-  const dc  = avg>=90?'#059669':avg>=80?'#d97706':'#dc2626';
+  const gaugeClr = T.band(avg);
   if (hofDonutC) hofDonutC.destroy();
-  hofDonutC = new Chart(document.getElementById('dc'), {type:'doughnut', data:{datasets:[{data:[avg,100-avg], backgroundColor:[dc,'#f1f5f9'], borderWidth:0, hoverOffset:0}]},
-    options:{responsive:false, cutout:'72%', plugins:{legend:{display:false}, tooltip:{enabled:false}}}});
+  hofDonutC = new Chart(document.getElementById('dc'), { type:'doughnut',
+    data:{ datasets:[{ data:[avg, 100-avg], backgroundColor:[gaugeClr, hofRGBA(hofCV('--tx','#0f172a'), .08)], borderWidth:0, hoverOffset:0 }]},
+    options:{ responsive:false, cutout:'72%', plugins:{ legend:{ display:false }, tooltip:{ enabled:false } } } });
 
-  // ── Category Skill Gap Radar ─────────────────────────────────────────────
+  // ── Category Skill Gap — clean horizontal bars (replaces the old radar) ──
   // Each category: [errorFieldKeys, auditsPtsPerAudit]
-  // Points earned = audits - (errors * penalty). % = earned/audits * 100
+  const CAT_DEF = [
+    { label:'Outcome',    fields:['outcome'],                                          auditsPts:10,
+      detail:['Outcome Recorded'] },
+    { label:'Call',       fields:['firstContact','firstCall','callLogged','callDesc'], auditsPts:15,
+      detail:['1st Contact','1st Call','Call Logged','Call Desc'] },
+    { label:'Lead Stage', fields:['leadStage','correctStage','qualifiedMark'],         auditsPts:15,
+      detail:['Lead Stage Upd','Correct Stage','Qualified Mark'] },
+    { label:'Deal',       fields:['deal','pipeline','timeline','properties'],          auditsPts:30,
+      detail:['Deal Created','Pipeline','Timeline','Properties'] },
+    { label:'Email',      fields:['emailSent','emailHub','profTone','signature'],      auditsPts:12,
+      detail:['Email Sent','Email via Hub','Prof Tone','Signature'] },
+    { label:'WhatsApp',   fields:['waUsed','waLogged','waNote'],                       auditsPts:12,
+      detail:['WA Used','WA Logged','WA Note'] },
+    { label:'Task',       fields:['taskCreated','taskDone','taskType'],                auditsPts:6,
+      detail:['Task Created','Task Done','Task Type'] },
+  ];
+
+  const totalAuds = HOF_filtered.reduce((s,d)=>s+d.audits,0) || 1;
+  const wFields = ['catErr_outcome','catErr_call','catErr_leadStage','catErr_deal','catErr_email','catErr_whatsapp','catErr_task'];
+
+  const radarVals = CAT_DEF.map((cat,i) => {
+    const totalErrors = HOF_filtered.reduce((s,d)=>s+(d[wFields[i]]||0),0);
+    // % of audits that PASSED this category
+    const passRate = Math.round(((totalAuds - totalErrors) / totalAuds) * 100);
+    return Math.max(0, Math.min(100, passRate));
+  });
+
+  if (hofRadarC) hofRadarC.destroy();
+  hofRadarC = new Chart(document.getElementById('rc2'), {
+    type:'bar',
+    data:{ labels:CAT_DEF.map(c=>c.label),
+      datasets:[{ data:radarVals,
+        backgroundColor:radarVals.map(v => hofRGBA(T.band(v), .88)),
+        hoverBackgroundColor:radarVals.map(T.band),
+        borderRadius:5, borderSkipped:false, maxBarThickness:16 }]},
+    options:{ indexAxis:'y', responsive:true, maintainAspectRatio:false,
+      plugins:{ legend:{ display:false },
+        tooltip:{...T.tt, callbacks:{ label: ctx => ' ' + ctx.parsed.x + '% pass rate' }} },
+      scales:{
+        x:{ min:0, max:100, ticks:{ color:T.tick, font:T.fntS, callback:v=>v+'%' }, grid:{ color:T.grid }, border:{ display:false } },
+        y:{ ticks:{ color:hofCV('--tx','#0f172a'), font:T.fntB }, grid:{ display:false }, border:{ display:false } }
+      } } });
+
+  // ── Top Error Categories — rounded horizontal bars (Team Training Targets) ──
+  const catLabels  = CAT_DEF.map(c=>c.label);
+  const catPtsLost = wFields.map(f => HOF_filtered.reduce((s,d)=>s+(d[f]||0),0));
+  const catPctLost = catPtsLost.map(v => totalAuds > 0 ? Math.round((v/totalAuds)*100) : 0);
+  const catColors  = catPctLost.map(v => v>=50 ? T.RED : v>=25 ? T.AMB : T.GRN);
+
+  if (window.hofCatBarC) window.hofCatBarC.destroy();
+  const catBarEl = document.getElementById('catBar');
+  if (catBarEl) {
+    window.hofCatBarC = new Chart(catBarEl, {
+      type:'bar',
+      data:{ labels:catLabels,
+        datasets:[{ data:catPctLost,
+          backgroundColor:catColors.map(c => hofRGBA(c, .88)), hoverBackgroundColor:catColors,
+          borderRadius:5, borderSkipped:false, maxBarThickness:18 }]},
+      options:{ indexAxis:'y', responsive:true, maintainAspectRatio:false,
+        plugins:{ legend:{ display:false },
+          tooltip:{...T.tt, callbacks:{ label: ctx => ' ' + ctx.parsed.x + '% errors per audit (' + catPtsLost[ctx.dataIndex] + ' pts)' }} },
+        scales:{
+          x:{ min:0, max:100, ticks:{ color:T.tick, font:T.fntS, callback:v=>v+'%' }, grid:{ color:T.grid }, border:{ display:false },
+            title:{ display:true, text:'% of Max Points Lost per Category', color:T.tick, font:T.fntS } },
+          y:{ ticks:{ color:hofCV('--tx','#0f172a'), font:T.fntB }, grid:{ display:false }, border:{ display:false } }
+        } } });
+  }
+
+  // Keep the distribution histogram + open agent deep-dive in sync with the current theme
+  try { if (typeof renderDistribution === 'function') renderDistribution(); } catch (e) {}
+  try {
+    var arc = document.getElementById('agentRadarCard');
+    if (arc && arc.style.display !== 'none' && window._lastAgentRadarName) showAgentRadar(window._lastAgentRadarName);
+  } catch (e) {}
+}
+
+// ── Agent Deep Dive Radar ────────────────────────────────────────────────────
+var agentRadarInst = null;
+
+function showAgentRadar(name) {
+  const d = HOF_ALL.find(x => x.name === name);
+  if (!d) return;
+  window._lastAgentRadarName = name;
+
   const CAT_DEF = [
     { label:'Outcome',    fields:['outcome'],                                                     auditsPts:10,
       detail:['Outcome Recorded'] },
@@ -384,101 +498,6 @@ function hofUpdateCharts() {
       detail:['Task Created','Task Done','Task Type'] },
   ];
 
-  const totalAudits = HOF_filtered.reduce((s,d)=>s+d.audits,0) || 1;
-  const wFields = ['catErr_outcome','catErr_call','catErr_leadStage','catErr_deal','catErr_email','catErr_whatsapp','catErr_task'];
-
-  const radarVals = CAT_DEF.map((cat,i) => {
-    const catErrField = wFields[i];
-    const totalErrors = HOF_filtered.reduce((s,d)=>s+(d[catErrField]||0),0);
-    const totalAud    = HOF_filtered.reduce((s,d)=>s+d.audits,0) || 1;
-    // % of audits that PASSED this category
-    const passRate = Math.round(((totalAud - totalErrors) / totalAud) * 100);
-    return Math.max(0, Math.min(100, passRate));
-  });
-
-  if (hofRadarC) hofRadarC.destroy();
-  hofRadarC = new Chart(document.getElementById('rc2'), {
-    type:'radar',
-    data:{ labels: CAT_DEF.map(c=>c.label),
-      datasets:[{ data:radarVals, backgroundColor:'rgba(37,99,235,.12)', borderColor:'#2563eb',
-        borderWidth:2, pointBackgroundColor:'#2563eb', pointRadius:4,
-        pointHoverBackgroundColor:'#fff', pointHoverBorderColor:'#2563eb' }]},
-    options:{ responsive:true, maintainAspectRatio:false,
-      plugins:{ legend:{display:false},
-        tooltip:{ callbacks:{ label: ctx => ctx.parsed.r+'% earned' }}},
-      scales:{ r:{ min:0, audits:100,
-        ticks:{stepSize:25, color:'#94a3b8', font:{family:'DM Mono',size:9}, backdropColor:'transparent'},
-        grid:{color:'rgba(0,0,0,.06)'},
-        pointLabels:{color:'#475569', font:{family:'DM Mono',size:10}},
-        angleLines:{color:'rgba(0,0,0,.06)'}}}}});
-
-  // ── Category Horizontal Bar Chart (Team Training Targets) ─────────────────
-  const catLabels   = CAT_DEF.map(c=>c.label);
-  const totalAuds   = HOF_filtered.reduce((s,d)=>s+d.audits,0) || 1;
-  const catMaxPts   = CAT_DEF.map(() => totalAuds); // max = total audits (each audit can fail once)
-  const catPtsLost  = [
-    HOF_filtered.reduce((s,d)=>s+(d.catErr_outcome||0),0),
-    HOF_filtered.reduce((s,d)=>s+(d.catErr_call||0),0),
-    HOF_filtered.reduce((s,d)=>s+(d.catErr_leadStage||0),0),
-    HOF_filtered.reduce((s,d)=>s+(d.catErr_deal||0),0),
-    HOF_filtered.reduce((s,d)=>s+(d.catErr_email||0),0),
-    HOF_filtered.reduce((s,d)=>s+(d.catErr_whatsapp||0),0),
-    HOF_filtered.reduce((s,d)=>s+(d.catErr_task||0),0),
-  ];
-  const catPctLost = catPtsLost.map((v,i) => {
-    return totalAuds > 0 ? Math.round((v/totalAuds)*100) : 0;
-  });
-  const catColors = catPctLost.map(v => v>=50?'rgba(220,38,38,.85)':v>=25?'rgba(217,119,6,.85)':'rgba(5,150,105,.85)');
-
-  if (window.hofCatBarC) window.hofCatBarC.destroy();
-  const catBarEl = document.getElementById('catBar');
-  if (catBarEl) {
-    window.hofCatBarC = new Chart(catBarEl, {
-      type:'bar',
-      data:{ labels:catLabels,
-        datasets:[
-          { label:'% of Points Lost', data:catPctLost, backgroundColor:catColors, borderRadius:4, barThickness:32 },
-          { label:'Points Lost', data:catPtsLost, backgroundColor:'rgba(0,0,0,0)', borderWidth:0, barThickness:0 }
-        ]},
-      options:{ indexAxis:'y', responsive:true, maintainAspectRatio:false,
-        plugins:{ legend:{display:false},
-          tooltip:{ callbacks:{ label: (ctx) => {
-            if(ctx.datasetIndex===0) return ctx.parsed.x+'% errors per audit ('+catPtsLost[ctx.dataIndex]+' pts)';
-            return '';
-          }}}},
-        scales:{
-          x:{ min:0, audits:100, ticks:{color:'#64748b',font:{family:'DM Mono',size:10},callback:v=>v+'%'},
-            grid:{color:'rgba(0,0,0,.04)'},
-            title:{display:true,text:'% of Max Points Lost per Category',color:'#94a3b8',font:{family:'DM Mono',size:10}}},
-          y:{ ticks:{color:'#475569',font:{family:'DM Mono',size:12,weight:'600'}}, grid:{display:false}}
-        }}});
-  }
-}
-
-// ── Agent Deep Dive Radar ────────────────────────────────────────────────────
-var agentRadarInst = null;
-
-function showAgentRadar(name) {
-  const d = HOF_ALL.find(x => x.name === name);
-  if (!d) return;
-
-  const CAT_DEF = [
-    { label:'Outcome',    fields:['outcome'],                                                     auditsPts:10,
-      detail:['Outcome Recorded'],                                                color:'#e11d48' },
-    { label:'Call',       fields:['firstContact','firstCall','callLogged','callDesc'],             auditsPts:15,
-      detail:['1st Contact','1st Call','Call Logged','Call Desc'],        color:'#2563eb' },
-    { label:'Lead Stage', fields:['leadStage','correctStage','qualifiedMark'],                   auditsPts:15,
-      detail:['Lead Stage Upd','Correct Stage','Qualified Mark'],                   color:'#7c3aed' },
-    { label:'Deal',       fields:['deal','pipeline','timeline','properties'],                    auditsPts:30,
-      detail:['Deal Created','Pipeline','Timeline','Properties'],                   color:'#dc2626' },
-    { label:'Email',      fields:['emailSent','emailHub','profTone','signature'],                auditsPts:12,
-      detail:['Email Sent','Email via Hub','Prof Tone','Signature'],                color:'#d97706' },
-    { label:'WhatsApp',   fields:['waUsed','waLogged','waNote'],                                 auditsPts:12,
-      detail:['WA Used','WA Logged','WA Note'],                                    color:'#059669' },
-    { label:'Task',       fields:['taskCreated','taskDone','taskType'],                          auditsPts:6,
-      detail:['Task Created','Task Done','Task Type'],                              color:'#6366f1' },
-  ];
-
   const audits = d.audits || 1;
   const vals   = CAT_DEF.map(cat => {
     const errors  = cat.fields.reduce((s,f)=>s+(d[f]||0),0);
@@ -488,55 +507,53 @@ function showAgentRadar(name) {
     return Math.min(100, Math.round((earned/auditsTotal)*100));
   });
 
+  const T = hofChartTheme();
+  const cardEl = document.getElementById('agentRadarCard');
+  const wasOpen = cardEl.style.display === 'block';
   document.getElementById('agentRadarTitle').textContent = name + ' — Skill Gap Analysis';
-  document.getElementById('agentRadarCard').style.display = 'block';
-  document.getElementById('agentRadarCard').scrollIntoView({behavior:'smooth', block:'nearest'});
+  cardEl.style.display = 'block';
+  if (!wasOpen) cardEl.scrollIntoView({behavior:'smooth', block:'nearest'});
 
-  // Category table
+  // Category table — theme-aware bars, Plus Jakarta, band-colored percentages
   const tableEl = document.getElementById('agentCatTable');
   tableEl.innerHTML = CAT_DEF.map((cat,i) => {
     const pct    = vals[i];
-    const col    = pct>=80?'#059669':pct>=60?'#d97706':'#dc2626';
+    const col    = pct >= 80 ? T.GRN : pct >= 60 ? T.AMB : T.RED;
     const totErr = cat.fields.reduce((s,f)=>s+(d[f]||0),0);
     // Sub-breakdown of each attribute
     const subs = cat.fields.map((f,fi) => {
       const cnt = d[f]||0;
-      return cnt>0 ? `<span style="font-size:10px;color:#dc2626;font-family:'DM Mono',monospace">${cat.detail[fi]}:${cnt}</span>` : '';
+      return cnt>0 ? `<span style="font-size:10px;color:${T.RED};font-family:'Plus Jakarta Sans',sans-serif;font-weight:600">${cat.detail[fi]}: ${cnt}</span>` : '';
     }).filter(Boolean).join(' &nbsp;');
     return `<div style="margin-bottom:6px">
       <div style="display:flex;align-items:center;gap:8px">
-        <div style="width:82px;font-size:12px;font-weight:700;color:${cat.color}">${cat.label}</div>
-        <div style="flex:1;height:7px;background:#f1f5f9;border-radius:4px;overflow:hidden">
+        <div style="width:82px;font-size:12px;font-weight:700;color:var(--tx)">${cat.label}</div>
+        <div style="flex:1;height:7px;background:var(--s2);border-radius:4px;overflow:hidden">
           <div style="width:${pct}%;height:100%;background:${col};border-radius:4px"></div>
         </div>
-        <div style="width:36px;text-align:right;font-size:12px;font-weight:700;color:${col};font-family:'DM Mono',monospace">${pct}%</div>
+        <div style="width:36px;text-align:right;font-size:12px;font-weight:800;color:${col};font-family:'Plus Jakarta Sans',sans-serif">${pct}%</div>
         <div style="width:44px;font-size:11px;color:var(--mu);text-align:right">${totErr} err</div>
       </div>
       ${subs ? `<div style="padding-left:90px;margin-top:2px;display:flex;flex-wrap:wrap;gap:4px">${subs}</div>` : ''}
     </div>`;
   }).join('');
 
+  // Per-agent skill bars — color encodes vs the 80% target
   if (agentRadarInst) agentRadarInst.destroy();
   agentRadarInst = new Chart(document.getElementById('agentRadar'), {
-    type:'radar',
+    type:'bar',
     data:{ labels: CAT_DEF.map(c=>c.label),
-      datasets:[
-        { label:name, data:vals,
-          backgroundColor:'rgba(37,99,235,.12)', borderColor:'#2563eb',
-          borderWidth:2, pointBackgroundColor:'#2563eb', pointRadius:5 },
-        { label:'Target (80%)', data:[80,80,80,80,80,80],
-          backgroundColor:'rgba(5,150,105,.05)', borderColor:'rgba(5,150,105,.4)',
-          borderWidth:1, borderDash:[4,4], pointRadius:0 }
-      ]},
-    options:{ responsive:true, maintainAspectRatio:false,
-      plugins:{ legend:{display:true, position:'bottom',
-          labels:{font:{family:'DM Mono',size:10}, color:'#64748b'}},
-        tooltip:{ callbacks:{ label: ctx => ctx.dataset.label+': '+ctx.parsed.r+'%' }}},
-      scales:{ r:{ min:0, audits:100,
-        ticks:{stepSize:20,color:'#94a3b8',font:{family:'DM Mono',size:9},backdropColor:'transparent'},
-        grid:{color:'rgba(0,0,0,.06)'},
-        pointLabels:{color:'#475569',font:{family:'DM Mono',size:11,weight:'600'}},
-        angleLines:{color:'rgba(0,0,0,.06)'}}}
+      datasets:[{ data:vals,
+        backgroundColor:vals.map(v => hofRGBA(v >= 80 ? T.GRN : v >= 60 ? T.AMB : T.RED, .88)),
+        hoverBackgroundColor:vals.map(v => v >= 80 ? T.GRN : v >= 60 ? T.AMB : T.RED),
+        borderRadius:5, borderSkipped:false, maxBarThickness:18 }]},
+    options:{ indexAxis:'y', responsive:true, maintainAspectRatio:false,
+      plugins:{ legend:{ display:false },
+        tooltip:{...T.tt, callbacks:{ label: ctx => ' ' + ctx.parsed.x + '% (target 80%)' }} },
+      scales:{
+        x:{ min:0, max:100, ticks:{ color:T.tick, font:T.fntS, callback:v=>v+'%' }, grid:{ color:T.grid }, border:{ display:false } },
+        y:{ ticks:{ color:hofCV('--tx','#0f172a'), font:T.fntB }, grid:{ display:false }, border:{ display:false } }
+      }
     }
   });
 }
@@ -930,23 +947,26 @@ function renderPersonalCard(d) {
     const el = document.getElementById('pc-trend-chart');
     if (el) {
       if (pcTrendChart) pcTrendChart.destroy();
+      const T = hofChartTheme();
       pcTrendChart = new Chart(el, {
         type:'line',
         data:{ labels:months.map(m=>m.month),
           datasets:[{
             data:months.map(m=>m.avgPct),
-            borderColor:'#2563eb', backgroundColor:'rgba(37,99,235,.1)',
-            borderWidth:2, fill:true, tension:.4, pointRadius:4,
-            pointBackgroundColor:months.map(m=>m.avgPct>=90?'#059669':m.avgPct>=80?'#d97706':'#dc2626')
+            borderColor:T.AC, borderWidth:2,
+            backgroundColor:function(ctx){ var ch=ctx.chart, area=ch.chartArea; if(!area) return hofRGBA(T.AC,.08);
+              var g=ch.ctx.createLinearGradient(0,area.top,0,area.bottom);
+              g.addColorStop(0,hofRGBA(T.AC,.16)); g.addColorStop(1,hofRGBA(T.AC,.01)); return g; },
+            fill:true, tension:.35, pointRadius:3.5,
+            pointBackgroundColor:months.map(m=>T.band(m.avgPct)),
+            pointBorderColor:hofCV('--w','#fff'), pointBorderWidth:1.5, pointHoverRadius:6
           }]},
         options:{ responsive:true, maintainAspectRatio:false,
-          plugins:{legend:{display:false},
-            tooltip:{callbacks:{label:ctx=>ctx.parsed.y.toFixed(1)+'%'}}},
+          plugins:{ legend:{display:false},
+            tooltip:{...T.tt, callbacks:{ label: ctx => ' ' + ctx.parsed.y.toFixed(1) + '%' }} },
           scales:{
-            x:{ticks:{color:'#64748b',font:{family:'DM Mono',size:9}},grid:{display:false}},
-            y:{min:0,audits:100,ticks:{color:'#64748b',font:{family:'DM Mono',size:9},callback:v=>v+'%'},
-              grid:{color:'rgba(0,0,0,.04)'},
-              annotations:{line80:{type:'line',yMin:80,yMax:80,borderColor:'#d97706',borderWidth:1,borderDash:[4,4]}}}
+            x:{ ticks:{ color:T.tick, font:T.fntS }, grid:{ display:false }, border:{ display:false } },
+            y:{ min:0, max:100, ticks:{ color:T.tick, font:T.fntS, callback:v=>v+'%' }, grid:{ color:T.grid }, border:{ display:false } }
           }}
       });
     }
@@ -959,14 +979,15 @@ function renderPersonalCard(d) {
 var distChartInst = null;
 
 function renderDistribution() {
+  const T = hofChartTheme();
   const bands = [
-    { label:'🔴 Critical',   min:0,  audits:70,  col:'rgba(220,38,38,.8)',   bg:'#fef2f2', tc:'#dc2626' },
-    { label:'🟡 At Risk',    min:70, audits:80,  col:'rgba(217,119,6,.8)',   bg:'#fffbeb', tc:'#d97706' },
-    { label:'🟢 Good',       min:80, audits:90,  col:'rgba(5,150,105,.8)',   bg:'#f0fdf4', tc:'#059669' },
-    { label:'Excellent',  min:90, audits:101, col:'rgba(37,99,235,.8)',   bg:'#eff6ff', tc:'#2563eb' },
+    { label:'Critical',  min:0,  max:70,  col:T.RED },
+    { label:'At Risk',   min:70, max:80,  col:T.AMB },
+    { label:'Good',      min:80, max:90,  col:T.GRN },
+    { label:'Excellent', min:90, max:101, col:T.AC  },
   ];
 
-  const counts = bands.map(b => HOF_filtered.filter(d => d.pct >= b.min && d.pct < b.audits).length);
+  const counts = bands.map(b => HOF_filtered.filter(d => d.pct >= b.min && d.pct < b.max).length);
   const total  = HOF_filtered.length || 1;
 
   // Chart
@@ -976,30 +997,32 @@ function renderDistribution() {
   distChartInst = new Chart(el, {
     type:'bar',
     data:{ labels: bands.map(b=>b.label),
-      datasets:[{ data:counts, backgroundColor:bands.map(b=>b.col), borderRadius:8, barThickness:45 }]},
+      datasets:[{ data:counts,
+        backgroundColor:bands.map(b => hofRGBA(b.col, .88)), hoverBackgroundColor:bands.map(b=>b.col),
+        borderRadius:6, borderSkipped:false, maxBarThickness:40 }]},
     options:{ responsive:true, maintainAspectRatio:false,
-      plugins:{ legend:{display:false},
-        tooltip:{ callbacks:{ label: ctx => ctx.parsed.y+' agents ('+((ctx.parsed.y/total)*100).toFixed(0)+'%)' }}},
+      plugins:{ legend:{ display:false },
+        tooltip:{...T.tt, callbacks:{ label: ctx => ' ' + ctx.parsed.y + ' agents (' + ((ctx.parsed.y/total)*100).toFixed(0) + '%)' }} },
       scales:{
-        x:{ ticks:{color:'var(--tx)',font:{family:'DM Mono',size:10}}, grid:{display:false} },
-        y:{ ticks:{color:'#64748b',font:{family:'DM Mono',size:10},stepSize:1}, grid:{color:'rgba(0,0,0,.04)'},
-          title:{display:true,text:'No. of Agents',color:'#94a3b8',font:{family:'DM Mono',size:10}} }
+        x:{ ticks:{ color:hofCV('--tx','#0f172a'), font:T.fntB }, grid:{ display:false }, border:{ display:false } },
+        y:{ beginAtZero:true, ticks:{ color:T.tick, font:T.fntS, stepSize:1 }, grid:{ color:T.grid }, border:{ display:false },
+          title:{ display:true, text:'No. of Agents', color:T.tick, font:T.fntS } }
       }}
   });
 
-  // Detail panel
+  // Detail panel — soft band-tinted cards that work on all three themes
   const det = document.getElementById('distDetail');
   if (det) {
     det.innerHTML = bands.map((b,i) => {
       const pct = ((counts[i]/total)*100).toFixed(0);
-      const agents = HOF_filtered.filter(d=>d.pct>=b.min&&d.pct<b.audits).map(d=>d.name.split(' ')[0]).join(', ');
-      return `<div style="background:${b.bg};border:1px solid ${b.col.replace('.8','1')};border-radius:10px;padding:10px 14px">
+      const agents = HOF_filtered.filter(d=>d.pct>=b.min&&d.pct<b.max).map(d=>d.name.split(' ')[0]).join(', ');
+      return `<div style="background:${hofRGBA(b.col,.08)};border:1px solid ${hofRGBA(b.col,.35)};border-radius:12px;padding:10px 14px">
         <div style="display:flex;justify-content:space-between;align-items:center">
-          <span style="font-size:12px;font-weight:700;color:${b.tc}">${b.label}</span>
-          <span style="font-family:'DM Mono',monospace;font-size:18px;font-weight:800;color:${b.tc}">${counts[i]}</span>
+          <span style="font-size:12px;font-weight:700;color:${b.col}">${b.label}</span>
+          <span style="font-family:'Plus Jakarta Sans',sans-serif;font-size:18px;font-weight:800;color:${b.col}">${counts[i]}</span>
         </div>
         <div style="font-size:10px;color:var(--mu);margin-top:2px">${pct}% of team${agents?` · ${agents}`:''}</div>
-        <div style="font-size:10px;color:var(--mu)">${b.min}% – ${b.audits===101?'100':b.audits}% range</div>
+        <div style="font-size:10px;color:var(--mu)">${b.min}% – ${b.max===101?'100':b.max}% range</div>
       </div>`;
     }).join('');
   }
