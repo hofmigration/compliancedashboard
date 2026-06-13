@@ -10,7 +10,9 @@ async function hofFetch(silent=false) {
   if (p.length) url += '?' + p.join('&');
 
   const controller = new AbortController();
-  const tid = setTimeout(() => controller.abort(), 12000);
+  // 30s: the Apps Script can cold-start + scan the whole sheet, which often
+  // takes longer than 12s on the first hit. Pass a reason so the message is readable.
+  const tid = setTimeout(() => controller.abort(new DOMException('Request timed out after 30s', 'TimeoutError')), 30000);
 
   try {
     const res = await fetch(url, {redirect:'follow', signal: controller.signal});
@@ -26,8 +28,27 @@ async function hofFetch(silent=false) {
       throw new Error('JSON parse failed: '+pe.message);
     }
     if (json.ok===false) throw new Error('Apps Script error: '+(json.error||'unknown'));
-    if (!Array.isArray(json.data)||json.data.length===0)
-      throw new Error('No data found. Try "All Time" to confirm data exists.');
+
+    // Empty result is a VALID state (e.g. no audits in the selected range),
+    // not an error. Render zeros instead of the red error box.
+    if (!Array.isArray(json.data) || json.data.length===0) {
+      HOF_ALL = [];
+      HOF_totalAudits = 0;
+      HOF_dateRange   = json.dateRange || {min:'', audits:''};
+      loadedTabs.hof  = true;
+      document.getElementById('eb').classList.remove('on');
+      setUpd();
+      if (!silent) {
+        hofPopulateCF();
+        applyFilters();
+        hideSkeleton();
+        try { renderWeightTable(); } catch(e2) {}
+        showToast('No audits found in this period — showing zeros');
+      } else {
+        try { applyFilters(); renderWeightTable(); setUpd(); } catch(e2) {}
+      }
+      return;
+    }
 
     HOF_ALL = json.data.map(d => ({
       name:               String(d.name||''),
@@ -80,8 +101,13 @@ async function hofFetch(silent=false) {
     }
   } catch(err) {
     clearTimeout(tid);
+    // Turn the cryptic browser abort text into something actionable
+    let msg = err.message;
+    if (err.name === 'TimeoutError' || err.name === 'AbortError' || /aborted/i.test(msg)) {
+      msg = 'Request timed out — the Sheet took too long to respond. Tap Retry (the script is usually faster on the second try), or pick a smaller date range.';
+    }
     if (!silent) {
-      document.getElementById('emsg').textContent = err.message;
+      document.getElementById('emsg').textContent = msg;
       document.getElementById('edet').textContent =
         '1. Apps Script → Deploy → Manage\n2. Execute as: Me\n3. Who has access: Anyone\n4. New change? Create NEW deployment → paste new URL';
       document.getElementById('eb').classList.add('on');
@@ -244,7 +270,7 @@ function hofUpdateKPIs() {
 function hofRenderTable(data) {
   const tb = document.getElementById('tb');
   if (!data.length) {
-    tb.innerHTML='<tr><td colspan="15" style="text-align:center;padding:24px;color:var(--mu)">No data for current filters.</td></tr>';
+    tb.innerHTML='<tr><td colspan="15" style="text-align:center;padding:24px;color:var(--mu)">No audits recorded for this date range. Try a wider range (e.g. This Month or All Time).</td></tr>';
     return;
   }
   const ec = (n, catKey, d) => {
