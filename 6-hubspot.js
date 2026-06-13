@@ -4,7 +4,7 @@
 //  Consultants tab (alongside "Performance Compliance").
 //  Graph-driven (Chart.js), theme-aware, day/custom/all date filter.
 // ══════════════════════════════════════════════════════════════════
-const HS_API = 'https://script.google.com/macros/s/AKfycbzn_ngRUlGOV9S9iDkY67QWBcB2DuNSdKD2qjoTJShpyU3GtL_CQ9JYd2Mr4SPJ4-N_BA/exec';
+const HS_API = 'https://script.google.com/macros/s/AKfycbzuPz1T5P3rxr4U3uH9YvzUyA2wrOQbGHFzBKSjo16wo0rb0R9WQfTPlQFUwPUgNovxtg/exec';
 
 var hsLoaded = false;
 var hsData   = null;
