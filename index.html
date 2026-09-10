@@ -2174,20 +2174,51 @@ footer{
     <button class="dla-seg-btn"    id="cq-seg-service" onclick="cqSetTeam('service')">Service Calls QA</button>
   </div>
 
+  <!-- Date presets + custom range + person filter -->
+  <div class="dla-filters">
+    <div class="dla-presets" id="cq-presets">
+      <button class="dla-chip" data-preset="today"  onclick="cqSetPreset('today')">Today</button>
+      <button class="dla-chip" data-preset="last7"  onclick="cqSetPreset('last7')">Last 7 days</button>
+      <button class="dla-chip" data-preset="last10" onclick="cqSetPreset('last10')">Last 10 days</button>
+      <button class="dla-chip on" data-preset="month" onclick="cqSetPreset('month')">This month</button>
+      <button class="dla-chip" data-preset="all"    onclick="cqSetPreset('all')">All time</button>
+      <button class="dla-chip" data-preset="custom" onclick="cqSetPreset('custom')">Custom</button>
+    </div>
+    <div class="dla-custom" id="cq-custom" style="display:none">
+      <input type="date" id="cq-start" onchange="cqRender()">
+      <span class="dla-to">to</span>
+      <input type="date" id="cq-end" onchange="cqRender()">
+    </div>
+    <select id="cq-person" class="dla-select" onchange="cqRender()">
+      <option value="all">All Consultants</option>
+    </select>
+  </div>
+
   <div class="dla-error" id="cq-error" style="display:none">
-    <span id="cq-error-msg">Could not load</span>
+    <span>⚠️</span><span id="cq-error-msg"></span>
+  </div>
+
+  <div class="dla-skeleton" id="cq-skeleton" style="display:none">
+    <div class="dla-sk-card"></div><div class="dla-sk-card"></div>
+    <div class="dla-sk-card"></div><div class="dla-sk-card"></div>
   </div>
 
   <div id="cq-content">
 
     <div class="dla-kpis">
-      <div class="dla-kpi"><div class="dla-kpi-v" id="cq-k-audits">—</div><div class="dla-kpi-l">Total audits</div></div>
+      <div class="dla-kpi"><div class="dla-kpi-v" id="cq-k-audits">—</div><div class="dla-kpi-l">Audits in range</div></div>
       <div class="dla-kpi"><div class="dla-kpi-v" id="cq-k-avg">—</div><div class="dla-kpi-l">Collective score</div></div>
       <div class="dla-kpi"><div class="dla-kpi-v" id="cq-k-people">—</div><div class="dla-kpi-l">People audited</div></div>
       <div class="dla-kpi"><div class="dla-kpi-v" id="cq-k-critical">—</div><div class="dla-kpi-l">Critical breaches</div></div>
     </div>
 
-    <!-- People / Daily / Monthly -->
+    <!-- MISTAKES FIRST -->
+    <div class="dla-card">
+      <div class="dla-card-h" id="cq-mistakes-h">Most common mistakes</div>
+      <div id="cq-mistakes" class="dla-mistakes"></div>
+    </div>
+
+    <!-- THEN PEOPLE -->
     <div class="dla-seg">
       <button class="dla-seg-btn on" id="cq-view-people"  onclick="cqSetView('people')">By Person</button>
       <button class="dla-seg-btn"    id="cq-view-daily"   onclick="cqSetView('daily')">Daily</button>
@@ -2201,16 +2232,6 @@ footer{
         <table class="dla-table">
           <thead id="cq-thead"></thead>
           <tbody id="cq-tbody"></tbody>
-        </table>
-      </div>
-    </div>
-
-    <div class="dla-card">
-      <div class="dla-card-h" id="cq-attr-h">Attribute performance</div>
-      <div class="dla-tablewrap">
-        <table class="dla-table">
-          <thead><tr><th>Attribute</th><th style="text-align:center">Weight</th><th style="text-align:center">Passed</th><th style="text-align:center">Failed</th><th style="text-align:right">Pass rate</th></tr></thead>
-          <tbody id="cq-attr-tbody"></tbody>
         </table>
       </div>
     </div>
