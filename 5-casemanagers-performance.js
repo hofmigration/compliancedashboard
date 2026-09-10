@@ -10,8 +10,7 @@ updateClock();
 setInterval(updateClock, 1000);
 
 
-hofFetch();
-setTimeout(function(){ loadCM('daily'); }, 500);
+loadCM('daily');
 
 // ── CM Sub-tab switching ─────────────────────────────────────────────────────
 function switchCMTab(tab) {
@@ -1724,8 +1723,11 @@ function startAutoRefresh() {
     // Don't churn while the tab is hidden/in the background — saves CPU and stops redraws
     if (document.hidden) return;
     // Silent background refresh — no loader, no skeleton, no toast
-    loadedTabs.hof = false;
-    hofFetch(true);
+    // HOF Consultants + Deals panels were removed; keep the CM tab fresh instead.
+    if (typeof activeTab !== 'undefined' && activeTab === 'daily') {
+      loadedTabs.daily = false;
+      loadCM('daily');
+    }
   }, AUTO_REFRESH_MS);
 }
 startAutoRefresh();
