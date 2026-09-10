@@ -20,6 +20,7 @@ var cqView     = 'people';                        // people | daily | monthly | 
 var cqPreset   = 'month';                         // today | last7 | last10 | month | all | custom
 var cqLastRows = [];                              // rows after filtering (used by export)
 var _cqLoaded  = false;
+var _cqUserPickedRange = false;   // true once the user clicks a date chip
 
 // go() in 1-core.js routes unknown tabs to loadCM(); marking this tab loaded
 // keeps it out of that path. Our own loader runs from the wrap below.
@@ -42,7 +43,7 @@ window.refreshActive = function () {
 /* ── FETCH ──────────────────────────────────────────────────── */
 function cqLoad() {
   var team = cqTeam;
-  if (cqData[team]) { cqPopulatePeople(); cqRender(); return; }
+  if (cqData[team]) { cqPopulatePeople(); cqAutoRange(); cqRender(); return; }
 
   cqSetUpdated('Loading ' + (team === 'sales' ? 'sales' : 'service') + ' audits…');
   cqHideError();
@@ -57,6 +58,7 @@ function cqLoad() {
       if (!j.ok) throw new Error(j.error || 'Apps Script returned an error');
       cqData[team] = j;
       cqPopulatePeople();
+      cqAutoRange();
       cqRender();
     })
     .catch(function (e) { cqError(e.message); })
@@ -88,6 +90,7 @@ function cqSetView(v) {
 
 function cqSetPreset(p) {
   cqPreset = p;
+  _cqUserPickedRange = true;
   document.querySelectorAll('#cq-presets .dla-chip').forEach(function (c) {
     c.classList.toggle('on', c.getAttribute('data-preset') === p);
   });
@@ -100,6 +103,21 @@ function cqSetPreset(p) {
     if (e && !e.value) e.value = t;
   }
   cqRender();
+}
+
+// If the default range is empty but the feed does have audits, widen to
+// "All time" so the tab never opens looking blank. Only until the user
+// picks a range themselves.
+function cqAutoRange() {
+  if (_cqUserPickedRange) return;
+  if (!cqAllRows().length) return;
+  if (cqFiltered().length) return;
+  cqPreset = 'all';
+  document.querySelectorAll('#cq-presets .dla-chip').forEach(function (c) {
+    c.classList.toggle('on', c.getAttribute('data-preset') === 'all');
+  });
+  var box = document.getElementById('cq-custom');
+  if (box) box.style.display = 'none';
 }
 
 /* ── STATE HELPERS ──────────────────────────────────────────── */
@@ -170,43 +188,59 @@ function cqEmptyRow(cols, msg) {
 }
 
 /* ── CALL DURATION ──────────────────────────────────────────── */
-// The sheet's Call Duration is normally "mm:ss" from the picker, but older
-// rows were typed by hand. Accept mm:ss, h:mm:ss, "5m 30s", or a bare number
-// of minutes. Returns minutes as a float.
-function cqMins(v) {
+// Durations are recorded as mm:ss. Google Sheets often reinterprets "25:46"
+// as a clock time and stores it as "25:46:00" — that trailing :00 is Sheets',
+// not a seconds value, so 25:46:00 means 25 min 46 s, NOT 25 hours.
+//   "mm:ss"     -> minutes:seconds
+//   "mm:ss:00"  -> minutes:seconds
+//   "h:mm:ss"   -> real h:mm:ss only when the third part is non-zero
+//   "5m 30s"    -> as written
+//   bare number -> minutes
+// Returns whole seconds.
+function cqDurSec(v) {
   if (v == null) return 0;
   var s = String(v).trim();
   if (!s) return 0;
 
   if (s.indexOf(':') !== -1) {
-    var p = s.split(':').map(function (x) { return parseInt(x, 10) || 0; });
-    if (p.length === 3) return p[0] * 60 + p[1] + p[2] / 60;   // h:mm:ss
-    if (p.length === 2) return p[0] + p[1] / 60;               // mm:ss
+    var p = s.split(':');
+    var a = parseInt(p[0], 10) || 0;
+    var b = parseInt(p[1], 10) || 0;
+    if (p.length === 2) return a * 60 + b;
+    var c = parseInt(p[2], 10) || 0;
+    if (c === 0) return a * 60 + b;              // mm:ss:00 from Sheets
+    return a * 3600 + b * 60 + c;                // genuine h:mm:ss
   }
   var h  = s.match(/(\d+)\s*h/i),
       m  = s.match(/(\d+)\s*m/i),
       sc = s.match(/(\d+)\s*s/i);
   if (h || m || sc) {
-    return (h ? parseInt(h[1], 10) * 60 : 0) +
-           (m ? parseInt(m[1], 10) : 0) +
-           (sc ? parseInt(sc[1], 10) / 60 : 0);
+    return (h ? parseInt(h[1], 10) * 3600 : 0) +
+           (m ? parseInt(m[1], 10) * 60 : 0) +
+           (sc ? parseInt(sc[1], 10) : 0);
   }
   var n = parseFloat(s);
-  return isNaN(n) ? 0 : n;   // bare number = minutes
+  return isNaN(n) ? 0 : Math.round(n * 60);
 }
 
-// 349 -> "5h 49m"
-function cqHM(mins) {
-  var t = Math.round(mins || 0);
-  if (t <= 0) return '0m';
-  var h = Math.floor(t / 60), m = t % 60;
+// Prefer the exact seconds the Apps Script sends; fall back to parsing the text.
+function cqRowSec(r) {
+  if (r && typeof r.durationSec === 'number' && isFinite(r.durationSec)) return r.durationSec;
+  return cqDurSec(r && r.duration);
+}
+
+// 20940 -> "5h 49m"
+function cqHM(secs) {
+  var mins = Math.round((secs || 0) / 60);
+  if (mins <= 0) return '0m';
+  var h = Math.floor(mins / 60), m = mins % 60;
   return h ? (h + 'h ' + m + 'm') : (m + 'm');
 }
-// short form for an average call length
-function cqMS(mins) {
-  var total = Math.round((mins || 0) * 60);
-  var m = Math.floor(total / 60), s = total % 60;
-  return m + ':' + (s < 10 ? '0' + s : s);
+// 745 -> "12:25"
+function cqMS(secs) {
+  var t = Math.round(secs || 0);
+  var m = Math.floor(t / 60), sec = t % 60;
+  return m + ':' + (sec < 10 ? '0' + sec : sec);
 }
 
 function cqFiltered() {
@@ -239,12 +273,12 @@ function cqRender() {
   var rows = cqFiltered();
   cqLastRows = rows;
 
-  var total = rows.length, sum = 0, crit = 0, people = {}, mins = 0;
+  var total = rows.length, sum = 0, crit = 0, people = {}, secs = 0;
   rows.forEach(function (r) {
     sum += Number(r.score) || 0;
     if (r.critical) crit++;
     if (r.consultant) people[r.consultant] = 1;
-    mins += cqMins(r.duration);
+    secs += cqRowSec(r);
   });
   var avg = total ? cqRound(sum / total) : 0;
 
@@ -252,7 +286,7 @@ function cqRender() {
   document.getElementById('cq-k-people').textContent   = Object.keys(people).length;
   document.getElementById('cq-k-critical').textContent = crit;
   var kTime = document.getElementById('cq-k-time');
-  if (kTime) kTime.textContent = total ? cqHM(mins) : '—';
+  if (kTime) kTime.textContent = total ? cqHM(secs) : '—';
   var kAvg = document.getElementById('cq-k-avg');
   kAvg.textContent = total ? avg + '%' : '—';
   kAvg.style.color = total ? cqClr(avg) : '';
@@ -426,8 +460,8 @@ function cqRenderAuditorTime(rows) {
     if (!r.date) return;
     var who = r.auditor || '—';
     var k = who + '||' + r.date;
-    if (!g[k]) g[k] = { who: who, date: r.date, n: 0, mins: 0 };
-    g[k].n++; g[k].mins += cqMins(r.duration);
+    if (!g[k]) g[k] = { who: who, date: r.date, n: 0, secs: 0 };
+    g[k].n++; g[k].secs += cqRowSec(r);
   });
 
   var list = Object.keys(g).map(function (k) { return g[k]; }).sort(function (a, b) {
@@ -443,21 +477,21 @@ function cqRenderAuditorTime(rows) {
     return '<tr><td>' + cqEsc(x.date) + '</td>' +
       '<td><b>' + cqEsc(x.who) + '</b></td>' +
       '<td style="text-align:center">' + x.n + '</td>' +
-      '<td style="text-align:center">' + cqMS(x.mins / x.n) + '</td>' +
-      '<td style="text-align:right"><b>' + cqHM(x.mins) + '</b></td></tr>';
+      '<td style="text-align:center">' + cqMS(x.secs / x.n) + '</td>' +
+      '<td style="text-align:right"><b>' + cqHM(x.secs) + '</b></td></tr>';
   }).join('');
 
   // Per-auditor totals across the whole filtered range
   var byWho = {};
   list.forEach(function (x) {
-    if (!byWho[x.who]) byWho[x.who] = { n: 0, mins: 0 };
-    byWho[x.who].n += x.n; byWho[x.who].mins += x.mins;
+    if (!byWho[x.who]) byWho[x.who] = { n: 0, secs: 0 };
+    byWho[x.who].n += x.n; byWho[x.who].secs += x.secs;
   });
   var totals = Object.keys(byWho).sort().map(function (w) {
     return '<tr style="background:var(--s2)"><td colspan="2"><b>' + cqEsc(w) + ' — range total</b></td>' +
       '<td style="text-align:center"><b>' + byWho[w].n + '</b></td>' +
-      '<td style="text-align:center">' + cqMS(byWho[w].mins / byWho[w].n) + '</td>' +
-      '<td style="text-align:right"><b>' + cqHM(byWho[w].mins) + '</b></td></tr>';
+      '<td style="text-align:center">' + cqMS(byWho[w].secs / byWho[w].n) + '</td>' +
+      '<td style="text-align:right"><b>' + cqHM(byWho[w].secs) + '</b></td></tr>';
   }).join('');
 
   document.getElementById('cq-tbody').innerHTML = body + totals;
