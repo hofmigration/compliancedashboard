@@ -941,6 +941,7 @@ footer{
         <button class="ntab on" id="nt-hof"   onclick="go('hof')">HOF Consultants <span class="nc" id="nc-hof">—</span></button>
         <button class="ntab"    id="nt-deals" onclick="go('deals')">Deal's Compliance <span class="nc" id="nc-deals">—</span></button>
         <button class="ntab"    id="nt-daily" onclick="go('daily')">CM's Compliance <span class="nc" id="nc-daily">—</span></button>
+        <button class="ntab"    id="nt-calls" onclick="go('calls')">Calls Quality <span class="nc" id="nc-calls">—</span></button>
       </div>
 
       <div class="tools">
@@ -2153,6 +2154,71 @@ footer{
 
 </div><!-- /p-deals -->
 
+<!-- ══ CALLS QUALITY (Sales + Service call QA) ══════════════════ -->
+<div class="panel" id="p-calls">
+
+  <div class="dla-head">
+    <div>
+      <div class="dla-title">Calls Quality</div>
+      <div class="dla-sub" id="cq-updated">Loading…</div>
+    </div>
+    <div class="dla-tools">
+      <button class="dla-btn" onclick="cqRefresh()">↻ Refresh</button>
+      <button class="dla-btn" onclick="cqExportCSV()">⤓ Export</button>
+    </div>
+  </div>
+
+  <!-- Sales / Service -->
+  <div class="dla-seg">
+    <button class="dla-seg-btn on" id="cq-seg-sales"   onclick="cqSetTeam('sales')">Sales Calls QA</button>
+    <button class="dla-seg-btn"    id="cq-seg-service" onclick="cqSetTeam('service')">Service Calls QA</button>
+  </div>
+
+  <div class="dla-error" id="cq-error" style="display:none">
+    <span id="cq-error-msg">Could not load</span>
+  </div>
+
+  <div id="cq-content">
+
+    <div class="dla-kpis">
+      <div class="dla-kpi"><div class="dla-kpi-v" id="cq-k-audits">—</div><div class="dla-kpi-l">Total audits</div></div>
+      <div class="dla-kpi"><div class="dla-kpi-v" id="cq-k-avg">—</div><div class="dla-kpi-l">Collective score</div></div>
+      <div class="dla-kpi"><div class="dla-kpi-v" id="cq-k-people">—</div><div class="dla-kpi-l">People audited</div></div>
+      <div class="dla-kpi"><div class="dla-kpi-v" id="cq-k-critical">—</div><div class="dla-kpi-l">Critical breaches</div></div>
+    </div>
+
+    <!-- People / Daily / Monthly -->
+    <div class="dla-seg">
+      <button class="dla-seg-btn on" id="cq-view-people"  onclick="cqSetView('people')">By Person</button>
+      <button class="dla-seg-btn"    id="cq-view-daily"   onclick="cqSetView('daily')">Daily</button>
+      <button class="dla-seg-btn"    id="cq-view-monthly" onclick="cqSetView('monthly')">Monthly</button>
+      <button class="dla-seg-btn"    id="cq-view-audits"  onclick="cqSetView('audits')">All Audits</button>
+    </div>
+
+    <div class="dla-card">
+      <div class="dla-card-h" id="cq-table-h">Score by person</div>
+      <div class="dla-tablewrap">
+        <table class="dla-table">
+          <thead id="cq-thead"></thead>
+          <tbody id="cq-tbody"></tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="dla-card">
+      <div class="dla-card-h" id="cq-attr-h">Attribute performance</div>
+      <div class="dla-tablewrap">
+        <table class="dla-table">
+          <thead><tr><th>Attribute</th><th style="text-align:center">Weight</th><th style="text-align:center">Passed</th><th style="text-align:center">Failed</th><th style="text-align:right">Pass rate</th></tr></thead>
+          <tbody id="cq-attr-tbody"></tbody>
+        </table>
+      </div>
+    </div>
+
+  </div>
+
+</div><!-- /p-calls -->
+
     </div><!-- /.appbody -->
   </div><!-- /.main -->
 </div><!-- /.app -->
@@ -2517,5 +2583,6 @@ if (window.Chart) {
 <script src="4-deals.js"></script>
 <script src="5-casemanagers-performance.js"></script>
 <script src="6-hubspot.js"></script>
+<script src="7-callsqa.js"></script>
 </body>
 </html>
