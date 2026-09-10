@@ -279,7 +279,7 @@ function mergeErrorLinks(errorLinksMap) {
 // ══════════════════════════════════════════════════════════════
 //  SHARED NAV STATE
 // ══════════════════════════════════════════════════════════════
-var activeTab   = 'hof';
+var activeTab   = 'daily';
 var loadedTabs  = {};
 var cmCharts    = {};
 var cmStore     = { daily: null, weekly: null, monthly: null };
@@ -372,15 +372,13 @@ function go(tab) {
   document.getElementById('nt-' + tab).classList.add('on');
   document.getElementById('p-'  + tab).classList.add('on');
   if (!loadedTabs[tab]) {
-    if (tab === 'hof') { hofFetch(); }
-    else if (tab === 'deals') { loadedTabs.deals = true; /* placeholder */ }
-    else { loadCM(tab); }
+    loadCM(tab);
   }
 }
 
 function refreshActive() {
   loadedTabs[activeTab] = false;
-  if (activeTab === 'hof') { hofFetch(); } else { loadCM(activeTab); }
+  loadCM(activeTab);
 }
 
 function cmNumFmt(n) { return n >= 1000 ? (n/1000).toFixed(1)+'k' : String(n); }
