@@ -79,7 +79,7 @@ function cqSetTeam(team) {
 
 function cqSetView(v) {
   cqView = v;
-  ['people', 'daily', 'monthly', 'audits'].forEach(function (x) {
+  ['people', 'daily', 'monthly', 'auditor', 'audits'].forEach(function (x) {
     var b = document.getElementById('cq-view-' + x);
     if (b) b.classList.toggle('on', x === v);
   });
@@ -169,6 +169,46 @@ function cqEmptyRow(cols, msg) {
     (msg || 'No audits in this period') + '</td></tr>';
 }
 
+/* ── CALL DURATION ──────────────────────────────────────────── */
+// The sheet's Call Duration is normally "mm:ss" from the picker, but older
+// rows were typed by hand. Accept mm:ss, h:mm:ss, "5m 30s", or a bare number
+// of minutes. Returns minutes as a float.
+function cqMins(v) {
+  if (v == null) return 0;
+  var s = String(v).trim();
+  if (!s) return 0;
+
+  if (s.indexOf(':') !== -1) {
+    var p = s.split(':').map(function (x) { return parseInt(x, 10) || 0; });
+    if (p.length === 3) return p[0] * 60 + p[1] + p[2] / 60;   // h:mm:ss
+    if (p.length === 2) return p[0] + p[1] / 60;               // mm:ss
+  }
+  var h  = s.match(/(\d+)\s*h/i),
+      m  = s.match(/(\d+)\s*m/i),
+      sc = s.match(/(\d+)\s*s/i);
+  if (h || m || sc) {
+    return (h ? parseInt(h[1], 10) * 60 : 0) +
+           (m ? parseInt(m[1], 10) : 0) +
+           (sc ? parseInt(sc[1], 10) / 60 : 0);
+  }
+  var n = parseFloat(s);
+  return isNaN(n) ? 0 : n;   // bare number = minutes
+}
+
+// 349 -> "5h 49m"
+function cqHM(mins) {
+  var t = Math.round(mins || 0);
+  if (t <= 0) return '0m';
+  var h = Math.floor(t / 60), m = t % 60;
+  return h ? (h + 'h ' + m + 'm') : (m + 'm');
+}
+// short form for an average call length
+function cqMS(mins) {
+  var total = Math.round((mins || 0) * 60);
+  var m = Math.floor(total / 60), s = total % 60;
+  return m + ':' + (s < 10 ? '0' + s : s);
+}
+
 function cqFiltered() {
   var range = cqRange();
   var person = (document.getElementById('cq-person') || {}).value || 'all';
@@ -199,17 +239,20 @@ function cqRender() {
   var rows = cqFiltered();
   cqLastRows = rows;
 
-  var total = rows.length, sum = 0, crit = 0, people = {};
+  var total = rows.length, sum = 0, crit = 0, people = {}, mins = 0;
   rows.forEach(function (r) {
     sum += Number(r.score) || 0;
     if (r.critical) crit++;
     if (r.consultant) people[r.consultant] = 1;
+    mins += cqMins(r.duration);
   });
   var avg = total ? cqRound(sum / total) : 0;
 
   document.getElementById('cq-k-audits').textContent   = total;
   document.getElementById('cq-k-people').textContent   = Object.keys(people).length;
   document.getElementById('cq-k-critical').textContent = crit;
+  var kTime = document.getElementById('cq-k-time');
+  if (kTime) kTime.textContent = total ? cqHM(mins) : '—';
   var kAvg = document.getElementById('cq-k-avg');
   kAvg.textContent = total ? avg + '%' : '—';
   kAvg.style.color = total ? cqClr(avg) : '';
@@ -226,6 +269,7 @@ function cqRender() {
   if (cqView === 'people')       cqRenderPeople(rows);
   else if (cqView === 'daily')   cqRenderDaily(rows);
   else if (cqView === 'monthly') cqRenderMonthly(rows);
+  else if (cqView === 'auditor') cqRenderAuditorTime(rows);
   else                           cqRenderAudits(rows);
 }
 
@@ -368,6 +412,55 @@ function cqRenderMonthly(rows) {
       '<td style="text-align:center">' + (x.crit ? '<b style="color:var(--red)">' + x.crit + '</b>' : '0') + '</td>' +
       '<td style="text-align:right">' + cqPct(x.sum / x.n) + '</td></tr>';
   }).join('') : cqEmptyRow(5);
+}
+
+// ── Auditor time: how long each auditor spent listening, per day
+function cqRenderAuditorTime(rows) {
+  document.getElementById('cq-table-h').textContent = 'Auditor time per day';
+  document.getElementById('cq-thead').innerHTML =
+    '<tr><th>Date</th><th>Auditor</th><th style="text-align:center">Audits</th>' +
+    '<th style="text-align:center">Avg call</th><th style="text-align:right">Total time</th></tr>';
+
+  var g = {};
+  rows.forEach(function (r) {
+    if (!r.date) return;
+    var who = r.auditor || '—';
+    var k = who + '||' + r.date;
+    if (!g[k]) g[k] = { who: who, date: r.date, n: 0, mins: 0 };
+    g[k].n++; g[k].mins += cqMins(r.duration);
+  });
+
+  var list = Object.keys(g).map(function (k) { return g[k]; }).sort(function (a, b) {
+    return a.date === b.date ? (a.who < b.who ? -1 : 1) : (a.date < b.date ? 1 : -1);
+  });
+
+  if (!list.length) {
+    document.getElementById('cq-tbody').innerHTML = cqEmptyRow(5);
+    return;
+  }
+
+  var body = list.map(function (x) {
+    return '<tr><td>' + cqEsc(x.date) + '</td>' +
+      '<td><b>' + cqEsc(x.who) + '</b></td>' +
+      '<td style="text-align:center">' + x.n + '</td>' +
+      '<td style="text-align:center">' + cqMS(x.mins / x.n) + '</td>' +
+      '<td style="text-align:right"><b>' + cqHM(x.mins) + '</b></td></tr>';
+  }).join('');
+
+  // Per-auditor totals across the whole filtered range
+  var byWho = {};
+  list.forEach(function (x) {
+    if (!byWho[x.who]) byWho[x.who] = { n: 0, mins: 0 };
+    byWho[x.who].n += x.n; byWho[x.who].mins += x.mins;
+  });
+  var totals = Object.keys(byWho).sort().map(function (w) {
+    return '<tr style="background:var(--s2)"><td colspan="2"><b>' + cqEsc(w) + ' — range total</b></td>' +
+      '<td style="text-align:center"><b>' + byWho[w].n + '</b></td>' +
+      '<td style="text-align:center">' + cqMS(byWho[w].mins / byWho[w].n) + '</td>' +
+      '<td style="text-align:right"><b>' + cqHM(byWho[w].mins) + '</b></td></tr>';
+  }).join('');
+
+  document.getElementById('cq-tbody').innerHTML = body + totals;
 }
 
 // ── All audits, newest first
