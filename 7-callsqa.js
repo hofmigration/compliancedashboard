@@ -502,7 +502,8 @@ function cqRenderAudits(rows) {
   document.getElementById('cq-table-h').textContent = 'All audits';
   document.getElementById('cq-thead').innerHTML =
     '<tr><th>Date</th><th>' + cqLabel() + '</th><th>Auditor</th><th>Ziwo ID(s)</th>' +
-    '<th style="text-align:center">Duration</th><th style="text-align:right">Score</th></tr>';
+    '<th style="text-align:center">Duration</th><th style="text-align:right">Score</th>' +
+    '<th>Comments</th></tr>';
 
   var list = rows.slice().sort(function (a, b) { return a.date < b.date ? 1 : -1; });
 
@@ -512,10 +513,28 @@ function cqRenderAudits(rows) {
     return '<tr><td>' + cqEsc(r.date) + '</td>' +
       '<td><b>' + name + '</b>' + (r.critical ? ' <span style="color:var(--red);font-weight:700" title="Critical breach">⛔</span>' : '') + '</td>' +
       '<td>' + cqEsc(r.auditor) + '</td>' +
-      '<td>' + cqEsc(r.ziwo) + '</td>' +
+      '<td>' + cqZiwo(r.ziwo) + '</td>' +
       '<td style="text-align:center">' + cqEsc(r.duration) + '</td>' +
-      '<td style="text-align:right">' + cqPct(Number(r.score) || 0) + '</td></tr>';
-  }).join('') : cqEmptyRow(6);
+      '<td style="text-align:right">' + cqPct(Number(r.score) || 0) + '</td>' +
+      '<td>' + cqComment(r.comment) + '</td></tr>';
+  }).join('') : cqEmptyRow(7);
+}
+
+// Comments can run long — show a readable amount, full text on hover.
+function cqComment(txt) {
+  var s = String(txt == null ? '' : txt).trim();
+  if (!s) return '<span style="color:var(--mu)">—</span>';
+  var short = s.length > 110 ? s.slice(0, 110).replace(/\s+\S*$/, '') + '…' : s;
+  return '<span title="' + cqEsc(s) + '" style="display:inline-block;max-width:420px;' +
+         'white-space:normal;line-height:1.45;color:var(--tx)">' + cqEsc(short) + '</span>';
+}
+
+// Ziwo IDs are sometimes long call UUIDs — keep the column narrow, full value on hover.
+function cqZiwo(v) {
+  var s = String(v == null ? '' : v).trim();
+  if (!s) return '<span style="color:var(--mu)">—</span>';
+  var short = s.length > 26 ? s.slice(0, 26) + '…' : s;
+  return '<span title="' + cqEsc(s) + '" style="font-variant-numeric:tabular-nums">' + cqEsc(short) + '</span>';
 }
 
 /* ── EXPORT (respects the current filters) ──────────────────── */
@@ -525,7 +544,8 @@ function cqExportCSV() {
   var crit = cqCrit();
 
   var head = ['Date', cqLabel(), 'Auditor', 'Ziwo ID(s)', 'Duration', 'Critical', 'Score %']
-    .concat(crit.map(function (c) { return c.label; }));
+    .concat(crit.map(function (c) { return c.label; }))
+    .concat(['Comments']);
 
   var lines = [head];
   rows.slice().sort(function (a, b) { return a.date < b.date ? 1 : -1; }).forEach(function (r) {
@@ -534,6 +554,7 @@ function cqExportCSV() {
       var v = (r.checks || [])[i];
       line.push(v === 1 ? 'Pass' : v === 0 ? 'Fail' : 'N/A');
     });
+    line.push(r.comment || '');
     lines.push(line);
   });
 
