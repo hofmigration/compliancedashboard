@@ -21,7 +21,8 @@ const APIS = {
   daily:   'https://script.google.com/macros/s/AKfycbyOPHjjzxoFE75kiyc5XcyLlrcaU0M-JKtPet4c17mKqKXHVh8TrDP6Cl-Vc0zVqdjP/exec',
   weekly:  'https://script.google.com/macros/s/AKfycbxLkga97bUdGu1NGq6T5AeXXcW0UuUJt5UUWYvlzq2tlDsanbq9qYFsmtpjSzCjMLuI7A/exec',
   monthly: 'https://script.google.com/macros/s/AKfycbz1AW3E4P4vxBdlGVp_P3OvFARO63Jn_XLoPIKg95bbFOzFdi-PgtpDX5ayTykeQDAG/exec',
-  perf:    'https://script.google.com/macros/s/AKfycbz4fy0-aHaQL_mpyVWVaUbHmONEpdnbnJlFjv6MPp8cCLYKqkUlviOS_hC4kULRZMBkCA/exec'
+  perf:    'https://script.google.com/macros/s/AKfycbz4fy0-aHaQL_mpyVWVaUbHmONEpdnbnJlFjv6MPp8cCLYKqkUlviOS_hC4kULRZMBkCA/exec',
+  meetings:'https://script.google.com/macros/s/AKfycbw08RhhNO6NN4ydhM3-A1KdCHIPU1ZhWhMrF3GQNgubulnXCTERpLjQrBsqjDHYNxg5BA/exec?mode=meetings'
 };
 
 // ══════════════════════════════════════════════════════════════
