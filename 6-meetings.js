@@ -1,16 +1,21 @@
 // ══════════════════════════════════════════════════════════════
-//  MEETINGS — inside CM Activity Compliance
-//  Follows the same shape as 3-casemanagers-activity.js: fetch from an
-//  Apps Script /exec, flatten to rows, filter, render.
+//  MEETINGS — brainstorm sessions, as a month calendar
+//  Inside CM Activity Compliance. Same fetch and render shape as
+//  3-casemanagers-activity.js, and the dashboard's own tokens throughout.
+//
+//  Only BRAINSTORMS are listed. General meetings carry no writer or case
+//  manager — the generator does not ask for them — so they cannot be
+//  attributed to anyone and would only pad the calendar. They are still
+//  counted, so the totals stay honest about what was booked.
 // ══════════════════════════════════════════════════════════════
 
-// State
-var meetAllRows   = [];     // every booking
-var meetWriters   = [];     // writer names present in the data
-var meetCMs       = [];     // case manager names present in the data
-var meetLoaded    = false;
+var meetAllRows     = [];   // every booking that came back
+var meetWriters     = [];
+var meetCMs         = [];
+var meetLoaded      = false;
 var meetColsMissing = [];
-var meetLastUrl   = '';
+var meetLastUrl     = '';
+var meetMonth       = null; // first day of the month on screen
 
 // ── Load ──
 function loadMeetings(force) {
@@ -20,9 +25,6 @@ function loadMeetings(force) {
     return;
   }
 
-  /* The script answers two things at one address and tells them apart by ?mode=meetings.
-     Without it the status check comes back instead of the bookings, so it is added here
-     if it was left off. */
   var url = String(APIS.meetings);
   if (url.indexOf('mode=meetings') === -1) url += (url.indexOf('?') === -1 ? '?' : '&') + 'mode=meetings';
   meetLastUrl = url;
@@ -38,71 +40,68 @@ function loadMeetings(force) {
     })
     .then(function (json) {
       if (!json.ok) throw new Error(json.error || 'Apps Script error');
-
       meetColsMissing = json.columnsMissing || [];
+
       meetAllRows = (json.meetings || []).map(function (m) {
         return {
-          when:        m.when || '',
-          date:        m.date || '',
-          time:        m.time || '',
-          dateObj:     m.when ? new Date(m.when) : null,
-          type:        m.type || 'General',
+          date:         m.date || '',
+          time:         m.time || '',
+          type:         m.type || 'General',
           isBrainstorm: /brainstorm/i.test(m.type || ''),
-          caseManager: m.caseManager || '',
-          writer:      m.writer || '',
-          consultant:  m.consultant || '',
-          client:      m.client || '',
-          link:        m.link || '',
-          record:      m.record || '',
-          recording:   m.recording || '',
-          notes:       m.notes || ''
+          caseManager:  m.caseManager || '',
+          writer:       m.writer || '',
+          consultant:   m.consultant || '',
+          client:       m.client || '',
+          link:         m.link || '',
+          record:       m.record || '',
+          recording:    m.recording || ''
         };
       });
 
-      var wSet = {}, cSet = {};
-      meetAllRows.forEach(function (r) {
-        if (r.writer) wSet[r.writer] = 1;
-        if (r.caseManager) cSet[r.caseManager] = 1;
-      });
-      meetWriters = Object.keys(wSet).sort();
-      meetCMs     = Object.keys(cSet).sort();
+      var bs = meetAllRows.filter(function (r) { return r.isBrainstorm; });
+      meetWriters = meetUnique(bs, 'writer');
+      meetCMs     = meetUnique(bs, 'caseManager');
 
-      var wSel = document.getElementById('meetWriterFilter');
-      if (wSel) wSel.innerHTML = '<option value="all">All writers</option>' +
-        meetWriters.map(function (n) { return '<option value="' + n + '">' + n + '</option>'; }).join('');
+      meetFillSelect('meetWriterFilter', meetWriters, 'All writers');
+      meetFillSelect('meetCMFilter', meetCMs, 'All case managers');
 
-      var cSel = document.getElementById('meetCMFilter');
-      if (cSel) cSel.innerHTML = '<option value="all">All case managers</option>' +
-        meetCMs.map(function (n) { return '<option value="' + n + '">' + n + '</option>'; }).join('');
+      // open on the month of the most recent brainstorm, or this month
+      if (!meetMonth) {
+        var newest = bs.length ? bs[0].date : '';
+        var d = newest ? new Date(newest + 'T00:00:00') : new Date();
+        meetMonth = new Date(d.getFullYear(), d.getMonth(), 1);
+      }
 
       meetLoaded = true;
       meetRender();
     })
     .catch(function (err) {
-      /* A bare "HTTP 404" is not actionable. Showing the address it actually asked for
-         usually makes the cause obvious straight away: a stale deployment id in
-         1-core.js, or the browser holding an old copy of that file. */
       cmHTML('meet-body',
         '<div style="padding:14px 16px;border-radius:12px;background:var(--gl);border:1px solid var(--red);font-size:12.5px">' +
           '<b style="color:var(--red)">Could not load meetings — ' + meetEsc(err.message) + '</b>' +
           '<div style="color:var(--mu);margin-top:9px">It asked for:</div>' +
           '<div style="margin-top:3px"><a href="' + meetEsc(meetLastUrl) + '" target="_blank" rel="noopener" style="color:var(--ac);word-break:break-all;font-family:\'DM Mono\',monospace;font-size:11px">' + meetEsc(meetLastUrl) + '</a></div>' +
-          '<div style="color:var(--mu);margin-top:9px;line-height:1.7">' +
-            'Open that link. If it returns the bookings, the address in <b>1-core.js</b> differs from the one that works &mdash; ' +
-            'check for a stale deployment id, and hard-refresh with Ctrl+Shift+R so the browser drops its cached copy of that file.' +
-          '</div>' +
+          '<div style="color:var(--mu);margin-top:9px;line-height:1.7">If that link works in a tab but not here, the deployment is not set to <b>Anyone</b>. A browser tab is signed in; this fetch is not, and Apps Script answers an unauthorised request with a 404.</div>' +
         '</div>');
     })
     .finally(function () { if (typeof hideLdr === 'function') hideLdr(); });
 }
 
-// ── Filtering ──
-function meetGetFiltered() {
-  var rows = meetAllRows.slice();
+function meetUnique(rows, key) {
+  var seen = {};
+  rows.forEach(function (r) { if (r[key]) seen[r[key]] = 1; });
+  return Object.keys(seen).sort();
+}
+function meetFillSelect(id, names, allLabel) {
+  var sel = document.getElementById(id);
+  if (!sel) return;
+  sel.innerHTML = '<option value="all">' + allLabel + '</option>' +
+    names.map(function (n) { return '<option value="' + meetEsc(n) + '">' + meetEsc(n) + '</option>'; }).join('');
+}
 
-  var type = (document.getElementById('meetTypeFilter') || {}).value || 'all';
-  if (type === 'brainstorm') rows = rows.filter(function (r) { return r.isBrainstorm; });
-  else if (type === 'general') rows = rows.filter(function (r) { return !r.isBrainstorm; });
+// ── Filtering — brainstorms only ──
+function meetGetFiltered() {
+  var rows = meetAllRows.filter(function (r) { return r.isBrainstorm; });
 
   var w = (document.getElementById('meetWriterFilter') || {}).value || 'all';
   if (w !== 'all') rows = rows.filter(function (r) { return r.writer === w; });
@@ -110,107 +109,152 @@ function meetGetFiltered() {
   var c = (document.getElementById('meetCMFilter') || {}).value || 'all';
   if (c !== 'all') rows = rows.filter(function (r) { return r.caseManager === c; });
 
-  var from = (document.getElementById('meetFrom') || {}).value || '';
-  var to   = (document.getElementById('meetTo') || {}).value   || '';
-  if (from) rows = rows.filter(function (r) { return r.date && r.date >= from; });
-  if (to)   rows = rows.filter(function (r) { return r.date && r.date <= to; });
-
   var q = ((document.getElementById('meetSearch') || {}).value || '').trim().toLowerCase();
   if (q) rows = rows.filter(function (r) {
-    return (r.client + ' ' + r.writer + ' ' + r.caseManager + ' ' + r.notes).toLowerCase().indexOf(q) !== -1;
+    return (r.client + ' ' + r.writer + ' ' + r.caseManager + ' ' + r.consultant).toLowerCase().indexOf(q) !== -1;
   });
-
   return rows;
 }
 
-function meetSetRange(days) {
-  var end = new Date(), start = new Date();
-  if (days === 0) { start = end; }                                  // today
-  else if (days === -1) { start = new Date(end.getFullYear(), end.getMonth(), 1); }  // this month
-  else { start.setDate(end.getDate() - days); }
-  var f = document.getElementById('meetFrom'), t = document.getElementById('meetTo');
-  if (f) f.value = start.toISOString().slice(0, 10);
-  if (t) t.value = end.toISOString().slice(0, 10);
+function meetShiftMonth(n) {
+  if (!meetMonth) meetMonth = new Date();
+  meetMonth = new Date(meetMonth.getFullYear(), meetMonth.getMonth() + n, 1);
+  meetRender();
+}
+function meetToday() {
+  var t = new Date();
+  meetMonth = new Date(t.getFullYear(), t.getMonth(), 1);
   meetRender();
 }
 function meetClearFilters() {
-  ['meetTypeFilter', 'meetWriterFilter', 'meetCMFilter'].forEach(function (id) {
+  ['meetWriterFilter', 'meetCMFilter'].forEach(function (id) {
     var el = document.getElementById(id); if (el) el.value = 'all';
   });
-  ['meetFrom', 'meetTo', 'meetSearch'].forEach(function (id) {
-    var el = document.getElementById(id); if (el) el.value = '';
-  });
+  var s = document.getElementById('meetSearch'); if (s) s.value = '';
   meetRender();
 }
 
 // ── Render ──
+var MEET_MONTHS = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+
 function meetRender() {
   var rows = meetGetFiltered();
-  var brainstorms = rows.filter(function (r) { return r.isBrainstorm; }).length;
+  var allBookings = meetAllRows.length;
+  var thisMonth = rows.filter(function (r) { return meetInMonth(r.date); });
 
   cmText('meet-kpi-total', rows.length);
-  cmText('meet-kpi-brainstorm', brainstorms);
-  cmText('meet-kpi-general', rows.length - brainstorms);
-  cmText('meet-kpi-writers', Object.keys(rows.reduce(function (a, r) { if (r.writer) a[r.writer] = 1; return a; }, {})).length);
+  cmText('meet-kpi-month', thisMonth.length);
+  cmText('meet-kpi-writers', meetUnique(rows, 'writer').length);
+  cmText('meet-kpi-cms', meetUnique(rows, 'caseManager').length);
 
-  // Per-person counts — the point of the panel: who is actually taking meetings
-  cmHTML('meet-by-writer', meetCountTable(rows.filter(function (r) { return r.writer; }), 'writer', 'Petition writer'));
-  cmHTML('meet-by-cm',     meetCountTable(rows.filter(function (r) { return r.caseManager; }), 'caseManager', 'Case manager'));
+  cmText('meet-month-label', meetMonth ? MEET_MONTHS[meetMonth.getMonth()] + ' ' + meetMonth.getFullYear() : '');
+  cmText('meet-count', rows.length + ' brainstorm' + (rows.length !== 1 ? 's' : '') +
+    ' · ' + allBookings + ' meetings booked in total');
 
-  // The bookings themselves
-  if (!rows.length) {
-    cmHTML('meet-tb', '<tr><td colspan="6" style="padding:26px;text-align:center;color:var(--mu);font-size:12.5px">No meetings match these filters.</td></tr>');
-  } else {
-    var TD = 'padding:9px 10px;border-top:1px solid var(--b);color:var(--tx);vertical-align:top';
-    cmHTML('meet-tb', rows.map(function (r) {
-      return '<tr>' +
-        '<td class="mono" style="' + TD + '">' + meetEsc(r.date) +
-          '<span style="display:block;font-size:10.5px;color:var(--mu)">' + meetEsc(r.time) + '</span></td>' +
-        '<td style="' + TD + '">' +
-          (r.isBrainstorm
-            ? '<span style="font-size:9px;font-weight:700;letter-spacing:.5px;background:var(--al);color:var(--ac);padding:2px 7px;border-radius:5px;font-family:\'DM Mono\',monospace">BRAINSTORM</span>'
-            : '<span style="font-size:9px;font-weight:700;letter-spacing:.5px;background:var(--gl);color:var(--mu);padding:2px 7px;border-radius:5px;font-family:\'DM Mono\',monospace">GENERAL</span>') + '</td>' +
-        '<td style="' + TD + '">' + (meetEsc(r.caseManager) || '<span style="color:var(--mu)">—</span>') + '</td>' +
-        '<td style="' + TD + '">' + (meetEsc(r.writer) || '<span style="color:var(--mu)">—</span>') + '</td>' +
-        '<td style="' + TD + '">' + (meetEsc(r.client) || '<span style="color:var(--mu)">—</span>') +
-          (r.consultant ? '<span style="display:block;font-size:10.5px;color:var(--mu)">' + meetEsc(r.consultant) + '</span>' : '') + '</td>' +
-        '<td style="' + TD + '">' +
-          (r.link ? '<a href="' + meetEsc(r.link) + '" target="_blank" rel="noopener" style="color:var(--ac);text-decoration:none;font-weight:600">Meet</a>' : '<span style="color:var(--mu)">—</span>') +
-          (r.record ? ' <a href="' + meetEsc(r.record) + '" target="_blank" rel="noopener" style="color:var(--mu);text-decoration:none">HubSpot</a>' : '') +
-          (r.recording ? ' <a href="' + meetEsc(r.recording) + '" target="_blank" rel="noopener" style="color:var(--grn);text-decoration:none;font-weight:600">Recording</a>' : '') +
-        '</td>' +
-      '</tr>';
-    }).join(''));
-  }
-  cmText('meet-count', rows.length + ' meeting' + (rows.length !== 1 ? 's' : ''));
+  cmHTML('meet-by-writer', meetCountTable(rows, 'writer'));
+  cmHTML('meet-by-cm', meetCountTable(rows, 'caseManager'));
+  cmHTML('meet-cal', meetCalendar(rows));
 
-  // A missing column must not look like nobody booked anything
   var warn = document.getElementById('meet-warn');
   if (warn) {
     var important = meetColsMissing.filter(function (c) { return c === 'caseManager' || c === 'writer' || c === 'when'; });
     warn.innerHTML = important.length
       ? '<div style="padding:11px 14px;border-radius:12px;background:var(--gl);border:1px solid var(--b);color:var(--tx);font-size:12px;margin-bottom:14px">' +
         '<b style="color:var(--red)">The sheet is missing: ' + important.join(', ') + '.</b> ' +
-        'Those columns show as blank here, so filtering by that person finds nothing — it does not mean no meetings were booked.</div>'
+        'Those columns come back blank, so filtering by that person finds nothing — it does not mean no meetings were booked.</div>'
       : '';
   }
 }
 
-function meetCountTable(rows, key, label) {
-  if (!rows.length) return '<div style="padding:16px;text-align:center;color:var(--mu);font-size:12px">Nothing for these filters.</div>';
-  var counts = {};
-  rows.forEach(function (r) { counts[r[key]] = (counts[r[key]] || 0) + 1; });
-  var list = Object.keys(counts).map(function (n) { return { name: n, n: counts[n] }; })
-    .sort(function (a, b) { return b.n - a.n; });
-  var max = list[0].n || 1;
+function meetInMonth(dateStr) {
+  if (!meetMonth || !dateStr) return false;
+  var d = new Date(dateStr + 'T00:00:00');
+  return d.getFullYear() === meetMonth.getFullYear() && d.getMonth() === meetMonth.getMonth();
+}
 
-  // the same pct-cell / pct-bar / pct-fill the compliance table uses, so the bars
-  // look and behave like the rest of the dashboard
-  return '<table style="width:100%;border-collapse:collapse;font-size:12.5px">' +
+// ── The calendar ──
+function meetCalendar(rows) {
+  if (!meetMonth) return '';
+
+  var byDay = {};
+  rows.forEach(function (r) { if (r.date) (byDay[r.date] = byDay[r.date] || []).push(r); });
+  Object.keys(byDay).forEach(function (k) {
+    byDay[k].sort(function (a, b) { return String(a.time).localeCompare(String(b.time)); });
+  });
+
+  var y = meetMonth.getFullYear(), m = meetMonth.getMonth();
+  var first = new Date(y, m, 1);
+  var start = new Date(y, m, 1 - first.getDay());          // back to the Sunday
+  var todayKey = meetKey(new Date());
+
+  var DOW = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
+  var html = '<div style="display:grid;grid-template-columns:repeat(7,1fr);gap:1px;background:var(--b);border:1px solid var(--b);border-radius:12px;overflow:hidden">';
+
+  html += DOW.map(function (d) {
+    return '<div style="background:var(--s2);padding:8px 10px;font-size:9.5px;font-weight:700;letter-spacing:1.2px;text-transform:uppercase;color:var(--mu);font-family:\'DM Mono\',monospace;text-align:center">' + d + '</div>';
+  }).join('');
+
+  for (var i = 0; i < 42; i++) {
+    var day = new Date(start.getFullYear(), start.getMonth(), start.getDate() + i);
+    var key = meetKey(day);
+    var inMonth = day.getMonth() === m;
+    var isToday = key === todayKey;
+    var items = byDay[key] || [];
+
+    // stop after the last full week that still contains this month
+    if (i >= 35 && day.getMonth() !== m) break;
+
+    html += '<div style="background:var(--s1,var(--bg,transparent));min-height:96px;padding:6px 7px;' +
+      (inMonth ? '' : 'opacity:.38;') + '">' +
+      '<div style="font-size:11px;font-weight:' + (isToday ? '800' : '600') + ';font-family:\'DM Mono\',monospace;' +
+        'color:' + (isToday ? 'var(--ac)' : 'var(--mu)') + ';margin-bottom:5px;text-align:right">' +
+        (isToday ? '<span style="background:var(--al);padding:1px 6px;border-radius:20px">' + day.getDate() + '</span>' : day.getDate()) +
+      '</div>' +
+      items.map(meetChip).join('') +
+    '</div>';
+  }
+  html += '</div>';
+
+  if (!rows.length) {
+    html += '<div style="padding:16px;text-align:center;color:var(--mu);font-size:12px">' +
+      'No brainstorm sessions match these filters. General meetings are counted above but not shown here — the generator does not record who is on them.</div>';
+  }
+  return html;
+}
+
+function meetChip(r) {
+  var who = (r.writer || '').split(' ')[0];
+  var title = r.time + ' · ' + r.writer + ' with ' + r.caseManager + (r.client ? ' · ' + r.client : '');
+  var inner =
+    '<div style="font-size:9.5px;font-family:\'DM Mono\',monospace;opacity:.8;line-height:1.3">' + meetEsc(r.time) + '</div>' +
+    '<div style="font-size:10.5px;font-weight:700;line-height:1.3;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">' + meetEsc(who) + '</div>' +
+    '<div style="font-size:9.5px;opacity:.75;line-height:1.3;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">' + meetEsc(r.client) + '</div>';
+  var style = 'display:block;background:var(--al);color:var(--ac);border-left:2px solid var(--ac);' +
+    'border-radius:4px;padding:3px 6px;margin-bottom:3px;text-decoration:none;font-family:\'Nunito\',sans-serif';
+  return r.link
+    ? '<a href="' + meetEsc(r.link) + '" target="_blank" rel="noopener" title="' + meetEsc(title) + '" style="' + style + '">' + inner + '</a>'
+    : '<div title="' + meetEsc(title) + '" style="' + style + '">' + inner + '</div>';
+}
+
+function meetKey(d) {
+  return d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0');
+}
+
+// ── Per-person counts, using the dashboard's own bar ──
+function meetCountTable(rows, key) {
+  var list = [];
+  var counts = {};
+  rows.forEach(function (r) { if (r[key]) counts[r[key]] = (counts[r[key]] || 0) + 1; });
+  list = Object.keys(counts).map(function (n) { return { name: n, n: counts[n] }; })
+    .sort(function (a, b) { return b.n - a.n; });
+  if (!list.length) return '<div style="padding:14px;text-align:center;color:var(--mu);font-size:12px">Nothing for these filters.</div>';
+
+  var max = list[0].n || 1;
+  return '<table style="width:100%;border-collapse:collapse;font-size:12.5px;font-family:\'Nunito\',sans-serif">' +
     list.map(function (x) {
       return '<tr>' +
         '<td style="padding:6px 0;border-top:1px solid var(--b);color:var(--tx)">' + meetEsc(x.name) + '</td>' +
-        '<td class="mono" style="padding:6px 0;border-top:1px solid var(--b);text-align:right;width:44px;font-weight:700;color:var(--tx)">' + x.n + '</td>' +
+        '<td class="mono" style="padding:6px 0;border-top:1px solid var(--b);text-align:right;width:42px;font-weight:700;color:var(--tx)">' + x.n + '</td>' +
         '<td style="padding:6px 0 6px 10px;border-top:1px solid var(--b);width:44%">' +
           '<div class="pct-bar"><div class="pct-fill" style="width:' + Math.round((x.n / max) * 100) + '%;background:var(--ac)"></div></div>' +
         '</td></tr>';
@@ -219,14 +263,14 @@ function meetCountTable(rows, key, label) {
 
 function meetExportCSV() {
   var rows = meetGetFiltered();
-  var head = ['Date', 'Time', 'Type', 'Case manager', 'Petition writer', 'Consultant', 'Client', 'Meet link', 'HubSpot', 'Recording'];
+  var head = ['Date', 'Time', 'Case manager', 'Petition writer', 'Consultant', 'Client', 'Meet link', 'HubSpot', 'Recording'];
   var csv = [head.join(',')].concat(rows.map(function (r) {
-    return [r.date, r.time, r.type, r.caseManager, r.writer, r.consultant, r.client, r.link, r.record, r.recording]
+    return [r.date, r.time, r.caseManager, r.writer, r.consultant, r.client, r.link, r.record, r.recording]
       .map(function (v) { return '"' + String(v || '').replace(/"/g, '""') + '"'; }).join(',');
   })).join('\n');
   var a = document.createElement('a');
   a.href = URL.createObjectURL(new Blob([csv], { type: 'text/csv' }));
-  a.download = 'meetings-' + new Date().toISOString().slice(0, 10) + '.csv';
+  a.download = 'brainstorms-' + new Date().toISOString().slice(0, 10) + '.csv';
   a.click();
 }
 
