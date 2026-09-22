@@ -10,17 +10,26 @@ var meetWriters   = [];     // writer names present in the data
 var meetCMs       = [];     // case manager names present in the data
 var meetLoaded    = false;
 var meetColsMissing = [];
+var meetLastUrl   = '';
 
 // ── Load ──
 function loadMeetings(force) {
   if (meetLoaded && !force) { meetRender(); return; }
   if (typeof APIS === 'undefined' || !APIS.meetings) {
-    cmHTML('meet-body', '<div style="padding:18px;text-align:center;color:var(--mu);font-size:12.5px">No meetings endpoint configured. Add <b>meetings</b> to APIS in config.js.</div>');
+    cmHTML('meet-body', '<div style="padding:18px;text-align:center;color:var(--mu);font-size:12.5px">No meetings endpoint configured. Add <b>meetings</b> to the APIS block in <b>1-core.js</b>.</div>');
     return;
   }
+
+  /* The script answers two things at one address and tells them apart by ?mode=meetings.
+     Without it the status check comes back instead of the bookings, so it is added here
+     if it was left off. */
+  var url = String(APIS.meetings);
+  if (url.indexOf('mode=meetings') === -1) url += (url.indexOf('?') === -1 ? '?' : '&') + 'mode=meetings';
+  meetLastUrl = url;
+
   if (typeof showLdr === 'function') showLdr('Loading meetings…');
 
-  fetch(APIS.meetings, { redirect: 'follow' })
+  fetch(url, { redirect: 'follow' })
     .then(function (res) { if (!res.ok) throw new Error('HTTP ' + res.status); return res.text(); })
     .then(function (raw) {
       if (!raw || raw.trim() === '') throw new Error('Empty response from Apps Script');
@@ -70,7 +79,19 @@ function loadMeetings(force) {
       meetRender();
     })
     .catch(function (err) {
-      cmHTML('meet-body', '<div style="padding:14px 16px;border-radius:12px;background:var(--gl);border:1px solid var(--red);color:var(--red);font-size:12.5px"><b>Could not load meetings.</b><br>' + meetEsc(err.message) + '</div>');
+      /* A bare "HTTP 404" is not actionable. Showing the address it actually asked for
+         usually makes the cause obvious straight away: a stale deployment id in
+         1-core.js, or the browser holding an old copy of that file. */
+      cmHTML('meet-body',
+        '<div style="padding:14px 16px;border-radius:12px;background:var(--gl);border:1px solid var(--red);font-size:12.5px">' +
+          '<b style="color:var(--red)">Could not load meetings — ' + meetEsc(err.message) + '</b>' +
+          '<div style="color:var(--mu);margin-top:9px">It asked for:</div>' +
+          '<div style="margin-top:3px"><a href="' + meetEsc(meetLastUrl) + '" target="_blank" rel="noopener" style="color:var(--ac);word-break:break-all;font-family:\'DM Mono\',monospace;font-size:11px">' + meetEsc(meetLastUrl) + '</a></div>' +
+          '<div style="color:var(--mu);margin-top:9px;line-height:1.7">' +
+            'Open that link. If it returns the bookings, the address in <b>1-core.js</b> differs from the one that works &mdash; ' +
+            'check for a stale deployment id, and hard-refresh with Ctrl+Shift+R so the browser drops its cached copy of that file.' +
+          '</div>' +
+        '</div>');
     })
     .finally(function () { if (typeof hideLdr === 'function') hideLdr(); });
 }
@@ -147,8 +168,8 @@ function meetRender() {
           '<span style="display:block;font-size:10.5px;color:var(--mu)">' + meetEsc(r.time) + '</span></td>' +
         '<td style="' + TD + '">' +
           (r.isBrainstorm
-            ? '<span style="font-size:9.5px;font-weight:700;background:var(--al);color:var(--ac);padding:2px 7px;border-radius:5px">BRAINSTORM</span>'
-            : '<span style="font-size:9.5px;font-weight:700;background:var(--gl);color:var(--mu);padding:2px 7px;border-radius:5px">GENERAL</span>') + '</td>' +
+            ? '<span style="font-size:9px;font-weight:700;letter-spacing:.5px;background:var(--al);color:var(--ac);padding:2px 7px;border-radius:5px;font-family:\'DM Mono\',monospace">BRAINSTORM</span>'
+            : '<span style="font-size:9px;font-weight:700;letter-spacing:.5px;background:var(--gl);color:var(--mu);padding:2px 7px;border-radius:5px;font-family:\'DM Mono\',monospace">GENERAL</span>') + '</td>' +
         '<td style="' + TD + '">' + (meetEsc(r.caseManager) || '<span style="color:var(--mu)">—</span>') + '</td>' +
         '<td style="' + TD + '">' + (meetEsc(r.writer) || '<span style="color:var(--mu)">—</span>') + '</td>' +
         '<td style="' + TD + '">' + (meetEsc(r.client) || '<span style="color:var(--mu)">—</span>') +
