@@ -1263,12 +1263,12 @@ footer{
   </div>
 
 
-  <!-- ══ MEETINGS — booked through the Meet link generator ══ -->
+  <!-- ══ BRAINSTORM SESSIONS — booked through the Meet link generator ══ -->
   <div class="card" style="margin-top:14px">
     <div class="card-head">
       <div>
-        <div class="card-title">Meetings</div>
-        <div class="card-sub">Booked through the Meet link generator · brainstorms carry the writer and case manager</div>
+        <div class="card-title">Brainstorm Sessions</div>
+        <div class="card-sub">Booked through the Meet link generator · click any session to open the Meet link</div>
       </div>
       <div style="margin-left:auto;display:flex;gap:6px">
         <button class="btn bo" onclick="loadMeetings(true)">↻ Refresh</button>
@@ -1276,85 +1276,56 @@ footer{
       </div>
     </div>
     <div class="card-body">
-
       <div id="meet-body">
         <div id="meet-warn"></div>
 
-        <!-- filters -->
-        <div style="display:flex;gap:6px;flex-wrap:wrap;align-items:center;margin-bottom:14px">
-          <select id="meetTypeFilter" onchange="meetRender()" style="background:var(--s2);border:1px solid var(--b2);border-radius:7px;padding:5px 10px;color:var(--tx);font-size:12px;font-weight:600;font-family:'Nunito',sans-serif;cursor:pointer;outline:none">
-            <option value="all">All meetings</option>
-            <option value="brainstorm">Brainstorm sessions</option>
-            <option value="general">General meetings</option>
-          </select>
-          <select id="meetWriterFilter" onchange="meetRender()" style="background:var(--s2);border:1px solid var(--b2);border-radius:7px;padding:5px 10px;color:var(--tx);font-size:12px;font-weight:600;font-family:'Nunito',sans-serif;cursor:pointer;outline:none">
-            <option value="all">All writers</option>
-          </select>
-          <select id="meetCMFilter" onchange="meetRender()" style="background:var(--s2);border:1px solid var(--b2);border-radius:7px;padding:5px 10px;color:var(--tx);font-size:12px;font-weight:600;font-family:'Nunito',sans-serif;cursor:pointer;outline:none">
-            <option value="all">All case managers</option>
-          </select>
-          <input type="date" id="meetFrom" onchange="meetRender()" title="From" style="background:var(--s2);border:1px solid var(--b);border-radius:7px;color:var(--tx);font-size:12px;padding:5px 9px;outline:none;font-family:'Nunito',sans-serif">
-          <input type="date" id="meetTo" onchange="meetRender()" title="To" style="background:var(--s2);border:1px solid var(--b);border-radius:7px;color:var(--tx);font-size:12px;padding:5px 9px;outline:none;font-family:'Nunito',sans-serif">
-          <button class="chip" onclick="meetSetRange(0)">Today</button>
-          <button class="chip" onclick="meetSetRange(7)">7 Days</button>
-          <button class="chip" onclick="meetSetRange(30)">30 Days</button>
-          <button class="chip" onclick="meetSetRange(-1)">This Month</button>
-          <button class="chip" onclick="meetClearFilters()">Clear</button>
-          <input class="srch" type="text" placeholder="Search client or person…" id="meetSearch" oninput="meetRender()" style="margin-left:auto">
-        </div>
-
         <!-- counts -->
-        <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:16px">
+        <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:14px">
           <div style="background:var(--s2);border:1px solid var(--b);border-radius:12px;padding:13px;text-align:center">
-            <div id="meet-kpi-total" style="font-size:24px;font-weight:800;color:var(--tx);font-family:'Nunito',sans-serif;line-height:1">0</div>
-            <div style="font-size:9.5px;font-weight:700;letter-spacing:1.2px;text-transform:uppercase;color:var(--mu);margin-top:6px;font-family:'DM Mono',monospace">Meetings</div>
-          </div>
-          <div style="background:var(--s2);border:1px solid var(--b);border-radius:12px;padding:13px;text-align:center">
-            <div id="meet-kpi-brainstorm" style="font-size:24px;font-weight:800;color:var(--ac);font-family:'Nunito',sans-serif;line-height:1">0</div>
+            <div id="meet-kpi-total" style="font-size:24px;font-weight:800;color:var(--ac);font-family:'Nunito',sans-serif;line-height:1">0</div>
             <div style="font-size:9.5px;font-weight:700;letter-spacing:1.2px;text-transform:uppercase;color:var(--mu);margin-top:6px;font-family:'DM Mono',monospace">Brainstorms</div>
           </div>
           <div style="background:var(--s2);border:1px solid var(--b);border-radius:12px;padding:13px;text-align:center">
-            <div id="meet-kpi-general" style="font-size:24px;font-weight:800;color:var(--tx);font-family:'Nunito',sans-serif;line-height:1">0</div>
-            <div style="font-size:9.5px;font-weight:700;letter-spacing:1.2px;text-transform:uppercase;color:var(--mu);margin-top:6px;font-family:'DM Mono',monospace">General</div>
+            <div id="meet-kpi-month" style="font-size:24px;font-weight:800;color:var(--tx);font-family:'Nunito',sans-serif;line-height:1">0</div>
+            <div style="font-size:9.5px;font-weight:700;letter-spacing:1.2px;text-transform:uppercase;color:var(--mu);margin-top:6px;font-family:'DM Mono',monospace">This Month</div>
           </div>
           <div style="background:var(--s2);border:1px solid var(--b);border-radius:12px;padding:13px;text-align:center">
             <div id="meet-kpi-writers" style="font-size:24px;font-weight:800;color:var(--grn);font-family:'Nunito',sans-serif;line-height:1">0</div>
             <div style="font-size:9.5px;font-weight:700;letter-spacing:1.2px;text-transform:uppercase;color:var(--mu);margin-top:6px;font-family:'DM Mono',monospace">Writers</div>
+          </div>
+          <div style="background:var(--s2);border:1px solid var(--b);border-radius:12px;padding:13px;text-align:center">
+            <div id="meet-kpi-cms" style="font-size:24px;font-weight:800;color:var(--tx);font-family:'Nunito',sans-serif;line-height:1">0</div>
+            <div style="font-size:9.5px;font-weight:700;letter-spacing:1.2px;text-transform:uppercase;color:var(--mu);margin-top:6px;font-family:'DM Mono',monospace">Case Managers</div>
           </div>
         </div>
 
         <!-- who is taking them -->
         <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:16px">
           <div style="background:var(--s2);border:1px solid var(--b);border-radius:12px;padding:14px">
-            <div class="card-title" style="margin-bottom:10px">By Petition Writer</div>
+            <div class="card-title" style="margin-bottom:8px">By Petition Writer</div>
             <div id="meet-by-writer"></div>
           </div>
           <div style="background:var(--s2);border:1px solid var(--b);border-radius:12px;padding:14px">
-            <div class="card-title" style="margin-bottom:10px">By Case Manager</div>
+            <div class="card-title" style="margin-bottom:8px">By Case Manager</div>
             <div id="meet-by-cm"></div>
           </div>
         </div>
 
-        <!-- the bookings -->
-        <div style="display:flex;justify-content:space-between;align-items:baseline;margin-bottom:8px">
-          <div class="card-title">All Bookings</div>
-          <div id="meet-count" style="font-size:11px;color:var(--mu);font-family:'DM Mono',monospace"></div>
+        <!-- month navigation + filters -->
+        <div style="display:flex;gap:6px;flex-wrap:wrap;align-items:center;margin-bottom:12px">
+          <button class="chip" onclick="meetShiftMonth(-1)" title="Previous month">‹</button>
+          <div id="meet-month-label" style="font-size:14px;font-weight:800;color:var(--tx);font-family:'Nunito',sans-serif;min-width:150px;text-align:center"></div>
+          <button class="chip" onclick="meetShiftMonth(1)" title="Next month">›</button>
+          <button class="chip" onclick="meetToday()">Today</button>
+          <select id="meetWriterFilter" onchange="meetRender()" style="background:var(--s2);border:1px solid var(--b2);border-radius:7px;padding:5px 10px;color:var(--tx);font-size:12px;font-weight:600;font-family:'Nunito',sans-serif;cursor:pointer;outline:none"><option value="all">All writers</option></select>
+          <select id="meetCMFilter" onchange="meetRender()" style="background:var(--s2);border:1px solid var(--b2);border-radius:7px;padding:5px 10px;color:var(--tx);font-size:12px;font-weight:600;font-family:'Nunito',sans-serif;cursor:pointer;outline:none"><option value="all">All case managers</option></select>
+          <button class="chip" onclick="meetClearFilters()">Clear</button>
+          <input class="srch" type="text" placeholder="Search client or person…" id="meetSearch" oninput="meetRender()" style="margin-left:auto">
         </div>
-        <div style="overflow-x:auto">
-          <table style="width:100%;border-collapse:collapse;font-size:12.5px;font-family:'Nunito',sans-serif">
-            <thead><tr>
-              <th style="text-align:left;padding:8px 10px;font-size:9.5px;font-weight:700;letter-spacing:1.2px;text-transform:uppercase;color:var(--mu);font-family:'DM Mono',monospace;border-bottom:1px solid var(--b)">When</th>
-              <th style="text-align:left;padding:8px 10px;font-size:9.5px;font-weight:700;letter-spacing:1.2px;text-transform:uppercase;color:var(--mu);font-family:'DM Mono',monospace;border-bottom:1px solid var(--b)">Type</th>
-              <th style="text-align:left;padding:8px 10px;font-size:9.5px;font-weight:700;letter-spacing:1.2px;text-transform:uppercase;color:var(--mu);font-family:'DM Mono',monospace;border-bottom:1px solid var(--b)">Case Manager</th>
-              <th style="text-align:left;padding:8px 10px;font-size:9.5px;font-weight:700;letter-spacing:1.2px;text-transform:uppercase;color:var(--mu);font-family:'DM Mono',monospace;border-bottom:1px solid var(--b)">Petition Writer</th>
-              <th style="text-align:left;padding:8px 10px;font-size:9.5px;font-weight:700;letter-spacing:1.2px;text-transform:uppercase;color:var(--mu);font-family:'DM Mono',monospace;border-bottom:1px solid var(--b)">Client</th>
-              <th style="text-align:left;padding:8px 10px;font-size:9.5px;font-weight:700;letter-spacing:1.2px;text-transform:uppercase;color:var(--mu);font-family:'DM Mono',monospace;border-bottom:1px solid var(--b)">Links</th>
-            </tr></thead>
-            <tbody id="meet-tb"></tbody>
-          </table>
-        </div>
-      </div>
 
+        <div id="meet-cal"></div>
+        <div id="meet-count" style="font-size:11px;color:var(--mu);font-family:'DM Mono',monospace;margin-top:10px;text-align:right"></div>
+      </div>
     </div>
   </div>
 
@@ -2168,7 +2139,7 @@ if (window.Chart) {
 <script src="6-hubspot.js"></script>
 <script src="7-callsqa.js?v=4"></script>
 
-<!-- Meetings: the activity panel is the default tab, so load it once the page is up. -->
+<!-- Brainstorm calendar: the activity panel is the default tab, so load it on open. -->
 <script>
   document.addEventListener('DOMContentLoaded', function () {
     if (typeof loadMeetings === 'function') loadMeetings();
