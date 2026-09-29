@@ -1329,6 +1329,7 @@ footer{
     </div>
   </div>
 
+
   </div><!-- /cmpanel-activity -->
 
   <!-- ══════ PERFORMANCE COMPLIANCE SUB-PANEL ══════ -->
@@ -1771,6 +1772,53 @@ footer{
 
   </div>
 
+
+  <!-- ══ MEETING RECORDINGS — follows the Sales / Service toggle above ══ -->
+  <div class="dla-head" style="margin-top:22px">
+    <div>
+      <div class="dla-title" id="rec-team-label">Sales call recordings</div>
+      <div class="dla-sub">Listen back to any call · summaries and transcripts are written automatically</div>
+    </div>
+    <div class="dla-tools">
+      <button class="dla-btn" onclick="loadRecordings(true)">↻ Refresh</button>
+      <button class="dla-btn" onclick="recOpenAdd()">+ Add a recording</button>
+    </div>
+  </div>
+
+  <div id="rec-add" style="display:none;background:var(--s2);border:1px solid var(--b);border-radius:12px;padding:16px;margin-bottom:14px">
+    <div class="card-title" style="margin-bottom:4px">Add a recording</div>
+    <div class="card-sub" style="margin-bottom:6px">Drop the audio into the Drive folder first, then match it to its meeting here.</div>
+    <div id="rec-add-body"></div>
+  </div>
+
+  <div id="rec-body">
+    <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:14px">
+      <div style="background:var(--s2);border:1px solid var(--b);border-radius:12px;padding:13px;text-align:center">
+        <div id="rec-kpi-total" style="font-size:24px;font-weight:800;color:var(--ac);font-family:'Nunito',sans-serif;line-height:1">0</div>
+        <div style="font-size:9.5px;font-weight:700;letter-spacing:1.2px;text-transform:uppercase;color:var(--mu);margin-top:6px;font-family:'DM Mono',monospace">Recordings</div>
+      </div>
+      <div style="background:var(--s2);border:1px solid var(--b);border-radius:12px;padding:13px;text-align:center">
+        <div id="rec-kpi-pending" style="font-size:24px;font-weight:800;color:var(--tx);font-family:'Nunito',sans-serif;line-height:1">0</div>
+        <div style="font-size:9.5px;font-weight:700;letter-spacing:1.2px;text-transform:uppercase;color:var(--mu);margin-top:6px;font-family:'DM Mono',monospace">Processing</div>
+      </div>
+      <div style="background:var(--s2);border:1px solid var(--b);border-radius:12px;padding:13px;text-align:center">
+        <div id="rec-kpi-people" style="font-size:24px;font-weight:800;color:var(--tx);font-family:'Nunito',sans-serif;line-height:1">0</div>
+        <div style="font-size:9.5px;font-weight:700;letter-spacing:1.2px;text-transform:uppercase;color:var(--mu);margin-top:6px;font-family:'DM Mono',monospace">People</div>
+      </div>
+      <div style="background:var(--s2);border:1px solid var(--b);border-radius:12px;padding:13px;text-align:center">
+        <div id="rec-kpi-summaries" style="font-size:24px;font-weight:800;color:var(--grn);font-family:'Nunito',sans-serif;line-height:1">0</div>
+        <div style="font-size:9.5px;font-weight:700;letter-spacing:1.2px;text-transform:uppercase;color:var(--mu);margin-top:6px;font-family:'DM Mono',monospace">Summarised</div>
+      </div>
+    </div>
+
+    <div class="dla-filters">
+      <select id="recPersonFilter" class="dla-select" onchange="recRender()"><option value="all">Everyone</option></select>
+      <input class="srch" type="text" placeholder="Search client, person or what was said…" id="recSearch" oninput="recRender()" style="margin-left:auto">
+    </div>
+
+    <div id="rec-list" style="margin-top:12px"></div>
+  </div>
+
 </div><!-- /p-calls -->
 
     </div><!-- /.appbody -->
@@ -2138,11 +2186,13 @@ if (window.Chart) {
 <script src="5-casemanagers-performance.js"></script>
 <script src="6-hubspot.js"></script>
 <script src="7-callsqa.js?v=4"></script>
+<script src="8-recordings.js"></script>
 
 <!-- Brainstorm calendar: the activity panel is the default tab, so load it on open. -->
 <script>
   document.addEventListener('DOMContentLoaded', function () {
     if (typeof loadMeetings === 'function') loadMeetings();
+    if (typeof loadRecordings === 'function') loadRecordings();
   });
 </script>
 </body>
